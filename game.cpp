@@ -21,9 +21,9 @@ void Game::HandleInput( float dt )
 void Game::Tick( float dt )
 {
 	screen->Clear( 0 );
-	Camera camera = Camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f);
-	Sphere sphere = Sphere(vec3(0, 0, 5), 1.0f);
-	PointLight pl = PointLight(vec3(3, 3, 3), 0x999999);
+	Camera camera (vec3(0, 0, 0), vec3(0, 0, 1), 1.0f);
+	Sphere sphere (vec3(0, 0, 5), 1.0f);
+	PointLight pl (vec3(-3, -3, 3), 0x999999);
 	Ray ray = camera.ShootRay(0,0);
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
 		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
@@ -34,10 +34,20 @@ void Game::Tick( float dt )
 			ray = camera.ShootRay(u, v);
 
 			sphere.Intersect(ray);
+
 			if (ray.length < std::numeric_limits<float>::max())
-				screen->Plot(x, y, 0xffffff);
-			else
-				screen->Plot(x, y, 0x000000);
+			{
+				glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
+				Ray shadowRay (rayPos, glm::normalize(pl.location - rayPos), std::numeric_limits<float>::max());
+
+				sphere.Intersect(shadowRay);
+				if (shadowRay.length == std::numeric_limits<float>::max())
+				{
+					screen->Plot(x, y, 0xffffff);
+					continue;
+				}
+			}
+			screen->Plot(x, y, 0x000000);
 		}
 	
 	screen->Print( "ab!<>", 2, 2, 0xffffff );
