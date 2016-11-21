@@ -6,6 +6,7 @@
 // -----------------------------------------------------------
 void Game::Init()
 {
+	// TODO place camera, primitives, lights here
 }
 
 // -----------------------------------------------------------
@@ -20,30 +21,52 @@ void Game::HandleInput( float dt )
 // -----------------------------------------------------------
 void Game::Tick( float dt )
 {
+	// Clear the screen
 	screen->Clear( 0 );
+
+	// Camera
 	Camera camera (vec3(0, 0, 0), vec3(0, 0, 1), 1.0f);
+
+	// One sphere
+	// TODO replace with vector of primitives
 	Sphere sphere (vec3(0, 0, 5), 1.0f);
+
+	// One poinlight 
+	// TODO replace with vector of pointlights
 	PointLight pl (vec3(-3, -3, 3), 0x999999);
-	Ray ray = camera.ShootRay(0,0);
+
+	// Iterate over pixels
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
 		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
 		{
 			float u = x / SCRWIDTH;
 			float v = y / SCRHEIGHT;
 
-			ray = camera.ShootRay(u, v);
+			Ray ray = camera.ShootRay(u, v);
 
+			// See if ray intersects with sphere
+			// TODO iterate over vector of primitives and only work with closest intersection
 			sphere.Intersect(ray);
 
+			// If ray collided with sphere
 			if (ray.length < std::numeric_limits<float>::max())
 			{
+
+				// Draw a shadow ray towards the light source
+				// TODO iterate over vector of light sources and sum up light influences
 				glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
 				Ray shadowRay (rayPos, glm::normalize(pl.location - rayPos), std::numeric_limits<float>::max());
 
+				// See if shadow ray intersects with sphere
+				// TODO iterate over vector of primitives and break upon first intersection (if intersection distance is smaller than distance to light source)
 				sphere.Intersect(shadowRay);
+
+				// If shadow ray did not intersect
 				if (shadowRay.length == std::numeric_limits<float>::max())
 				{
-					screen->Plot(x, y, 0xffffff);
+					// Draw the pixel
+					// TODO: Consider color of the primitive that is collided with
+					screen->Plot(x, y, pl.color);
 					continue;
 				}
 			}
