@@ -11,6 +11,10 @@
     <ClCompile Include="template.cpp">
       <Filter>template code</Filter>
     </ClCompile>
+    <ClCompile Include="sphere.cpp" />
+    <ClCompile Include="pointlight.cpp" />
+    <ClCompile Include="ray.cpp" />
+    <ClCompile Include="camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -23,6 +27,10 @@
     <ClInclude Include="template.h">
       <Filter>template code</Filter>
     </ClInclude>
+    <ClInclude Include="sphere.h" />
+    <ClInclude Include="pointlight.h" />
+    <ClInclude Include="ray.h" />
+    <ClInclude Include="camera.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

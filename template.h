@@ -34,6 +34,11 @@ extern "C"
 #include "wglext.h"
 #include "fcntl.h"
 
+#include "sphere.h"
+#include "pointlight.h"
+#include "ray.h"
+#include "camera.h"
+
 using namespace Tmpl8;				// to use template classes
 using namespace glm;				// to use glm vector stuff
 using namespace std;				// to use stl vectors
