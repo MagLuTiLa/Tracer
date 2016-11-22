@@ -2,10 +2,10 @@
 #include "sphere.h"
 
 // TODO make general primitive class, sphere is subclass of primitive. Primitive should have abstract Intersect function.
-Sphere::Sphere(glm::vec3 loc, float r)
+Sphere::Sphere(glm::vec3 loc, float r):
+	location(loc),
+	radius(r)
 {
-	location = loc;
-	radius = r;
 }
 
 void Sphere::Intersect(Ray& ray)

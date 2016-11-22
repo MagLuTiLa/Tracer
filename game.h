@@ -1,5 +1,9 @@
 #pragma once
 
+#include "sphere.h"
+#include "camera.h"
+#include "pointlight.h"
+
 #define SCRWIDTH	 1280
 #define SCRHEIGHT	 800
 
@@ -9,6 +13,7 @@ class Surface;
 class Game
 {
 public:
+	Game();
 	void SetTarget( Surface* _Surface ) { screen = _Surface; }
 	void Init();
 	void Shutdown() { /* implement if you want code to be executed upon app exit */ };
@@ -21,6 +26,9 @@ public:
 	void KeyDown( int a_Key ) { /* implement if you want to handle keys */ }
 private:
 	Surface* screen;
+	Camera camera;
+	Sphere sphere;
+	PointLight pl;
 };
 
 }; // namespace Tmpl8

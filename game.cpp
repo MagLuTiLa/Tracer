@@ -1,6 +1,14 @@
 #include "template.h"
 #include "game.h"
 
+Game::Game() :
+	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f),
+	sphere(vec3(0, 0, 5), 1.0f),
+	pl(vec3(-3, -3, 3), 0x999999)
+{
+}
+
+
 // -----------------------------------------------------------
 // Initialize the game
 // -----------------------------------------------------------
@@ -22,18 +30,19 @@ void Game::HandleInput( float dt )
 void Game::Tick( float dt )
 {
 	// Clear the screen
-	screen->Clear( 0 );
+	//screen->Clear( 0 );
 
 	// Camera
-	Camera camera (vec3(0, 0, 0), vec3(0, 0, 1), 1.0f);
+	
 
 	// One sphere
 	// TODO replace with vector of primitives
-	Sphere sphere (vec3(0, 0, 5), 1.0f);
+	//Sphere sphere (vec3(0, 0, 5), 1.0f);
+	sphere.location += vec3(0.01f, -0.01f, -0.01f);
 
 	// One poinlight 
 	// TODO replace with vector of pointlights
-	PointLight pl (vec3(-3, -3, 3), 0x999999);
+	//PointLight pl(vec3(0,0,5), 0x999999);
 
 	// Iterate over pixels
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
