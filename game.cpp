@@ -1,11 +1,20 @@
 #include "template.h"
 #include "game.h"
+#include "primitive.h"
+#include "sphere.h"
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f),
-	sphere(vec3(0, 0, 5), 1.0f),
 	pl(vec3(-3, -3, 3), 0x999999)
 {
+	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
+	primitives.push_back(p1);
+
+	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
+	primitives.push_back(p1);
+
+	/*p1 = new Sphere(vec3(0, 0, 5), 1.0f);
+	primitives.push_back(p1);*/
 }
 
 
@@ -38,7 +47,7 @@ void Game::Tick( float dt )
 	// One sphere
 	// TODO replace with vector of primitives
 	//Sphere sphere (vec3(0, 0, 5), 1.0f);
-	sphere.location += vec3(0.01f, -0.01f, -0.01f);
+	//sphere.location += vec3(0.01f, -0.01f, -0.01f);
 
 	// One poinlight 
 	// TODO replace with vector of pointlights
@@ -48,6 +57,7 @@ void Game::Tick( float dt )
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
 		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
 		{
+			
 			float u = x / SCRWIDTH;
 			float v = y / SCRHEIGHT;
 
@@ -56,9 +66,17 @@ void Game::Tick( float dt )
 
 			Ray ray = camera.ShootRay(u, v);
 
+			if ((int)x == SCRWIDTH / 2 && (int)y == SCRHEIGHT / 2)
+				int a = 0;
+
 			// See if ray intersects with sphere
 			// TODO iterate over vector of primitives and only work with closest intersection
-			sphere.Intersect(ray);
+			for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+			{
+				Primitive* p = primitives[i];
+				vec3 locthis = p->location;
+				p->Intersect(ray);
+			}
 
 			// If ray collided with sphere
 			if (ray.length < std::numeric_limits<float>::max())
@@ -71,7 +89,11 @@ void Game::Tick( float dt )
 
 				// See if shadow ray intersects with sphere
 				// TODO iterate over vector of primitives and break upon first intersection (if intersection distance is smaller than distance to light source)
-				sphere.Intersect(shadowRay);
+				for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+				{
+					Primitive* p = primitives[i];
+					p->Intersect(shadowRay);
+				}
 
 				// If shadow ray did not intersect
 				if (shadowRay.length == std::numeric_limits<float>::max())

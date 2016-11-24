@@ -3,7 +3,7 @@
 
 // TODO make general primitive class, sphere is subclass of primitive. Primitive should have abstract Intersect function.
 Sphere::Sphere(glm::vec3 loc, float r):
-	location(loc),
+	Primitive(loc),
 	radius(r)
 {
 }

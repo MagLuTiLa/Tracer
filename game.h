@@ -1,8 +1,9 @@
 #pragma once
 
-#include "sphere.h"
+#include "primitive.h"
 #include "camera.h"
 #include "pointlight.h"
+#include <vector>
 
 #define SCRWIDTH	 1280
 #define SCRHEIGHT	 800
@@ -26,8 +27,10 @@ public:
 	void KeyDown( int a_Key ) { /* implement if you want to handle keys */ }
 private:
 	Surface* screen;
+	std::vector<Primitive*> primitives;
+	//std::reference_wrapper<Primitive> primitves;
 	Camera camera;
-	Sphere sphere;
+	//Sphere sphere;
 	PointLight pl;
 };
 
