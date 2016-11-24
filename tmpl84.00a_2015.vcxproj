@@ -226,6 +226,7 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="plane.cpp" />
     <ClCompile Include="pointlight.cpp" />
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="ray.cpp" />
@@ -242,6 +243,7 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="plane.h" />
     <ClInclude Include="pointlight.h" />
     <ClInclude Include="primitive.h" />
     <ClInclude Include="ray.h" />

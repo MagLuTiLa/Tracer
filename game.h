@@ -28,9 +28,7 @@ public:
 private:
 	Surface* screen;
 	std::vector<Primitive*> primitives;
-	//std::reference_wrapper<Primitive> primitves;
 	Camera camera;
-	//Sphere sphere;
 	PointLight pl;
 };
 

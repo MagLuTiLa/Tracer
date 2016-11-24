@@ -2,6 +2,7 @@
 #include "game.h"
 #include "primitive.h"
 #include "sphere.h"
+#include "plane.h"
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f),
@@ -13,8 +14,8 @@ Game::Game() :
 	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
 	primitives.push_back(p1);
 
-	/*p1 = new Sphere(vec3(0, 0, 5), 1.0f);
-	primitives.push_back(p1);*/
+	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
+	primitives.push_back(p1);
 }
 
 
