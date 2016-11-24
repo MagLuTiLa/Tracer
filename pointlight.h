@@ -2,9 +2,9 @@
 class PointLight
 {
 public:
-	PointLight(glm::vec3 loc, int c);
+	PointLight(glm::vec3 loc, glm::vec3 c);
 
 	glm::vec3 location;
-	int color;
+	glm::vec3 color;
 };
 

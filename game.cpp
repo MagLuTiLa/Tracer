@@ -5,7 +5,7 @@
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f),
-	pl(vec3(-3, -3, 3), 0x999999)
+	pl(vec3(-3, -3, 3), vec3(0.9f, 0.9f, 0.9f))
 {
 	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
 	primitives.push_back(p1);
