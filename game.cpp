@@ -51,6 +51,9 @@ void Game::Tick( float dt )
 			float u = x / SCRWIDTH;
 			float v = y / SCRHEIGHT;
 
+			if ((int)x == SCRWIDTH / 2 && (int)y == SCRHEIGHT / 2)
+				int a = 0;
+
 			Ray ray = camera.ShootRay(u, v);
 
 			// See if ray intersects with sphere
@@ -64,7 +67,7 @@ void Game::Tick( float dt )
 				// Draw a shadow ray towards the light source
 				// TODO iterate over vector of light sources and sum up light influences
 				glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
-				Ray shadowRay (rayPos, glm::normalize(pl.location - rayPos), std::numeric_limits<float>::max());
+				Ray shadowRay (rayPos, glm::normalize(pl.location - rayPos));
 
 				// See if shadow ray intersects with sphere
 				// TODO iterate over vector of primitives and break upon first intersection (if intersection distance is smaller than distance to light source)

@@ -39,5 +39,5 @@ Ray Camera::ShootRay(float u, float v)
 	glm::vec3 dir = topLeft + u*width + v*height - position;
 	float length = glm::length(dir);
 	dir = dir / length;
-	return Ray(position, dir, std::numeric_limits<float>::max());
+	return Ray(position, dir);
 }

@@ -13,7 +13,7 @@ namespace Tmpl8 {
 
 #define PALETTE_LEVELS	32
 
-typedef unsigned long Pixel;
+typedef unsigned int Pixel;
 
 inline Pixel AddBlend( Pixel a_Color1, Pixel a_Color2 )
 {
