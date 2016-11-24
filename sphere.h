@@ -1,11 +1,11 @@
 #pragma once
 #include "ray.h"
+#include "primitive.h"
 
-class Sphere
+class Sphere : public Primitive
 {
 public:
 	Sphere(glm::vec3, float);
-	void Intersect(Ray& ray);
-	glm::vec3 location;
+	virtual void Intersect(Ray& ray);
 	float radius;
 };
