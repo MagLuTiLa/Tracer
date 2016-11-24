@@ -5,17 +5,22 @@
 #include "plane.h"
 
 Game::Game() :
-	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f),
-	pl(vec3(-3, -3, 3), vec3(0.9f, 0.9f, 0.9f))
+	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f)
 {
 	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
 	primitives.push_back(p1);
 
 	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
 	primitives.push_back(p1);
-
+	
 	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
 	primitives.push_back(p1);
+
+	Light * l = new PointLight(vec3(-3, -3, 3), vec3(0.6f, 0.6f, 0.6f));
+	lights.push_back(l);
+
+	l = new PointLight(vec3(3, -3, 3), vec3(0.1f, 0.4f, 0.1f));
+	lights.push_back(l);
 }
 
 
@@ -42,10 +47,6 @@ void Game::Tick( float dt )
 	// Clear the screen
 	//screen->Clear( 0 );
 
-	// One pointlight 
-	// TODO replace with vector of pointlights
-	//PointLight pl(vec3(0,0,5), 0x999999);
-
 	// Iterate over pixels
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
 		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
@@ -56,9 +57,6 @@ void Game::Tick( float dt )
 
 			Ray ray = camera.ShootRay(u, v);
 
-			if ((int)x == SCRWIDTH / 2 && (int)y == SCRHEIGHT / 2)
-				int a = 0;
-
 			// See if ray intersects with primtives
 			for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 			{
@@ -67,32 +65,37 @@ void Game::Tick( float dt )
 				p->Intersect(ray);
 			}
 
+			vec3 lightIntensity = vec3();
+
 			// If ray collided with sphere
 			if (ray.length < std::numeric_limits<float>::max())
 			{
 
-				// Draw a shadow ray towards the light source
-				// TODO iterate over vector of light sources and sum up light influences
+				// Draw a shadow ray towards the light sources
 				glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
-				Ray shadowRay (rayPos, glm::normalize(pl.location - rayPos), std::numeric_limits<float>::max());
 
-				// See if shadow ray intersects with primitives
-				for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+				for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 				{
-					Primitive* p = primitives[i];
-					p->Intersect(shadowRay);
-				}
+					Light* l = lights[i];
+					Ray shadowRay(rayPos, glm::normalize(l->location - rayPos), std::numeric_limits<float>::max());
 
-				// If shadow ray did not intersect
-				if (shadowRay.length == std::numeric_limits<float>::max())
-				{
-					// Draw the pixel
-					// TODO: Consider color of the primitive that is collided with
-					screen->Plot(x, y, pl.color);
-					continue;
+					// See if shadow ray intersects with primitives
+					for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+					{
+						Primitive* p = primitives[i];
+						p->Intersect(shadowRay);
+					}
+
+					// If shadow ray did not intersect
+					if (shadowRay.length == std::numeric_limits<float>::max())
+					{
+						// Draw the pixel
+						// TODO: Consider color of the primitive that is collided with
+						lightIntensity += l->color;
+					}
 				}
 			}
-			screen->Plot(x, y, 0x000000);
+			screen->Plot(x, y, lightIntensity);
 		}
 	
 	screen->Print( "ab!<>", 2, 2, 0xffffff );
