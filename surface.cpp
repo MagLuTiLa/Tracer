@@ -296,6 +296,18 @@ void Surface::Plot( int x, int y, Pixel c )
 		m_Buffer[x + y * m_Pitch] = c;
 }
 
+void Surface::Plot(int x, int y, glm::vec3 c)
+{
+	if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height))
+	{
+		int red = std::fmin(c.r * 255, 255.0f);
+		int green = std::fmin(c.g * 255, 255.0f);
+		int blue = std::fmin(c.b * 255, 255.0f);
+		int finalColor = (red << 16) + (green << 8) + (blue);
+		m_Buffer[x + y * m_Pitch] = finalColor;
+	}
+}
+
 void Surface::Box( int x1, int y1, int x2, int y2, Pixel c )
 {
 	Line( (float)x1, (float)y1, (float)x2, (float)y1, c );
