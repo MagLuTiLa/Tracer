@@ -16,10 +16,13 @@ Game::Game() :
 	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
 	primitives.push_back(p1);
 
-	Light * l = new PointLight(vec3(-3, -3, 3), vec3(0.6f, 0.6f, 0.6f));
+	Light * l = new PointLight(vec3(-3, -3, 3), vec3(0.6f, 0.1f, 0.1f));
 	lights.push_back(l);
 
-	l = new PointLight(vec3(3, -3, 3), vec3(0.1f, 0.4f, 0.1f));
+	l = new PointLight(vec3(3, -3, 3), vec3(0.1f, 0.8f, 0.1f));
+	lights.push_back(l);
+
+	l = new PointLight(vec3(0, -4, 6), vec3(0.1f, 0.1f, 0.8f));
 	lights.push_back(l);
 }
 
