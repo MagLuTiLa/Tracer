@@ -17,9 +17,11 @@ void Sphere::Intersect(Ray& ray)
 	float r2 = radius * radius;
 	if (p2 > r2) return; // r2 = r * r
 	t -= glm::sqrt(r2 - p2);
-	if (t < ray.length)
-		if (t > 0)
-			ray.length = t;
+	if (t < ray.length && t > 0)
+	{
+		ray.length = t;
+		ray.hit = this;
+	}
 		
 	// or: ray.t = min( ray.t, max( 0, t ) );
 }

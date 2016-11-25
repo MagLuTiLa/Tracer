@@ -100,7 +100,7 @@ void Game::Tick( float dt )
 				{
 					// Draw the pixel
 					// TODO: Consider color of the primitive that is collided with
-					screen->Plot(x, y, pl.color);
+					screen->Plot(x, y, pl.color * glm::dot(shadowRay.direction, ray.direction));
 					continue;
 				}
 			}

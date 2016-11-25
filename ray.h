@@ -1,4 +1,6 @@
 #pragma once
+#include "primitive.h"
+class Primitive;
 class Ray
 {
 public:
@@ -6,7 +8,7 @@ public:
 
 	glm::vec3 origin;
 	glm::vec3 direction;
-	glm::vec3 colour;
 	float length;
+	Primitive* hit;
 };
 
