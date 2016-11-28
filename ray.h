@@ -10,5 +10,6 @@ public:
 	glm::vec3 direction;
 	float length;
 	Primitive* hit;
+	glm::vec3 color;
 };
 

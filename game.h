@@ -28,10 +28,8 @@ public:
 private:
 	Surface* screen;
 	std::vector<Primitive*> primitives;
-	//std::reference_wrapper<Primitive> primitves;
+	std::vector<Light*> lights;
 	Camera camera;
-	//Sphere sphere;
-	PointLight pl;
 };
 
 }; // namespace Tmpl8
