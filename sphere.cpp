@@ -28,9 +28,7 @@ void Sphere::Intersect(Ray& ray)
 
 glm::vec3 Sphere::Sample(Ray& ray, Ray& lightRay)
 {
-	glm::vec3 delta = location - ray.origin;
-	float angle = glm::dot(delta, ray.direction);
-	glm::vec3 hitLoc = delta - angle * ray.direction;
+	glm::vec3 hitLoc = lightRay.origin;
 	glm::vec3 normal = (hitLoc - location) / radius;
 	return color*lightRay.color * glm::dot(normal, lightRay.direction)/(lightRay.length*lightRay.length);
 	
