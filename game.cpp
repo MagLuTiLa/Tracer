@@ -6,24 +6,33 @@
 #include <string>
 
 Game::Game() :
-	camera(vec3(0, 0, 0), vec3(0, 0, 1), 0.5f)
+	camera(vec3(0, 0, 0), vec3(0, 0, 10), 0.5f)
 {
 	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
 	primitives.push_back(p1);
 
 	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
 	primitives.push_back(p1);
+
+	p1 = new Sphere(vec3(2, 0, 4), 0.8f);
+	primitives.push_back(p1);
+
+	p1 = new Sphere(vec3(-2, -3, 8), 2.2f);
+	primitives.push_back(p1);
 	
 	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
 	primitives.push_back(p1);
 
-	Light * l = new PointLight(vec3(-3, -3, 3), vec3(0.6f, 0.1f, 0.1f));
+	Light * l = new PointLight(vec3(-3, -3, 3), vec3(0.4f, 0.1f, 0.1f));
 	lights.push_back(l);
 
-	l = new PointLight(vec3(3, -3, 3), vec3(0.1f, 0.8f, 0.1f));
+	l = new PointLight(vec3(3, -0.5f, 3), vec3(0.1f, 0.4f, 0.1f));
 	lights.push_back(l);
 
-	l = new PointLight(vec3(1, -4, 6), vec3(0.1f, 0.1f, 0.8f));
+	l = new PointLight(vec3(1, -4, 6), vec3(0.1f, 0.1f, 0.4f));
+	lights.push_back(l);
+
+	l = new PointLight(vec3(-1, -2, -1), vec3(0.2f, 0.2f, 0.05f));
 	lights.push_back(l);
 }
 
@@ -61,7 +70,7 @@ void Game::Tick( float dt )
 
 			Ray ray = camera.ShootRay(u, v);
 
-			// See if ray intersects with primtives
+			// See if ray intersects with primitives
 			for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 			{
 				Primitive* p = primitives[i];

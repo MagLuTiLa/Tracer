@@ -2,11 +2,11 @@
 #include "camera.h"
 
 
-Camera::Camera(glm::vec3 p, glm::vec3 d, float dist):
+Camera::Camera(glm::vec3 p, glm::vec3 lookAt, float dist):
 	position(p),
-	direction(d),
 	distance(dist)
 {
+	direction = glm::normalize(lookAt - position);
 	Update();
 }
 
@@ -47,13 +47,13 @@ void Camera::Update()
 void Camera::MoveForward()
 {
 	//distance += 0.1f;
-	position += glm::vec3(0, 0, 0.1f);
+	position += glm::vec3(0, 0, 0.3f);
 	Update();
 }
 
 void Camera::MoveBack()
 {
 	//distance -= 0.1f;
-	position -= glm::vec3(0, 0, 0.1f);
+	position -= glm::vec3(0, 0, 0.3f);
 	Update();
 }
