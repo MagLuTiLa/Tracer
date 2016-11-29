@@ -3,9 +3,10 @@
 #include "primitive.h"
 #include "sphere.h"
 #include "plane.h"
+#include <string>
 
 Game::Game() :
-	camera(vec3(0, 0, 0), vec3(0, 0, 1), 1.0f)
+	camera(vec3(0, 0, 0), vec3(0, 0, 1), 0.5f)
 {
 	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
 	primitives.push_back(p1);
@@ -22,7 +23,7 @@ Game::Game() :
 	l = new PointLight(vec3(3, -3, 3), vec3(0.1f, 0.8f, 0.1f));
 	lights.push_back(l);
 
-	l = new PointLight(vec3(0, -4, 6), vec3(0.1f, 0.1f, 0.8f));
+	l = new PointLight(vec3(1, -4, 6), vec3(0.1f, 0.1f, 0.8f));
 	lights.push_back(l);
 }
 
@@ -109,4 +110,16 @@ void Game::Tick( float dt )
 	screen->Line(SCRWIDTH / 2, 0, SCRWIDTH / 2, SCRHEIGHT - 1, 0x00dd00);
 	screen->Line(0, SCRHEIGHT / 2, SCRWIDTH - 1, SCRHEIGHT / 2, 0xdd0000);
 	*/
+}
+
+void Tmpl8::Game::KeyDown(int a_Key)
+{
+	if (a_Key == 82)
+		camera.MoveForward();
+	if (a_Key == 81)
+		camera.MoveBack();
+	/*
+	char text [50];
+	sprintf(text, "%i", a_Key);
+	screen->Print(text, 2, 12, 0xffffff);*/
 }

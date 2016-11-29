@@ -7,8 +7,20 @@ Camera::Camera(glm::vec3 p, glm::vec3 d, float dist):
 	direction(d),
 	distance(dist)
 {
-	center = position + direction * distance;
+	Update();
+}
 
+Ray Camera::ShootRay(float u, float v)
+{
+	glm::vec3 dir = topLeft + u*width + v*height - position;
+	float length = glm::length(dir);
+	dir = dir / length;
+	return Ray(position, dir, std::numeric_limits<float>::max());
+}
+
+void Camera::Update()
+{
+	center = position + direction * distance;
 
 	float stdValue = 1.0f;
 	float ratio;
@@ -19,7 +31,7 @@ Camera::Camera(glm::vec3 p, glm::vec3 d, float dist):
 		topRight = center + glm::vec3(ratio, -1, 0);
 		botLeft = center + glm::vec3(-ratio, 1, 0);
 	}
-	else 
+	else
 	{
 		ratio = (float)SCRHEIGHT / (float)SCRWIDTH;
 		topLeft = center + glm::vec3(-1, -ratio, 0);
@@ -28,16 +40,20 @@ Camera::Camera(glm::vec3 p, glm::vec3 d, float dist):
 	}
 
 	// Used for the "screen" through where rays are shot
-	
-
 	width = topRight - topLeft;
 	height = botLeft - topLeft;
 }
 
-Ray Camera::ShootRay(float u, float v)
+void Camera::MoveForward()
 {
-	glm::vec3 dir = topLeft + u*width + v*height - position;
-	float length = glm::length(dir);
-	dir = dir / length;
-	return Ray(position, dir, std::numeric_limits<float>::max());
+	//distance += 0.1f;
+	position += glm::vec3(0, 0, 0.1f);
+	Update();
+}
+
+void Camera::MoveBack()
+{
+	//distance -= 0.1f;
+	position -= glm::vec3(0, 0, 0.1f);
+	Update();
 }
