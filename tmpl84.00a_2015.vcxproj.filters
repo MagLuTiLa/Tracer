@@ -18,7 +18,6 @@
     <ClCompile Include="primitive.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="light.cpp" />
-    <ClCompile Include="tracer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -38,7 +37,6 @@
     <ClInclude Include="primitive.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="light.h" />
-    <ClInclude Include="tracer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
