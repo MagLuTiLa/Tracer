@@ -16,6 +16,15 @@ void Plane::Intersect(Ray& ray)
 		glm::vec3 p = (location - ray.origin);
 		float dist = glm::dot(p, normal);
 		if (dist > 0 && dist < ray.length)
+		{
 			ray.length = dist;
+			ray.hit = this;
+		}
 	}
+}
+
+glm::vec3 Plane::Sample(Ray & ray, Ray & lightRay)
+{
+	float intencity = -glm::dot(normal, lightRay.direction);
+	return color*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }

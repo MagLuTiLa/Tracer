@@ -12,27 +12,27 @@ Game::Game() :
 	primitives.push_back(p1);
 
 	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
+	p1->color = vec3(0., 0., 1.);
 	primitives.push_back(p1);
 
 	p1 = new Sphere(vec3(2, 0, 4), 0.8f);
+	p1->color = vec3(1., 0., 0.);
 	primitives.push_back(p1);
-
+	
 	p1 = new Sphere(vec3(-2, -3, 8), 2.2f);
+	p1->color = vec3(0., 1., 0.);
 	primitives.push_back(p1);
 	
 	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
 	primitives.push_back(p1);
-
-	Light * l = new PointLight(vec3(-3, -3, 3), vec3(0.4f, 0.1f, 0.1f));
+	
+	Light * l = new PointLight(vec3(-1, -3, -1), vec3(7.f, 7.f, 7.f));
 	lights.push_back(l);
-
-	l = new PointLight(vec3(3, -0.5f, 3), vec3(0.1f, 0.4f, 0.1f));
+	
+	l = new PointLight(vec3(-3, -3, 3), vec3(5.f, 5.f, 5.f));
 	lights.push_back(l);
-
-	l = new PointLight(vec3(1, -4, 6), vec3(0.1f, 0.1f, 0.4f));
-	lights.push_back(l);
-
-	l = new PointLight(vec3(-1, -2, -1), vec3(0.2f, 0.2f, 0.05f));
+	
+	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 5.f, 1.f));
 	lights.push_back(l);
 }
 
@@ -58,7 +58,7 @@ void Game::HandleInput( float dt )
 void Game::Tick( float dt )
 {
 	// Clear the screen
-	//screen->Clear( 0 );
+	screen->Clear( 0 );
 
 	// Iterate over pixels
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
@@ -90,7 +90,8 @@ void Game::Tick( float dt )
 				for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 				{
 					Light* l = lights[i];
-					Ray shadowRay(rayPos, glm::normalize(l->location - rayPos), std::numeric_limits<float>::max());
+					float len = glm::length(l->location - rayPos);
+					Ray shadowRay(rayPos, (l->location - rayPos)/ len);
 
 					// See if shadow ray intersects with primitives
 					for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
@@ -104,7 +105,9 @@ void Game::Tick( float dt )
 					{
 						// Draw the pixel
 						// TODO: Consider color of the primitive that is collided with
-						lightIntensity += l->color;
+						shadowRay.length = len;
+						shadowRay.color = l->color;
+						lightIntensity += ray.hit->Sample(ray, shadowRay);
 					}
 				}
 			}
