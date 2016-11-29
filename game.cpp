@@ -23,7 +23,7 @@ Game::Game() :
 	p1->color = vec3(0., 1., 0.);
 	primitives.push_back(p1);
 	
-	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
+	p1 = new Plane(vec3(0, 2, 2), vec3(0, -1, 0));
 	primitives.push_back(p1);
 	
 	Light * l = new PointLight(vec3(-1, -3, -1), vec3(7.f, 7.f, 7.f));
@@ -98,17 +98,17 @@ void Game::Tick( float dt )
 					{
 						Primitive* p = primitives[i];
 						p->Intersect(shadowRay);
+						if (shadowRay.length < len)
+							goto endOfLoop;
 					}
 
 					// If shadow ray did not intersect
-					if (shadowRay.length == std::numeric_limits<float>::max())
-					{
-						// Draw the pixel
-						// TODO: Consider color of the primitive that is collided with
-						shadowRay.length = len;
-						shadowRay.color = l->color;
-						lightIntensity += ray.hit->Sample(ray, shadowRay);
-					}
+					// Draw the pixel
+					// TODO: Consider color of the primitive that is collided with
+					shadowRay.length = len;
+					shadowRay.color = l->color;
+					lightIntensity += ray.hit->Sample(ray, shadowRay);
+				endOfLoop:;
 				}
 			}
 			screen->Plot(x, y, lightIntensity);

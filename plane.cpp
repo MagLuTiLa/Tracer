@@ -11,24 +11,20 @@ Plane::Plane(glm::vec3 loc, glm::vec3 nor):
 void Plane::Intersect(Ray& ray)
 {
 	float dP = glm::dot(normal, ray.direction);
-	if (dP > 0)
+	if (dP < 0)
 	{
 		glm::vec3 p = (location - ray.origin);
-		float angle = glm::dot(normal, ray.direction);
-		if (angle > 0)
-		{
-			float dist = glm::dot(p, normal) / angle;
+			float dist = glm::dot(p, normal) / dP;
 			if (dist < ray.length)
 			{
 				ray.length = dist;
 				ray.hit = this;
 			}
-		}
 	}
 }
 
 glm::vec3 Plane::Sample(Ray & ray, Ray & lightRay)
 {
-	float intencity = -glm::dot(normal, lightRay.direction);
+	float intencity = glm::dot(normal, lightRay.direction);
 	return color*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }
