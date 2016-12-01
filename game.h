@@ -15,6 +15,9 @@ class Game
 {
 public:
 	Game();
+
+	glm::vec3 DirectIllumination(Ray ray);
+
 	void SetTarget( Surface* _Surface ) { screen = _Surface; }
 	void Init();
 	void Shutdown() { /* implement if you want code to be executed upon app exit */ };

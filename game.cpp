@@ -33,7 +33,6 @@ Game::Game() :
 	lights.push_back(l);
 }
 
-
 // -----------------------------------------------------------
 // Initialize the game
 // -----------------------------------------------------------
@@ -82,36 +81,8 @@ void Game::Tick( float dt )
 
 			// If ray collided with sphere
 			if (ray.length < std::numeric_limits<float>::max())
-			{
+				lightIntensity = DirectIllumination(ray);
 
-				// Draw a shadow ray towards the light sources
-				glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
-
-				for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
-				{
-					Light* l = lights[i];
-					float len = glm::length(l->location - rayPos);
-					Ray shadowRay(rayPos, (l->location - rayPos)/ len);
-
-					// See if shadow ray intersects with primitives
-					for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
-					{
-						Primitive* p = primitives[i];
-						p->Intersect(shadowRay);
-						if (shadowRay.length < len)
-							goto next;
-					}
-
-					// If shadow ray did not intersect
-
-						// Draw the pixel
-						// TODO: Consider color of the primitive that is collided with
-						shadowRay.length = len;
-						shadowRay.color = l->color;
-						lightIntensity += ray.hit->Sample(ray, shadowRay);
-					next:;
-				}
-			}
 			screen->Plot(x, y, lightIntensity);
 		}
 	
@@ -128,6 +99,40 @@ void Game::Tick( float dt )
 	screen->Line(SCRWIDTH / 2, 0, SCRWIDTH / 2, SCRHEIGHT - 1, 0x00dd00);
 	screen->Line(0, SCRHEIGHT / 2, SCRWIDTH - 1, SCRHEIGHT / 2, 0xdd0000);
 	*/
+}
+
+glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
+{
+	vec3 lightIntensity = vec3();
+
+	// Draw a shadow ray towards the light sources
+	glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
+
+	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
+	{
+		Light* l = lights[i];
+		float len = glm::length(l->location - rayPos);
+		Ray shadowRay(rayPos, (l->location - rayPos) / len);
+
+		// See if shadow ray intersects with primitives
+		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+		{
+			Primitive* p = primitives[i];
+			p->Intersect(shadowRay);
+			if (shadowRay.length < len)
+				goto next;
+		}
+
+		// If shadow ray did not intersect
+
+		// Draw the pixel
+		// TODO: Consider color of the primitive that is collided with
+		shadowRay.length = len;
+		shadowRay.color = l->color;
+		lightIntensity += ray.hit->Sample(ray, shadowRay);
+	next:;
+	}
+	return lightIntensity;
 }
 
 void Tmpl8::Game::KeyDown(int a_Key)
