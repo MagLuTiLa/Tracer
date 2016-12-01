@@ -92,13 +92,6 @@ void Game::Tick( float dt )
 	screen->Print(textBuffer, 2, 12, 0xffffff);
 	sprintf(textBuffer, "Mouse Y: %i", mouseY);
 	screen->Print(textBuffer, 2, 22, 0xffffff);
-	/*screen->Plot(20, 20, 0xff0000);
-	screen->Bar(30, 30, 100, 50, 0x555555);
-	screen->Box(120, 30, 140, 50, 0x779977);
-	screen->Line(3 * SCRWIDTH / 4, 0, 1 * SCRWIDTH / 4, SCRHEIGHT - 1, 0x0000dd);
-	screen->Line(SCRWIDTH / 2, 0, SCRWIDTH / 2, SCRHEIGHT - 1, 0x00dd00);
-	screen->Line(0, SCRHEIGHT / 2, SCRWIDTH - 1, SCRHEIGHT / 2, 0xdd0000);
-	*/
 }
 
 glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
