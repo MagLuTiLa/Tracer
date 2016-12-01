@@ -2,12 +2,6 @@
 #include "sphere.h"
 #include <algorithm>
 
-Sphere::Sphere(glm::vec3 loc, float r):
-	Primitive(loc),
-	radius(r)
-{
-}
-
 void Sphere::Intersect(Ray& ray)
 {
 	glm::vec3 c = location - ray.origin;
@@ -30,7 +24,7 @@ glm::vec3 Sphere::Sample(Ray& ray, Ray& lightRay)
 {
 	glm::vec3 hitLoc = lightRay.origin;
 	glm::vec3 normal = (hitLoc - location) / radius;
-	return color*lightRay.color * std::max(0.f,glm::dot(normal, lightRay.direction)/(lightRay.length*lightRay.length));
+	return Color()*lightRay.color * std::max(0.f,glm::dot(normal, lightRay.direction)/(lightRay.length*lightRay.length));
 	
 
 	// or: ray.t = min( ray.t, max( 0, t ) );

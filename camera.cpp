@@ -38,9 +38,7 @@ void Camera::Update()
 
 Ray Camera::ShootRay(float u, float v)
 {
-	glm::vec3 dir = topLeft + u*width + v*height - position;
-	float length = glm::length(dir);
-	dir = dir / length;
+	glm::vec3 dir = glm::normalize(topLeft + u*width + v*height - position);
 	return Ray(position, dir);
 }
 

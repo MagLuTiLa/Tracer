@@ -11,28 +11,25 @@ Game::Game() :
 	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
 	primitives.push_back(p1);
 
-	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
-	p1->color = vec3(0., 0., 1.);
+	p1 = new Sphere(vec3(1, 2, 3), 1.0f, vec3(0., 0., 1.));
 	primitives.push_back(p1);
 
-	p1 = new Sphere(vec3(2, 0, 4), 0.8f);
-	p1->color = vec3(1., 0., 0.);
+	p1 = new Sphere(vec3(2, 0, 4), 0.8f, vec3(1., 0., 0.));
 	primitives.push_back(p1);
 	
-	p1 = new Sphere(vec3(-2, -3, 8), 2.2f);
-	p1->color = vec3(0., 1., 0.);
+	p1 = new Sphere(vec3(-2, -3, 5), 1.f, Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 	
-	p1 = new Plane(vec3(0, 5, 5), vec3(0, 1, 0));
+	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0));
 	primitives.push_back(p1);
 	
 	Light * l = new PointLight(vec3(-1, -3, -1), vec3(7.f, 7.f, 7.f));
 	lights.push_back(l);
 	
-	l = new PointLight(vec3(-3, -3, 3), vec3(5.f, 5.f, 5.f));
+	l = new PointLight(vec3(-3, -5, 3), vec3(9.f, 9.f, 9.f));
 	lights.push_back(l);
 	
-	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 5.f, 1.f));
+	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f));
 	lights.push_back(l);
 }
 
@@ -65,6 +62,9 @@ void Game::Tick( float dt )
 		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
 		{
 			
+			if ((int)x == 565 && (int)y == 250)
+				int a = 1;
+
 			float u = x / SCRWIDTH;
 			float v = y / SCRHEIGHT;
 
@@ -98,23 +98,29 @@ void Game::Tick( float dt )
 					{
 						Primitive* p = primitives[i];
 						p->Intersect(shadowRay);
+						if (shadowRay.length < len)
+							goto next;
 					}
 
 					// If shadow ray did not intersect
-					if (shadowRay.length == std::numeric_limits<float>::max())
-					{
+
 						// Draw the pixel
 						// TODO: Consider color of the primitive that is collided with
 						shadowRay.length = len;
 						shadowRay.color = l->color;
 						lightIntensity += ray.hit->Sample(ray, shadowRay);
-					}
+					next:;
 				}
 			}
 			screen->Plot(x, y, lightIntensity);
 		}
 	
 	screen->Print( "ab!<>", 2, 2, 0xffffff );
+	char textBuffer [20];
+	sprintf(textBuffer, "Mouse X: %i", mouseX );
+	screen->Print(textBuffer, 2, 12, 0xffffff);
+	sprintf(textBuffer, "Mouse Y: %i", mouseY);
+	screen->Print(textBuffer, 2, 22, 0xffffff);
 	/*screen->Plot(20, 20, 0xff0000);
 	screen->Bar(30, 30, 100, 50, 0x555555);
 	screen->Box(120, 30, 140, 50, 0x779977);
@@ -134,4 +140,11 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	char text [50];
 	sprintf(text, "%i", a_Key);
 	screen->Print(text, 2, 12, 0xffffff);*/
+}
+
+
+void Game::MouseMove(int _X, int _Y)
+{
+	mouseX = _X;
+	mouseY = _Y;
 }
