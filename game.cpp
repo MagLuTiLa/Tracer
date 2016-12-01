@@ -113,22 +113,18 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 			lightIntensity = DirectIllumination(ray);
 		else if (material.IsReflective())
 		{
+			vec3 rayPos = ray.origin + ray.direction * (ray.length - 0.0001f);
+
 			//?? = ?? ? 2(?? ? ??)??.
 			vec3 colPos = ray.origin + ray.direction * ray.length;
 			vec3 normal = ray.hit->Normal(colPos);
-			vec3 rayPos = ray.origin + ray.direction * (ray.length - 0.0001f);
-			/*
-			float step1 = glm::dot(ray.direction, normal);
-			vec3 step2 = step1 * normal;
-			vec3 step3 = 2.f * step2;
-			*/
 			vec3 rayDir = ray.direction - 2.f * (glm::dot(ray.direction, normal) * normal);
+
 			Ray newRay(rayPos, rayDir);
 			vec3 light = TraceRay(newRay);
 			lightIntensity = light * ray.hit->Color();
 		}
 	}
-
 	return lightIntensity;
 }
 
