@@ -22,6 +22,7 @@ public:
 	void HandleInput( float dt );
 	void Tick( float dt );
 
+	glm::vec3 TraceRay(Ray& ray);
 	glm::vec3 DirectIllumination(Ray ray);
 
 	void MouseUp( int _Button ) { /* implement if you want to detect mouse button presses */ }

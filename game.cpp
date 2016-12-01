@@ -6,27 +6,33 @@
 #include <string>
 
 Game::Game() :
-	camera(vec3(0, 0, 0), vec3(0, 0, 10), 0.5f)
+	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
-	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
+	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(1.f, vec3(1., 0., 0.)));
 	primitives.push_back(p1);
 
-	p1 = new Sphere(vec3(1, 2, 3), 1.0f, vec3(0., 0., 1.));
-	primitives.push_back(p1);
-
-	p1 = new Sphere(vec3(2, 0, 4), 0.8f, vec3(1., 0., 0.));
-	primitives.push_back(p1);
-	
 	p1 = new Sphere(vec3(-2, -3, 5), 1.f, Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 	
-	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0));
+		p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 	
-	Light * l = new PointLight(vec3(-1, -3, -1), vec3(7.f, 7.f, 7.f));
+	p1 = new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.)));
+	primitives.push_back(p1);
+	
+	p1 = new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.)));
+	primitives.push_back(p1);
+
+	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.)));
+	primitives.push_back(p1);
+	/*
+	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 1., 1.)));
+	primitives.push_back(p1);
+	*/
+	Light * l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
 	lights.push_back(l);
 	
-	l = new PointLight(vec3(-3, -5, 3), vec3(9.f, 9.f, 9.f));
+	l = new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f));
 	lights.push_back(l);
 	
 	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f));
@@ -60,8 +66,13 @@ void Game::Tick( float dt )
 	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
 		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
 		{
-			
-			if ((int)x == 565 && (int)y == 250)
+			if ((int)x == 712 && (int)y == 543)
+				int a = 1;
+
+			if ((int)x == 817 && (int)y == 303)
+				int a = 1;
+
+			if ((int)x == 638 && (int)y == 650)
 				int a = 1;
 
 			float u = x / SCRWIDTH;
@@ -69,19 +80,7 @@ void Game::Tick( float dt )
 
 			Ray ray = camera.ShootRay(u, v);
 
-			// See if ray intersects with primitives
-			for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
-			{
-				Primitive* p = primitives[i];
-				vec3 locthis = p->location;
-				p->Intersect(ray);
-			}
-
-			vec3 lightIntensity = vec3();
-
-			// If ray collided with sphere
-			if (ray.length < std::numeric_limits<float>::max())
-				lightIntensity = DirectIllumination(ray);
+			vec3 lightIntensity = TraceRay(ray);
 
 			screen->Plot(x, y, lightIntensity);
 		}
@@ -94,12 +93,51 @@ void Game::Tick( float dt )
 	screen->Print(textBuffer, 2, 22, 0xffffff);
 }
 
+glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
+{
+	// See if ray intersects with primitives
+	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+	{
+		Primitive* p = primitives[i];
+		vec3 locthis = p->location;
+		p->Intersect(ray);
+	}
+
+	vec3 lightIntensity = vec3();
+
+	// If ray collided with sphere
+	if (ray.length < std::numeric_limits<float>::max())
+	{
+		Material material = ray.hit->material;
+		if (material.IsOpaque())
+			lightIntensity = DirectIllumination(ray);
+		else if (material.IsReflective())
+		{
+			//?? = ?? ? 2(?? ? ??)??.
+			vec3 colPos = ray.origin + ray.direction * ray.length;
+			vec3 normal = ray.hit->Normal(colPos);
+			vec3 rayPos = ray.origin + ray.direction * (ray.length - 0.0001f);
+			/*
+			float step1 = glm::dot(ray.direction, normal);
+			vec3 step2 = step1 * normal;
+			vec3 step3 = 2.f * step2;
+			*/
+			vec3 rayDir = ray.direction - 2.f * (glm::dot(ray.direction, normal) * normal);
+			Ray newRay(rayPos, rayDir);
+			vec3 light = TraceRay(newRay);
+			lightIntensity = light * ray.hit->Color();
+		}
+	}
+
+	return lightIntensity;
+}
+
 glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
 {
 	vec3 lightIntensity = vec3();
 
 	// Draw a shadow ray towards the light sources
-	glm::vec3 rayPos = ray.direction * (ray.length - 0.0001f);
+	glm::vec3 rayPos = ray.origin + ray.direction * (ray.length - 0.0001f);
 
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
@@ -115,11 +153,8 @@ glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
 			if (shadowRay.length < len)
 				goto next;
 		}
-
-		// If shadow ray did not intersect
-
-		// Draw the pixel
-		// TODO: Consider color of the primitive that is collided with
+		
+		// Add color to the lightintensity
 		shadowRay.length = len;
 		shadowRay.color = l->color;
 		lightIntensity += ray.hit->Sample(ray, shadowRay);

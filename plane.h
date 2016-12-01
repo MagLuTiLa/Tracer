@@ -20,5 +20,7 @@ public:
 
 	// Inherited via Primitive
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay) override;
+
+	virtual glm::vec3 Normal(glm::vec3);
 };
 

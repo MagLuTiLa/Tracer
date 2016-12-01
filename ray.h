@@ -1,4 +1,6 @@
 #pragma once
+#define TRACECAP = 10;
+
 #include "primitive.h"
 class Primitive;
 class Ray
@@ -11,5 +13,6 @@ public:
 	float length;
 	Primitive* hit;
 	glm::vec3 color;
+	int traceDepth = 0;
 };
 

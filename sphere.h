@@ -17,5 +17,6 @@ public:
 
 	virtual void Intersect(Ray& ray);
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay);
+	virtual glm::vec3 Normal(glm::vec3);
 	float radius;
 };

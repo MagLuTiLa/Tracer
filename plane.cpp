@@ -23,3 +23,8 @@ glm::vec3 Plane::Sample(Ray & ray, Ray & lightRay)
 	float intencity = glm::dot(normal, lightRay.direction);
 	return Color()*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }
+
+glm::vec3 Plane::Normal(glm::vec3 loc)
+{
+	return normal;
+}
