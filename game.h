@@ -15,14 +15,20 @@ class Game
 {
 public:
 	Game();
+
 	void SetTarget( Surface* _Surface ) { screen = _Surface; }
 	void Init();
 	void Shutdown() { /* implement if you want code to be executed upon app exit */ };
 	void HandleInput( float dt );
 	void Tick( float dt );
+
+	glm::vec3 TraceRay(Ray& ray);
+	glm::vec3 DirectIllumination(Ray ray);
+	glm::vec3 Reflect(Ray ray);
+
 	void MouseUp( int _Button ) { /* implement if you want to detect mouse button presses */ }
 	void MouseDown( int _Button ) { /* implement if you want to detect mouse button presses */ }
-	void MouseMove( int _X, int _Y ) { /* implement if you want to detect mouse movement */ }
+	void MouseMove(int _X, int _Y);
 	void KeyUp( int a_Key ) { /* implement if you want to handle keys */ }
 	void KeyDown(int a_Key);
 private:
@@ -30,6 +36,8 @@ private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
 	Camera camera;
+	int mouseX = 0;
+	int mouseY = 0;
 };
 
 }; // namespace Tmpl8

@@ -20,6 +20,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="obj.cpp" />
     <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="obj.h" />
     <ClInclude Include="triangle.h" />
+    <ClInclude Include="material.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

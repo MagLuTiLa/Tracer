@@ -44,7 +44,7 @@ void Triangle::Intersect(Ray & ray)
 
 	t = glm::dot(e2, Q) * inv_det;
 
-	if (t > 0.0001& t < ray.length) {
+	if ((t > 0.0001) & (t < ray.length)) {
 		//ray intersection
 		ray.length = t;
 		ray.hit = this;
@@ -55,5 +55,10 @@ void Triangle::Intersect(Ray & ray)
 glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 {
 	float intencity = (glm::dot(normal, lightRay.direction));
-	return color*lightRay.color * intencity / (lightRay.length*lightRay.length);
+	return Color()*lightRay.color * intencity / (lightRay.length*lightRay.length);
+}
+
+glm::vec3 Triangle::Normal(glm::vec3 loc)
+{
+	return normal;
 }

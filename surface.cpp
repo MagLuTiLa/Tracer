@@ -8,6 +8,7 @@
 // -----------------------------------------------------------
 
 #include "template.h"
+#include <algorithm>
 
 namespace Tmpl8 {
 
@@ -300,9 +301,9 @@ void Surface::Plot(int x, int y, glm::vec3 c)
 {
 	if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height))
 	{
-		int red = std::fmin(c.r * 255, 255.0f);
-		int green = std::fmin(c.g * 255, 255.0f);
-		int blue = std::fmin(c.b * 255, 255.0f);
+		int red = (std::min)((int)(c.r * 255), 255);
+		int green = (std::min)((int)(c.g * 255), 255);
+		int blue = (std::min)((int)(c.b * 255.f), 255);
 		int finalColor = (red << 16) + (green << 8) + (blue);
 		m_Buffer[x + y * m_Pitch] = finalColor;
 	}

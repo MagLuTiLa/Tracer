@@ -17,5 +17,8 @@ public:
 	// Inherited via Primitive
 	virtual void Intersect(Ray & ray) override;
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay) override;
+
+	// Inherited via Primitive
+	virtual glm::vec3 Normal(glm::vec3 loc) override;
 };
 
