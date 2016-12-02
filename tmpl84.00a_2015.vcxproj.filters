@@ -33,6 +33,10 @@
     <ClCompile Include="ray.cpp">
       <Filter>Transport</Filter>
     </ClCompile>
+    <ClCompile Include="obj.cpp" />
+    <ClCompile Include="triangle.cpp">
+      <Filter>Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -66,6 +70,10 @@
     </ClInclude>
     <ClInclude Include="ray.h">
       <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="obj.h" />
+    <ClInclude Include="triangle.h">
+      <Filter>Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

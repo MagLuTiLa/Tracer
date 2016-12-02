@@ -36,8 +36,8 @@ private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
 	Camera camera;
-	int mouseX = 0.;
-	int mouseY = 0.;
+	int mouseX = 0;
+	int mouseY = 0;
 };
 
 }; // namespace Tmpl8

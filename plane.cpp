@@ -9,12 +9,12 @@ void Plane::Intersect(Ray& ray)
 	{
 		glm::vec3 p = (location - ray.origin);
 
-			float dist = glm::dot(p, normal) / dP;
-			if (dist < ray.length)
-			{
-				ray.length = dist;
-				ray.hit = this;
-			}
+		float dist = glm::dot(p, normal) / dP;
+		if (dist < ray.length)
+		{
+			ray.length = dist;
+			ray.hit = this;
+		}
 	}
 }
 

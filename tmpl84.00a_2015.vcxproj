@@ -227,6 +227,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="light.cpp" />
+    <ClCompile Include="obj.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="pointlight.cpp" />
@@ -241,11 +242,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="threads.cpp" />
+    <ClCompile Include="triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="obj.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="pointlight.h" />
@@ -255,6 +258,7 @@
     <ClInclude Include="surface.h" />
     <ClInclude Include="template.h" />
     <ClInclude Include="threads.h" />
+    <ClInclude Include="triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="_readme.txt" />

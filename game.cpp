@@ -2,18 +2,32 @@
 #include "game.h"
 #include "primitive.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "plane.h"
+#include "obj.h"
+#include <ppl.h>
 #include <string>
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
 	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(0.3f, vec3(1., 1., 1.)));
-	primitives.push_back(p1);
 
-	p1 = new Sphere(vec3(-2, -3, 5), 1.f, Material(vec3(0., 1., 0.)));
-	primitives.push_back(p1);
-	
+	LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
+										0, std::cos(2), -std::sin(2), 0,
+										0, std::sin(2), std::cos(2), 0,
+										0, 0, 0, 1)
+										*
+									mat4(std::cos(2), 0, -std::sin(2), 0,
+										0, 1, 0, 0,
+										std::sin(2), 0, std::cos(2), 0,
+										0, 0, 0, 1)
+											*
+									mat4(.2, 0, 0, 0,
+										0, .2, 0, 0,
+										0, 0, .2, 4,
+										0, 0, 0, 1));
+
 	p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 	
@@ -66,20 +80,21 @@ void Game::Tick( float dt )
 	screen->Clear( 0 );
 
 	// Iterate over pixels
-	for (float y = 0.0f; y < SCRHEIGHT; y += 1.0f)
-		for (float x = 0.0f; x < SCRWIDTH; x += 1.0f)
+	concurrency::parallel_for(0, SCRHEIGHT, [&](int y)
+	{
+		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if ((int)x == 712 && (int)y == 543)
+			if (x == 712 && y == 543)
 				int a = 1;
 
-			if ((int)x == 817 && (int)y == 303)
+			if (x == 817 && y == 303)
 				int a = 1;
 
-			if ((int)x == 638 && (int)y == 650)
+			if (x == 638 && y == 650)
 				int a = 1;
 
-			float u = x / SCRWIDTH;
-			float v = y / SCRHEIGHT;
+			float u = (float)x / SCRWIDTH;
+			float v = (float)y / SCRHEIGHT;
 
 			Ray ray = camera.ShootRay(u, v);
 
@@ -87,7 +102,7 @@ void Game::Tick( float dt )
 
 			screen->Plot(x, y, lightIntensity);
 		}
-	
+	});
 	screen->Print( "ab!<>", 2, 2, 0xffffff );
 	char textBuffer [20];
 	sprintf(textBuffer, "Mouse X: %i", mouseX );
