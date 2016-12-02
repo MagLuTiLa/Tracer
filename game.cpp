@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include "plane.h"
 #include "obj.h"
+#include <ppl.h>
 #include <string>
 
 Game::Game() :
@@ -22,9 +23,9 @@ Game::Game() :
 										std::sin(2), 0, std::cos(2), 0,
 										0, 0, 0, 1)
 											*
-									mat4(1, 0, 0, 0,
-										0, 1, 0, 0,
-										0, 0, 1, 4,
+									mat4(.2, 0, 0, 0,
+										0, .2, 0, 0,
+										0, 0, .2, 4,
 										0, 0, 0, 1));
 
 	p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
@@ -79,7 +80,8 @@ void Game::Tick( float dt )
 	screen->Clear( 0 );
 
 	// Iterate over pixels
-	for (int y = 0; y < SCRHEIGHT; y += 1)
+	concurrency::parallel_for(0, SCRHEIGHT, [&](int y)
+	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
 			if (x == 712 && y == 543)
@@ -100,7 +102,7 @@ void Game::Tick( float dt )
 
 			screen->Plot(x, y, lightIntensity);
 		}
-	
+	});
 	screen->Print( "ab!<>", 2, 2, 0xffffff );
 	char textBuffer [20];
 	sprintf(textBuffer, "Mouse X: %i", mouseX );
