@@ -24,6 +24,7 @@ public:
 
 	glm::vec3 TraceRay(Ray& ray);
 	glm::vec3 DirectIllumination(Ray ray);
+	glm::vec3 Reflect(Ray ray);
 
 	void MouseUp( int _Button ) { /* implement if you want to detect mouse button presses */ }
 	void MouseDown( int _Button ) { /* implement if you want to detect mouse button presses */ }

@@ -8,13 +8,13 @@
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
-	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(1.f, vec3(1., 0., 0.)));
+	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(0.3f, vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 
-	p1 = new Sphere(vec3(-2, -3, 5), 1.f, Material(vec3(1., 1., 1.)));
+	p1 = new Sphere(vec3(-2, -3, 5), 1.f, Material(vec3(0., 1., 0.)));
 	primitives.push_back(p1);
 	
-		p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
+	p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 	
 	p1 = new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.)));
@@ -25,10 +25,13 @@ Game::Game() :
 
 	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
-	/*
-	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 1., 1.)));
+	
+	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(1.f,vec3(1., 1., 1.)));
 	primitives.push_back(p1);
-	*/
+
+	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11), Material(vec3(0.2, 0.7, 0.2)));
+	primitives.push_back(p1);
+	
 	Light * l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
 	lights.push_back(l);
 	
@@ -113,16 +116,14 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 			lightIntensity = DirectIllumination(ray);
 		else if (material.IsReflective())
 		{
-			vec3 rayPos = ray.origin + ray.direction * (ray.length - 0.0001f);
-
-			//?? = ?? ? 2(?? ? ??)??.
-			vec3 colPos = ray.origin + ray.direction * ray.length;
-			vec3 normal = ray.hit->Normal(colPos);
-			vec3 rayDir = ray.direction - 2.f * (glm::dot(ray.direction, normal) * normal);
-
-			Ray newRay(rayPos, rayDir);
-			vec3 light = TraceRay(newRay);
-			lightIntensity = light * ray.hit->Color();
+			float s = material.reflection;
+			if (s == 1.f)
+				lightIntensity = Reflect(ray);
+			else
+			{
+				lightIntensity += s * Reflect(ray);
+				lightIntensity += (1 - s) * DirectIllumination(ray);
+			}
 		}
 	}
 	return lightIntensity;
@@ -156,6 +157,22 @@ glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
 		lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
 	}
+	return lightIntensity;
+}
+
+glm::vec3 Tmpl8::Game::Reflect(Ray ray)
+{
+	vec3 lightIntensity = vec3();
+	vec3 rayPos = ray.origin + ray.direction * (ray.length - 0.0001f);
+
+	//?? = ?? ? 2(?? ? ??)??.
+	vec3 colPos = ray.origin + ray.direction * ray.length;
+	vec3 normal = ray.hit->Normal(colPos);
+	vec3 rayDir = ray.direction - 2.f * (glm::dot(ray.direction, normal) * normal);
+
+	Ray newRay(rayPos, rayDir);
+	vec3 light = TraceRay(newRay);
+	lightIntensity = light * ray.hit->Color();
 	return lightIntensity;
 }
 
