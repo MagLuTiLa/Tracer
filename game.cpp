@@ -2,20 +2,37 @@
 #include "game.h"
 #include "primitive.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "plane.h"
+#include "obj.h"
 #include <string>
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 0.5f)
 {
-	Primitive * p1 = new Sphere(vec3(0, 0, 5), 1.0f);
+	Primitive * p1 = new Sphere(vec3(0, 4, 5), 1.0f);
 	primitives.push_back(p1);
 
 	p1 = new Sphere(vec3(1, 2, 3), 1.0f);
 	p1->color = vec3(0., 0., 1.);
 	primitives.push_back(p1);
 
-	p1 = new Sphere(vec3(2, 0, 4), 0.8f);
+	LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
+										0, std::cos(2), -std::sin(2), 0,
+										0, std::sin(2), std::cos(2), 0,
+										0, 0, 0, 1)
+										*
+									mat4(std::cos(2), 0, -std::sin(2), 0,
+										0, 1, 0, 0,
+										std::sin(2), 0, std::cos(2), 0,
+										0, 0, 0, 1)
+											*
+									mat4(1, 0, 0, 0,
+										0, 1, 0, 0,
+										0, 0, 1, 4,
+										0, 0, 0, 1));
+
+	p1 = new Sphere(vec3(2, 2, 4), 0.8f);
 	p1->color = vec3(1., 0., 0.);
 	primitives.push_back(p1);
 	
@@ -23,8 +40,8 @@ Game::Game() :
 	p1->color = vec3(0., 1., 0.);
 	primitives.push_back(p1);
 	
-	p1 = new Plane(vec3(0, 2, 2), vec3(0, -1, 0));
-	primitives.push_back(p1);
+	//p1 = new Plane(vec3(0, 2, 2), vec3(0, -1, 0));
+	//primitives.push_back(p1);
 	
 	Light * l = new PointLight(vec3(-1, -3, -1), vec3(7.f, 7.f, 7.f));
 	lights.push_back(l);
