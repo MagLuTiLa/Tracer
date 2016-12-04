@@ -9,7 +9,7 @@ public:
 		normal(nor)
 	{}
 
-	Plane::Plane(glm::vec3 loc, glm::vec3 nor, Material m) :
+	Plane::Plane(glm::vec3 loc, glm::vec3 nor, Material* m) :
 		Primitive(loc, m),
 		normal(nor)
 	{}

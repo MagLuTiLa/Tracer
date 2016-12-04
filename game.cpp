@@ -11,7 +11,8 @@
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
-	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(0.3f, vec3(1., 1., 1.)));
+	cout << sizeof(Triangle);
+	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, new Material(0.3f, vec3(1., 1., 1.)));
 	//Triangle *t = NULL;
 	int tc = LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
 										0, std::cos(2), -std::sin(2), 0,
@@ -30,22 +31,22 @@ Game::Game() :
 	//t[0].location = vec3(1., 1., 1.);
 	//t[0].CalculateNormal();
 
-	p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
+	p1 = new Sphere(vec3(0, 3, 5), 2.f);
 	primitives.push_back(p1);
 	
-	p1 = new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.)));
+	p1 = new Sphere(vec3(-3, -1, 5), 1.f, new Material(vec3(1., 0., 0.)));
 	primitives.push_back(p1);
 	
-	p1 = new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.)));
+	p1 = new Sphere(vec3(3, -1, 5), 1.f, new Material(vec3(0., 0., 1.)));
 	primitives.push_back(p1);
 
-	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.)));
+	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0));
 	primitives.push_back(p1);
 	
-	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(1.f,vec3(1., 1., 1.)));
+	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), new Material(1.f,vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 
-	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11), Material(vec3(0.2, 0.7, 0.2)));
+	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11), new Material("concrete.bmp"));
 	primitives.push_back(p1);
 	
 	Light * l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
@@ -128,7 +129,7 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 	// If ray collided with sphere
 	if (ray.length < std::numeric_limits<float>::max())
 	{
-		Material material = ray.hit->material;
+		Material material =*( ray.hit->material);
 		if (material.IsOpaque())
 			lightIntensity = DirectIllumination(ray);
 		else if (material.IsReflective())

@@ -10,7 +10,7 @@ public:
 		radius(r)
 	{};
 
-	Sphere::Sphere(glm::vec3 loc, float r, Material m) :
+	Sphere::Sphere(glm::vec3 loc, float r, Material* m) :
 		Primitive(loc, m),
 		radius(r)
 	{};
