@@ -14,25 +14,20 @@ class Material
 {
 public:
 	// Used for opaque materials
-	Material::Material(glm::vec3 c) :
-		reflection(0),
-		refraction(0),
-		color(c)
+	Material::Material(glm::vec3 c) : Material(0.f, c)
 	{};
 	
 	// Used for reflective, non-see through materials
-	Material::Material(float refl, glm::vec3 c) :
-		reflection(refl),
-		refraction(0),
-		color(c)
+	Material::Material(float refl, glm::vec3 c) : Material(0.f,0.f,c)
 	{};
 
 	// Used for see-through materials
 	Material::Material(float refl, float refr, glm::vec3 c) :
 		reflection(refl),
-		refraction(refr),
-		color(c)
-	{};
+		refraction(refr)
+	{
+		texture = new glm::vec3[1]{ c };
+	};
 
 	inline bool IsOpaque()
 	{
@@ -49,7 +44,13 @@ public:
 		return (refraction > 0);
 	}
 
-	glm::vec3 color;
+	glm::vec3 Color(const glm::vec2 &uv)
+	{
+		return texture[(int)(uv.x * 0.99999 * width) + (int)(uv.y * 0.99999 * height) * width];
+	}
+
+	glm::vec3* texture;
+	unsigned int width = 1, height = 1;
 	float reflection;
 	float refraction;
 };

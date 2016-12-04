@@ -55,7 +55,7 @@ void Triangle::Intersect(Ray & ray)
 glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 {
 	float intencity = (glm::dot(normal, lightRay.direction));
-	return Color()*lightRay.color * intencity / (lightRay.length*lightRay.length);
+	return material.Color(glm::vec2(1,1))*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }
 
 glm::vec3 Triangle::Normal(glm::vec3 loc)
