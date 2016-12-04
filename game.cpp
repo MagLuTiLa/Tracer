@@ -10,50 +10,7 @@
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
-{
-	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(0.3f, vec3(1., 1., 1.)));
-
-	LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
-										0, std::cos(2), -std::sin(2), 0,
-										0, std::sin(2), std::cos(2), 0,
-										0, 0, 0, 1)
-										*
-									mat4(std::cos(2), 0, -std::sin(2), 0,
-										0, 1, 0, 0,
-										std::sin(2), 0, std::cos(2), 0,
-										0, 0, 0, 1)
-											*
-									mat4(.2, 0, 0, 0,
-										0, .2, 0, 0,
-										0, 0, .2, 4,
-										0, 0, 0, 1));
-
-	p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
-	primitives.push_back(p1);
-	
-	p1 = new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.)));
-	primitives.push_back(p1);
-	
-	p1 = new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.)));
-	primitives.push_back(p1);
-
-	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.)));
-	primitives.push_back(p1);
-	
-	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(1.f,vec3(1., 1., 1.)));
-	primitives.push_back(p1);
-
-	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11), Material(vec3(0.2, 0.7, 0.2)));
-	primitives.push_back(p1);
-	
-	Light * l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
-	lights.push_back(l);
-	
-	l = new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f));
-	lights.push_back(l);
-	
-	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f));
-	lights.push_back(l);
+{	
 }
 
 // -----------------------------------------------------------
@@ -61,7 +18,33 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	// TODO place camera, primitives, lights here
+	AddPrimitive(new Sphere(vec3(0, 3, 5), 2.f, Material(.5f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
+
+	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(1.f, vec3(1., 1., 1.))));
+	//AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 11), Material(vec3(0.2, 0.7, 0.2))));
+
+	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
+	AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
+	AddLight(new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f)));
+
+	LoadObj("box.obj", primitives, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.2, 0, 0, 0,
+			0, .2, 0, 0,
+			0, 0, .2, 4,
+			0, 0, 0, 1));
 }
 
 // -----------------------------------------------------------
@@ -87,15 +70,10 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
+			/*
 			if (x == 712 && y == 543)
 				int a = 1;
-
-			if (x == 817 && y == 303)
-				int a = 1;
-
-			if (x == 638 && y == 650)
-				int a = 1;
-
+				*/
 			float u = (float)x / SCRWIDTH;
 			float v = (float)y / SCRHEIGHT;
 
@@ -109,9 +87,7 @@ void Game::Tick( float dt )
 
 	int time = t.elapsed();
 	sprintf(textBuffer, "PlotTime: %ims", time);
-	screen->Print(textBuffer, 2, 32, 0xffffff);
-
-	screen->Print( "ab!<>", 2, 2, 0xffffff );
+	screen->Print(textBuffer, 2, 2, 0xffffff);
 	
 	sprintf(textBuffer, "Mouse X: %i", mouseX );
 	screen->Print(textBuffer, 2, 12, 0xffffff);
@@ -197,6 +173,24 @@ glm::vec3 Tmpl8::Game::Reflect(Ray ray)
 	vec3 light = TraceRay(newRay);
 	lightIntensity = light * ray.hit->Color();
 	return lightIntensity;
+}
+
+glm::vec3 Tmpl8::Game::Refract(Ray ray, Material from, Material to)
+{
+	// Determine reflection and refraction part
+	float fractR = (from.refraction - to.refraction) / (from.refraction + to.refraction);
+	float R = fractR * fractR;
+	return glm::vec3();
+}
+
+void Tmpl8::Game::AddPrimitive(Primitive * p)
+{
+	primitives.push_back(p);
+}
+
+void Tmpl8::Game::AddLight(Light * l)
+{
+	lights.push_back(l);
 }
 
 void Tmpl8::Game::KeyDown(int a_Key)
