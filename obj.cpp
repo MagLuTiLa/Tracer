@@ -1,10 +1,11 @@
 #include "template.h"
+#include "trianglemesh.h"
 #include "obj.h"
 #include <fstream>
 #include <sstream>
 
 
-void LoadObj(const char* fileName, std::vector<Primitive*> &primitives, const glm::mat4 &trans)
+int LoadObj(const char* fileName, std::vector<Primitive*> &primitives, const glm::mat4 &trans, Triangle** triangleOut)
 {
 	std::string line;
 	ifstream f;
@@ -44,8 +45,16 @@ void LoadObj(const char* fileName, std::vector<Primitive*> &primitives, const gl
 		}
 		}
 	}
-	for (int i = 0; i < vertexIndices.size(); i += 3)
-		primitives.push_back(new Triangle(vertices[vertexIndices[i] - 1], vertices[vertexIndices[i + 1] - 1], vertices[vertexIndices[i + 2] - 1]));
+	Triangle* triangles = new Triangle[vertexIndices.size() / 3];
+	if(triangleOut != NULL)
+		*triangleOut = triangles;
+	for (unsigned int i = 0, j = 0; j < vertexIndices.size(); i++, j+=3)
+	{
+		triangles[i].location = vertices[vertexIndices[j] - 1];
+		triangles[i].location2 = vertices[vertexIndices[j + 1] - 1];
+		triangles[i].location3 = vertices[vertexIndices[j + 2] - 1];
+		triangles[i].CalculateNormal();
+		primitives.push_back(&triangles[i]);
+	}
+	return vertexIndices.size() / 3;
 }
-
-

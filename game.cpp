@@ -12,8 +12,8 @@ Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
 	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, Material(0.3f, vec3(1., 1., 1.)));
-
-	LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
+	//Triangle *t = NULL;
+	int tc = LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
 										0, std::cos(2), -std::sin(2), 0,
 										0, std::sin(2), std::cos(2), 0,
 										0, 0, 0, 1)
@@ -26,7 +26,9 @@ Game::Game() :
 									mat4(.2, 0, 0, 0,
 										0, .2, 0, 0,
 										0, 0, .2, 4,
-										0, 0, 0, 1));
+										0, 0, 0, 1));// , &t);
+	//t[0].location = vec3(1., 1., 1.);
+	//t[0].CalculateNormal();
 
 	p1 = new Sphere(vec3(0, 3, 5), 2.f, Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);

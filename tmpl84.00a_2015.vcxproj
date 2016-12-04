@@ -227,6 +227,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="light.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="obj.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="plane.cpp" />
@@ -243,11 +244,13 @@
     </ClCompile>
     <ClCompile Include="threads.cpp" />
     <ClCompile Include="triangle.cpp" />
+    <ClCompile Include="trianglemesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="obj.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="plane.h" />
@@ -259,6 +262,7 @@
     <ClInclude Include="template.h" />
     <ClInclude Include="threads.h" />
     <ClInclude Include="triangle.h" />
+    <ClInclude Include="trianglemesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="_readme.txt" />

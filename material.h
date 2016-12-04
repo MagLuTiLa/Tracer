@@ -34,14 +34,14 @@ public:
 		color(c)
 	{};
 
-	bool IsOpaque()
+	inline bool IsOpaque()
 	{
-		return (reflection == 0 && refraction == 0);
+		return ((reflection == 0) & (refraction == 0));
 	}
 
-	bool IsReflective()
+	inline bool IsReflective()
 	{
-		return (reflection > 0 && refraction == 0);
+		return ((reflection > 0) & (refraction == 0));
 	}
 
 	bool IsRefractive()
