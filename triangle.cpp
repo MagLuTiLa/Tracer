@@ -55,7 +55,25 @@ void Triangle::Intersect(Ray & ray)
 glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 {
 	float intencity = (glm::dot(normal, lightRay.direction));
-	return material->Color(glm::vec2(1,1))*lightRay.color * intencity / (lightRay.length*lightRay.length);
+	vec3 matcol;
+	if (uv == NULL)
+		matcol = material->texture[0];
+	else
+	{
+		glm::vec3 v0 = location2 - location, v1 = location3 - location, v2 = lightRay.origin - location;
+		float d00 = glm::dot(v0, v0);
+		float d01 = glm::dot(v0, v1);
+		float d11 = glm::dot(v1, v1);
+		float d20 = glm::dot(v2, v0);
+		float d21 = glm::dot(v2, v1);
+		float denom = d00 * d11 - d01 * d01;
+		float v = (d11 * d20 - d01 * d21) / denom;
+		float w = (d00 * d21 - d01 * d20) / denom;
+		float u = 1.0f - v - w;
+		matcol = material->Color(uv[0] * u + uv[1] * v + uv[2] * w);
+	}
+
+	return matcol*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }
 
 glm::vec3 Triangle::Normal(glm::vec3 loc)

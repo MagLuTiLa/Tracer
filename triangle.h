@@ -22,6 +22,8 @@ public:
 	glm::vec3 location2;
 	glm::vec3 location3;
 
+	glm::vec2* uv = NULL;
+
 	~Triangle();
 
 	// Inherited via Primitive

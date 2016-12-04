@@ -12,9 +12,11 @@ Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
 	cout << sizeof(Triangle);
+	Material* concrete = new Material("concrete.bmp");
 	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, new Material(0.3f, vec3(1., 1., 1.)));
 	//Triangle *t = NULL;
-	int tc = LoadObj("box.obj", primitives,  mat4(1, 0, 0, 0,
+	int tc = LoadObj("box.obj", primitives, concrete,
+									mat4(1, 0, 0, 0,
 										0, std::cos(2), -std::sin(2), 0,
 										0, std::sin(2), std::cos(2), 0,
 										0, 0, 0, 1)
@@ -46,7 +48,7 @@ Game::Game() :
 	p1 = new Plane(vec3(0, 0, 7), vec3(0, 0, -1), new Material(1.f,vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 
-	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11), new Material("concrete.bmp"));
+	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11), concrete);
 	primitives.push_back(p1);
 	
 	Light * l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
