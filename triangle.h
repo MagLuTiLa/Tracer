@@ -1,9 +1,10 @@
 #pragma once
 #include "primitive.h"
-class Triangle :
+__declspec(align(64)) class Triangle :
 	public Primitive
 {
 public:
+	int dummy;
 	Triangle() : Primitive(glm::vec3())
 	{
 	}
