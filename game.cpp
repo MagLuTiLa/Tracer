@@ -76,6 +76,9 @@ void Game::HandleInput( float dt )
 // -----------------------------------------------------------
 void Game::Tick( float dt )
 {
+	timer t;
+	char textBuffer[20];
+
 	// Clear the screen
 	screen->Clear( 0 );
 
@@ -103,8 +106,13 @@ void Game::Tick( float dt )
 			screen->Plot(x, y, lightIntensity);
 		}
 	});
+
+	int time = t.elapsed();
+	sprintf(textBuffer, "PlotTime: %ims", time);
+	screen->Print(textBuffer, 2, 32, 0xffffff);
+
 	screen->Print( "ab!<>", 2, 2, 0xffffff );
-	char textBuffer [20];
+	
 	sprintf(textBuffer, "Mouse X: %i", mouseX );
 	screen->Print(textBuffer, 2, 12, 0xffffff);
 	sprintf(textBuffer, "Mouse Y: %i", mouseY);
