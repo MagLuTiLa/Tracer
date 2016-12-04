@@ -14,5 +14,6 @@ public:
 	Primitive* hit;
 	glm::vec3 color;
 	int traceDepth = 0;
+	bool inside = false;
 };
 

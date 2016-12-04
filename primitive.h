@@ -23,5 +23,6 @@ public:
 
 	glm::vec3 location;
 	Material material;
+	int hax = 0;
 };
 

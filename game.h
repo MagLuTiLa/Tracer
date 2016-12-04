@@ -25,7 +25,7 @@ public:
 	glm::vec3 TraceRay(Ray&);
 	glm::vec3 DirectIllumination(Ray);
 	glm::vec3 Reflect(Ray);
-	glm::vec3 Refract(Ray, Material, Material);
+	glm::vec3 Refract(Ray, float, float);
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);
