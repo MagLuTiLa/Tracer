@@ -1,5 +1,4 @@
 #include "template.h"
-#include "trianglemesh.h"
 #include "obj.h"
 #include <fstream>
 #include <sstream>

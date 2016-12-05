@@ -21,8 +21,6 @@
     <ClCompile Include="obj.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="material.cpp" />
-    <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="trianglemesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -45,8 +43,6 @@
     <ClInclude Include="obj.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="material.h" />
-    <ClInclude Include="mesh.h" />
-    <ClInclude Include="trianglemesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

@@ -19,6 +19,16 @@ public:
 		normal = glm::normalize(glm::cross(location2 - location, location3 - location));
 	}
 
+	void* operator new[](size_t i)
+	{
+		return _mm_malloc(i, 64);
+	}
+
+	void operator delete[](void* p)
+	{
+		_mm_free(p);
+	}
+
 	glm::vec3 normal;
 	glm::vec3 location2;
 	glm::vec3 location3;
