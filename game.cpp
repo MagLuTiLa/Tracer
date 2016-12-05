@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include "plane.h"
 #include "obj.h"
+#include "spotLight.h"
 #include <ppl.h>
 #include <string>
 
@@ -60,6 +61,9 @@ Game::Game() :
 	lights.push_back(l);
 	
 	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f));
+	lights.push_back(l);
+
+	l = new SpotLight(vec3(10, 0, 0), vec3(0, 0, 1), 1, vec3(100, 0, 0));
 	lights.push_back(l);
 }
 
@@ -161,21 +165,17 @@ glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
-		float len = glm::length(l->location - rayPos);
-		Ray shadowRay(rayPos, (l->location - rayPos) / len);
+		Ray shadowRay = l->getIllumination(rayPos);
 
 		// See if shadow ray intersects with primitives
 		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 		{
 			Primitive* p = primitives[i];
 			p->Intersect(shadowRay);
-			if (shadowRay.length < len)
+			if (shadowRay.hit != NULL)
 				goto next;
 		}
-		
 		// Add color to the lightintensity
-		shadowRay.length = len;
-		shadowRay.color = l->color;
 		lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
 	}

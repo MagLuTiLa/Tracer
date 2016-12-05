@@ -11,16 +11,33 @@
     <ClCompile Include="template.cpp">
       <Filter>template code</Filter>
     </ClCompile>
-    <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="pointlight.cpp" />
-    <ClCompile Include="ray.cpp" />
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="primitive.cpp" />
-    <ClCompile Include="plane.cpp" />
-    <ClCompile Include="light.cpp" />
+    <ClCompile Include="material.cpp">
+      <Filter>Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="plane.cpp">
+      <Filter>Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="primitive.cpp">
+      <Filter>Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere.cpp">
+      <Filter>Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
+    <ClCompile Include="pointlight.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
+    <ClCompile Include="ray.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
     <ClCompile Include="obj.cpp" />
-    <ClCompile Include="triangle.cpp" />
-    <ClCompile Include="material.cpp" />
+    <ClCompile Include="triangle.cpp">
+      <Filter>Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="spotLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -33,20 +50,43 @@
     <ClInclude Include="template.h">
       <Filter>template code</Filter>
     </ClInclude>
-    <ClInclude Include="sphere.h" />
-    <ClInclude Include="pointlight.h" />
-    <ClInclude Include="ray.h" />
     <ClInclude Include="camera.h" />
-    <ClInclude Include="primitive.h" />
-    <ClInclude Include="plane.h" />
-    <ClInclude Include="light.h" />
+    <ClInclude Include="material.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="primitive.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="pointlight.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="ray.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
     <ClInclude Include="obj.h" />
-    <ClInclude Include="triangle.h" />
-    <ClInclude Include="material.h" />
+    <ClInclude Include="triangle.h">
+      <Filter>Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="spotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
       <UniqueIdentifier>{bf32dd6e-4be7-4889-8ac6-49e7ee163c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Primitives">
+      <UniqueIdentifier>{7c1edd83-2f63-4915-a01b-5f7abc60c7f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transport">
+      <UniqueIdentifier>{85b87857-7ab4-448b-9af4-974b65238bc9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

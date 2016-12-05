@@ -11,7 +11,7 @@ public:
 	glm::vec3 origin;
 	glm::vec3 direction;
 	float length;
-	Primitive* hit;
+	Primitive* hit = NULL;
 	glm::vec3 color;
 	int traceDepth = 0;
 };
