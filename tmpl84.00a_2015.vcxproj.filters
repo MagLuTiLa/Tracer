@@ -37,6 +37,7 @@
     <ClCompile Include="triangle.cpp">
       <Filter>Primitives</Filter>
     </ClCompile>
+    <ClCompile Include="spotLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -75,6 +76,7 @@
     <ClInclude Include="triangle.h">
       <Filter>Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="spotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

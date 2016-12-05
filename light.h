@@ -1,4 +1,5 @@
 #pragma once
+#include "ray.h"
 class Light
 {
 public:
@@ -6,6 +7,8 @@ public:
 		location(loc),
 		color(c)
 	{}
+	
+	inline virtual Ray getIllumination(glm::vec3 point) = 0;
 
 	glm::vec3 location;
 	glm::vec3 color;
