@@ -1,8 +1,8 @@
 #pragma once
 
-#define REFRACTIVE_GLASS = 1.46f;
-#define REFRACTIVE_WATER = 1.333f;
-#define REFRACTIVE_AIR = 1.f;
+#define REFRACTIVE_GLASS = 1.46;
+#define REFRACTIVE_WATER = 1.333;
+#define REFRACTIVE_AIR = 1.0;
 
 #define AIR2GLASS = REFRACTIVE_GLASS / REFRACTIVE_AIR;
 #define GLASS2AIR = REFRACTIVE_AIR / REFRACTIVE_GLASS;
@@ -16,15 +16,10 @@ public:
 	// Used for opaque materials
 	Material::Material(glm::vec3 c) : Material(0.f, c)
 	{}
-	
-	// Used for reflective, non-see through materials
-	Material::Material(float refl, glm::vec3 c) : Material(refl,0.f,c)
-	{}
 
-	// Used for see-through materials
-	Material::Material(float refl, float refr, glm::vec3 c) :
-		reflection(refl),
-		refraction(refr)
+	// Used for reflective (0-1) and see through materials (1>)
+	Material::Material(float r, glm::vec3 c) :
+		ref(r)
 	{
 		texture = new glm::vec3[1]{ c };
 	};
@@ -32,29 +27,25 @@ public:
 	Material::Material(char* filename) : Material(0, filename)
 	{};
 
-	Material::Material(float refl, char* filename) : Material(refl, 0, filename)
-	{}
-
-	Material::Material(float refl, float refr, char* filename) : 
-		reflection(refl),
-		refraction(refr)
+	Material::Material(float r, char* filename) : 
+		ref(r)
 	{
 		readBMP(filename);
 	}
 
 	inline bool IsOpaque()
 	{
-		return ((reflection == 0) & (refraction == 0));
+		return (ref == 0);
 	}
 
 	inline bool IsReflective()
 	{
-		return ((reflection > 0) & (refraction == 0));
+		return (ref > 0 && ref <= 1);
 	}
 
 	inline bool IsRefractive()
 	{
-		return (refraction > 0);
+		return (ref > 1);
 	}
 
 	inline bool IsSingleColor()
@@ -96,8 +87,7 @@ public:
 
 	glm::vec3* texture;
 	unsigned int width = 0, height = 0;
-	float reflection;
-	float refraction;
+	float ref;
 };
 
 static Material* BASE_MATERIAL = new Material(glm::vec3(1.0f, 1.0f, 1.0f));

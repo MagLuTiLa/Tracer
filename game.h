@@ -5,8 +5,10 @@
 #include "pointlight.h"
 #include <vector>
 
-#define SCRWIDTH	 1280
-#define SCRHEIGHT	 800
+#define SCRWIDTH	   1280
+#define SCRHEIGHT	    800
+#define MAXTRACEDEPTH    10
+#define EPSILON     0.0001f
 
 namespace Tmpl8 {
 
@@ -22,9 +24,13 @@ public:
 	void HandleInput( float dt );
 	void Tick( float dt );
 
-	glm::vec3 TraceRay(Ray& ray);
-	glm::vec3 DirectIllumination(Ray ray);
-	glm::vec3 Reflect(Ray ray);
+	glm::vec3 TraceRay(Ray&);
+	glm::vec3 DirectIllumination(Ray);
+	glm::vec3 Reflect(Ray);
+	glm::vec3 Refract(Ray, float, float);
+
+	void AddPrimitive(Primitive*);
+	void AddLight(Light*);
 
 	void MouseUp( int _Button ) { /* implement if you want to detect mouse button presses */ }
 	void MouseDown( int _Button ) { /* implement if you want to detect mouse button presses */ }
@@ -38,6 +44,7 @@ private:
 	Camera camera;
 	int mouseX = 0;
 	int mouseY = 0;
+	int keyDown = 0;
 };
 
 }; // namespace Tmpl8

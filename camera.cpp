@@ -2,56 +2,143 @@
 #include "camera.h"
 
 
-Camera::Camera(glm::vec3 p, glm::vec3 lookAt, float dist):
-	position(p),
-	distance(dist)
+Camera::Camera()
 {
-	direction = glm::normalize(lookAt - position);
+	Reset();
+	/*direction = glm::normalize(lookAt - position);
+	Update();*/
+}
+
+void Camera::Reset()
+{
+	position = glm::vec3(0, 0, 0);
+	direction = glm::vec3(0, 0, 1);
+	up = glm::vec3(0, -1, 0);
+
+	distance = 1;
+	horStretch = 1;
+	verStretch = 1;
+	
 	Update();
 }
 
 void Camera::Update()
 {
 	center = position + direction * distance;
+	right = glm::cross(up, direction);
+	down = -glm::cross(direction, right);
 
-	float stdValue = 1.0f;
-	float ratio;
+	glm::vec3 hor;
+	glm::vec3 ver;
 	if (SCRWIDTH > SCRHEIGHT)
 	{
-		ratio = (float)SCRWIDTH / (float)SCRHEIGHT;
-		topLeft = center + glm::vec3(-ratio, -1, 0);
-		topRight = center + glm::vec3(ratio, -1, 0);
-		botLeft = center + glm::vec3(-ratio, 1, 0);
+		hor = -((float)SCRWIDTH / (float)SCRHEIGHT) * right * horStretch;
+		ver = down * verStretch;
 	}
 	else
 	{
-		ratio = (float)SCRHEIGHT / (float)SCRWIDTH;
-		topLeft = center + glm::vec3(-1, -ratio, 0);
-		topRight = center + glm::vec3(1, -ratio, 0);
-		botLeft = center + glm::vec3(-1, ratio, 0);
+		hor = -right * verStretch;
+		ver = ((float)SCRHEIGHT / (float)SCRWIDTH) * down * verStretch;
 	}
+
+	topLeft = center - hor - ver;
+	topRight = center + hor - ver;
+	botLeft = center - hor + ver;
 
 	// Used for the "screen" through where rays are shot
 	width = topRight - topLeft;
 	height = botLeft - topLeft;
 }
 
+void Camera::Translate(glm::vec3 t)
+{
+	position += t;
+	Update();
+}
+
+void Camera::Horizontal(float inc)
+{
+	position += -inc * right;
+	Update();
+}
+
+void Camera::Vertical(float inc)
+{
+	position += -inc * down;
+	Update();
+}
+
+void Camera::Axial(float inc)
+{
+	position += inc * direction;
+	Update();
+}
+
+void Camera::Jaw(float angle)
+{
+	float X = direction.x;
+	float Z = direction.z;
+
+	float rad = angle * PI / 180;
+	float c = glm::cos(rad);
+	float s = glm::sin(rad);
+
+	float nX = X*c - Z*s;
+	float nZ = Z*c + X*s;
+
+	direction.x = nX;
+	direction.z = nZ;
+
+	Update();
+}
+
+void Camera::Pitch(float angle)
+{
+	float Y = direction.y;
+	float Z = direction.z;
+
+	float rad = angle * PI / 180;
+	float c = glm::cos(rad);
+	float s = glm::sin(rad);
+
+	float nY = Y*c - Z*s;
+	float nZ = Z*c + Y*s;
+
+	direction.y = nY;
+	direction.z = nZ;
+
+	Update();
+}
+
+void Camera::HorStretch(float inc)
+{
+	if (horStretch + inc > 0)
+	{
+		horStretch += inc;
+		Update();
+	}
+}
+
+void Camera::VerStretch(float inc)
+{
+	if (verStretch + inc > 0)
+	{
+		verStretch += inc;
+		Update();
+	}
+}
+
+void Camera::Zoom(float inc)
+{
+	if (distance + inc > 0)
+	{
+		distance += inc;
+		Update();
+	}
+}
+
 Ray Camera::ShootRay(float u, float v)
 {
 	glm::vec3 dir = glm::normalize(topLeft + u*width + v*height - position);
 	return Ray(position, dir);
-}
-
-void Camera::MoveForward()
-{
-	//distance += 0.1f;
-	position += glm::vec3(0, 0, 0.3f);
-	Update();
-}
-
-void Camera::MoveBack()
-{
-	//distance -= 0.1f;
-	position -= glm::vec3(0, 0, 0.3f);
-	Update();
 }

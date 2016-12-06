@@ -23,7 +23,7 @@ inline void Triangle::Intersect(Ray & ray)
 	//if determinant is near zero, ray lies in plane of triangle or ray is parallel to plane of triangle
 	det = glm::dot(e1, P);
 	//NOT CULLING
-	if ((det > -0.0001) && (det < 0.0001)) return;
+	if (det > -EPSILON && det < EPSILON) return;
 	inv_det = 1.f / det;
 
 	//calculate distance from V1 to ray origin
@@ -44,7 +44,7 @@ inline void Triangle::Intersect(Ray & ray)
 
 	t = glm::dot(e2, Q) * inv_det;
 
-	if ((t > 0.0001) && (t < ray.length)) {
+	if ((t > EPSILON) && (t < ray.length)) {
 		//ray intersection
 		ray.length = t;
 		ray.hit = this;
@@ -52,15 +52,23 @@ inline void Triangle::Intersect(Ray & ray)
 
 }
 
+
+
 glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 {
 	float intencity = (glm::dot(normal, lightRay.direction));
-	vec3 matcol;
+	vec3 matcol = Color(lightRay.origin);
+
+	return matcol*lightRay.color * intencity / (lightRay.length*lightRay.length);
+}
+
+glm::vec3 Triangle::Color(const vec3& position)
+{
 	if (uv == NULL)
-		matcol = material->texture[0];
+		return material->texture[0];
 	else
 	{
-		glm::vec3 v0 = location2 - location, v1 = location3 - location, v2 = lightRay.origin - location;
+		glm::vec3 v0 = location2 - location, v1 = location3 - location, v2 = position - location;
 		float d00 = glm::dot(v0, v0);
 		float d01 = glm::dot(v0, v1);
 		float d11 = glm::dot(v1, v1);
@@ -70,10 +78,8 @@ glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 		float v = (d11 * d20 - d01 * d21) / denom;
 		float w = (d00 * d21 - d01 * d20) / denom;
 		float u = 1.0f - v - w;
-		matcol = material->Color(uv[0] * u + uv[1] * v + uv[2] * w);
+		return material->Color(uv[0] * u + uv[1] * v + uv[2] * w);
 	}
-
-	return matcol*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }
 
 glm::vec3 Triangle::Normal(glm::vec3 loc)

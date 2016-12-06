@@ -4,7 +4,6 @@ __declspec(align(64)) class Triangle :
 	public Primitive
 {
 public:
-	int dummy;
 	Triangle() : Primitive(glm::vec3())
 	{
 	}
@@ -41,5 +40,6 @@ public:
 	virtual void Intersect(Ray & ray) override;
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay) override;
 	virtual glm::vec3 Normal(glm::vec3 loc) override;
+	virtual glm::vec3 Color(const glm::vec3& position) override;
 };
 
