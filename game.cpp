@@ -104,6 +104,8 @@ void Game::Tick( float dt )
 	screen->Print(textBuffer, 2, 12, 0xffffff);
 	sprintf(textBuffer, "Mouse Y: %i", mouseY);
 	screen->Print(textBuffer, 2, 22, 0xffffff);
+	sprintf(textBuffer, "Key down: %i", keyDown);
+	screen->Print(textBuffer, 2, 32, 0xffffff);
 }
 
 glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
@@ -251,22 +253,38 @@ void Tmpl8::Game::AddLight(Light * l)
 
 void Tmpl8::Game::KeyDown(int a_Key)
 {
+	float inc = 0.05f;
+
+	// Up
 	if (a_Key == 82)
 	{
-		camera.MoveForward();
-		lights[0]->location += glm::vec3(0, 0, 0.1f);
+		camera.Translate(glm::vec3(0, 0, inc));
+		lights[0]->location += glm::vec3(0, 0, inc);
 	}
+
+	// Down
 	if (a_Key == 81)
 	{
-		camera.MoveBack();
-		lights[0]->location -= glm::vec3(0, 0, 0.1f);
+		camera.Translate(glm::vec3(0, 0, -inc));
+		lights[0]->location += glm::vec3(0, 0, -inc);
 	}
-	/*
-	char text [50];
-	sprintf(text, "%i", a_Key);
-	screen->Print(text, 2, 12, 0xffffff);*/
-}
 
+	// Left
+	if (a_Key == 79)
+	{
+		camera.Translate(glm::vec3(inc, 0, 0));
+		lights[0]->location += glm::vec3(inc, 0, 0);
+	}
+
+	// Right
+	if (a_Key == 80)
+	{
+		camera.Translate(glm::vec3(-inc, 0, 0));
+		lights[0]->location += glm::vec3(-inc, 0, 0);
+	}
+	
+	keyDown = a_Key;
+}
 
 void Game::MouseMove(int _X, int _Y)
 {

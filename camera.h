@@ -5,8 +5,7 @@ public:
 	Camera(glm::vec3, glm::vec3, glm::vec3, float);
 	Ray ShootRay(float u, float v);
 	void Update();
-	void MoveForward();
-	void MoveBack();
+	void Translate(glm::vec3);
 
 	glm::vec3 position;
 	glm::vec3 direction;

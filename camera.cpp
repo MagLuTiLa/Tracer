@@ -17,57 +17,36 @@ void Camera::Update()
 	right = glm::cross(up, direction);
 	down = -glm::cross(direction, right);
 
-	float stdValue = 1.0f;
-	glm::vec3 ratio;
 	if (SCRWIDTH > SCRHEIGHT)
 	{
-		float r = ((float)SCRWIDTH / (float)SCRHEIGHT);
-		ratio = r * right;
+		glm::vec3 ratio = -((float)SCRWIDTH / (float)SCRHEIGHT) * right;
 
 		topLeft = center - ratio - down;
 		topRight = center + ratio - down;
 		botLeft = center - ratio + down;
-		/*topLeft = center + glm::vec3(-ratio, -1, 0);
-		topRight = center + glm::vec3(ratio, -1, 0);
-		botLeft = center + glm::vec3(-ratio, 1, 0);*/
 	}
 	else
 	{
-		ratio = ((float)SCRHEIGHT / (float)SCRWIDTH) * down;
+		glm::vec3 ratio = ((float)SCRHEIGHT / (float)SCRWIDTH) * down;
 
-		topLeft = center - right - ratio;
-		topRight = center + right - ratio;
-		botLeft = center - right + ratio;
-		/*topLeft = center + glm::vec3(-1, -ratio, 0);
-		topRight = center + glm::vec3(1, -ratio, 0);
-		botLeft = center + glm::vec3(-1, ratio, 0);*/
+		topLeft = center + right - ratio;
+		topRight = center - right - ratio;
+		botLeft = center + right + ratio;
 	}
-	/*
-	topLeft = center - right - down;
-	topRight = center + right - down;
-	botLeft = center - right + down;*/
 
 	// Used for the "screen" through where rays are shot
 	width = topRight - topLeft;
 	height = botLeft - topLeft;
 }
 
+void Camera::Translate(glm::vec3 t)
+{
+	position += t;
+	Update();
+}
+
 Ray Camera::ShootRay(float u, float v)
 {
 	glm::vec3 dir = glm::normalize(topLeft + u*width + v*height - position);
 	return Ray(position, dir);
-}
-
-void Camera::MoveForward()
-{
-	//distance += 0.1f;
-	position += glm::vec3(0, 0, 0.1f);
-	Update();
-}
-
-void Camera::MoveBack()
-{
-	//distance -= 0.1f;
-	position -= glm::vec3(0, 0, 0.1f);
-	Update();
 }
