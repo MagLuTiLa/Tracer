@@ -11,7 +11,7 @@
 #define PARALLEL
 
 Game::Game() :
-	camera(vec3(0, 0, 0), vec3(0, 0, 10), vec3(0, -1, 0), 1.f)
+	camera()
 {
 }
 
@@ -22,19 +22,19 @@ void Game::Init()
 {
 	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.f, 1.f, vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
+	//AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
 	//AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
+	//AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
 
 	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(0.f, 1.f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 0., 0.))));
+	//AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(vec3(0., 1., 0.))));
+	//AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(vec3(0., 0., 1.))));
+	//AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(vec3(1., 1., 0.))));
 	//AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), Material(1.f, vec3(1., 1., 1.))));
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
-	AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
+	//AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
 	//AddLight(new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f)));
 	
 	/*
@@ -264,47 +264,7 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	float rotate = 1.f;
 	float stretch = 0.01f;
 	float zoom = 0.01f;
-	/*
-	// Up
-	if (a_Key == 82)
-		camera.Pitch(1);
 
-	// Down
-	if (a_Key == 81)
-		camera.Pitch(-1);
-
-	// Left
-	if (a_Key == 79)
-		camera.Jaw(-1);
-
-	// Right
-	if (a_Key == 80)
-		camera.Jaw(1);
-
-	// W
-	if (a_Key == 26)
-		camera.Axial(inc);
-
-	// A
-	if (a_Key == 4)
-		camera.Horizontal(-inc);
-
-	// S
-	if (a_Key == 22)
-		camera.Axial(-inc);
-
-	// D
-	if (a_Key == 7)
-		camera.Horizontal(inc);
-
-	// Q
-	if (a_Key == 20)
-		camera.Vertical(-inc);
-
-	// E
-	if (a_Key == 8)
-		camera.Vertical(inc);
-		*/
 	switch (a_Key)
 	{
 
@@ -387,8 +347,13 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	case 12:
 		camera.Zoom(zoom);
 		break;
+
+	// R
+	case 21:
+		camera.Reset();
+		break;
 	}
-	
+
 	keyDown = a_Key;
 }
 

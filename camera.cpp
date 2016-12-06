@@ -2,12 +2,23 @@
 #include "camera.h"
 
 
-Camera::Camera(glm::vec3 p, glm::vec3 lookAt, glm::vec3 u, float dist):
-	position(p),
-	distance(dist),
-	up(u)
+Camera::Camera()
 {
-	direction = glm::normalize(lookAt - position);
+	Reset();
+	/*direction = glm::normalize(lookAt - position);
+	Update();*/
+}
+
+void Camera::Reset()
+{
+	position = glm::vec3(0, 0, 0);
+	direction = glm::vec3(0, 0, 1);
+	up = glm::vec3(0, -1, 0);
+
+	distance = 1;
+	horStretch = 1;
+	verStretch = 1;
+	
 	Update();
 }
 

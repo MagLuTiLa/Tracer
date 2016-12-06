@@ -2,9 +2,12 @@
 class Camera
 {
 public:
-	Camera(glm::vec3, glm::vec3, glm::vec3, float);
+	Camera();
 	Ray ShootRay(float u, float v);
+
+	void Reset();
 	void Update();
+
 	void Translate(glm::vec3);
 
 	void Horizontal(float);
