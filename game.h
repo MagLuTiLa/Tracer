@@ -5,8 +5,9 @@
 #include "pointlight.h"
 #include <vector>
 
-#define SCRWIDTH	 1280
-#define SCRHEIGHT	 800
+#define SCRWIDTH	   1280
+#define SCRHEIGHT	    800
+#define MAXTRACEDEPTH    10
 
 namespace Tmpl8 {
 

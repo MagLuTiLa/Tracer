@@ -20,15 +20,17 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.95f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.9f, vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(vec3(0., 1., 0.))));
 	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
 	//AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
 	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
 
 	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 1., 1.))));
-	//AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 11), Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(0.8f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(vec3(0., 1., 1.))));
+	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(0.8f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(0.8f, vec3(1., 1., 1.))));
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
 	AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
@@ -123,6 +125,8 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 	// If ray collided with sphere
 	if (ray.length < std::numeric_limits<float>::max())
 	{
+		if (ray.traceDepth >= MAXTRACEDEPTH)
+			return DirectIllumination(ray);
 		Material material = ray.hit->material;
 		if (material.IsOpaque())
 			lightIntensity = DirectIllumination(ray);
@@ -190,6 +194,7 @@ glm::vec3 Tmpl8::Game::Reflect(Ray ray)
 	vec3 rayDir = ray.direction - 2.f * (glm::dot(ray.direction, normal) * normal);
 
 	Ray newRay(rayPos, rayDir);
+	newRay.traceDepth = ray.traceDepth + 1;
 	vec3 light = TraceRay(newRay);
 	lightIntensity = light * ray.hit->Color();
 	return lightIntensity;
@@ -226,6 +231,7 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 		vec3 d2 = N * ((fdt) * cosTheta - sqrtf(k));
 		vec3 rayDir = d1 + d2;
 		Ray newRay(rayPos, rayDir);
+		newRay.traceDepth = ray.traceDepth + 1;
 		if (ray.hit->hax == 1)
 			newRay.inside = !ray.inside;
 		else
