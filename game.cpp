@@ -20,22 +20,22 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.f, 1.5f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(1.5f, vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(vec3(0., 1., 0.))));
-	//AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
-	//AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
-	//AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
 
-	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(0.f, 1.f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 0., 0.))));
-	//AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(vec3(0., 1., 0.))));
-	//AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(vec3(0., 0., 1.))));
-	//AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(vec3(1., 1., 0.))));
-	//AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), Material(1.f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(0.9f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(0.9f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(0.9f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(0.9f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), Material(vec3(1., 1., 1.))));
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
 	//AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
-	//AddLight(new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f)));
+	AddLight(new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f)));
 	
 	/*
 	LoadObj("box.obj", primitives, mat4(1, 0, 0, 0,
@@ -134,7 +134,7 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 			lightIntensity = DirectIllumination(ray);
 		else if (material.IsReflective())
 		{
-			float s = material.reflection;
+			float s = material.ref;
 			if (s == 1.f)
 				lightIntensity = Reflect(ray);
 			else
@@ -146,9 +146,9 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 		else if (material.IsRefractive())
 		{
 			if (!ray.inside)
-				lightIntensity = Refract(ray, 1.f, material.refraction);
+				lightIntensity = Refract(ray, 1.f, material.ref);
 			else
-				lightIntensity = Refract(ray, material.refraction, 1.f);
+				lightIntensity = Refract(ray, material.ref, 1.f);
 		}
 	}
 	return lightIntensity;

@@ -15,42 +15,32 @@ class Material
 public:
 	// Used for opaque materials
 	Material::Material(glm::vec3 c) :
-		reflection(0),
-		refraction(0),
+		ref(0),
 		color(c)
 	{};
 	
-	// Used for reflective, non-see through materials
-	Material::Material(float refl, glm::vec3 c) :
-		reflection(refl),
-		refraction(0),
-		color(c)
-	{};
-
-	// Used for see-through materials
-	Material::Material(float refl, float refr, glm::vec3 c) :
-		reflection(refl),
-		refraction(refr),
+	// Used for reflective (0-1) and see through materials (1>)
+	Material::Material(float r, glm::vec3 c) :
+		ref(r),
 		color(c)
 	{};
 
 	bool IsOpaque()
 	{
-		return (reflection == 0 && refraction == 0);
+		return (ref == 0);
 	}
 
 	bool IsReflective()
 	{
-		return (reflection > 0 && refraction == 0);
+		return (ref > 0 && ref <= 1);
 	}
 
 	bool IsRefractive()
 	{
-		return (refraction > 0);
+		return (ref > 1);
 	}
 
 	glm::vec3 color;
-	float reflection;
-	float refraction;
+	float ref;
 };
 
