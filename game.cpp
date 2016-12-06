@@ -20,7 +20,7 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.f, 1.f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.f, 1.5f, vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(vec3(0., 1., 0.))));
 	//AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
 	//AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
@@ -83,7 +83,7 @@ void Game::Tick( float dt )
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
 			
-			if (x == 640 && y == 400)
+			if (x == 570 && y == 327)
 				int a = 1;
 				
 			float u = (float)x / SCRWIDTH;
@@ -146,9 +146,9 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 		else if (material.IsRefractive())
 		{
 			if (!ray.inside)
-				lightIntensity = Refract(ray, 1.f, 1.5f);
+				lightIntensity = Refract(ray, 1.f, material.refraction);
 			else
-				lightIntensity = Refract(ray, 1.5f, 1.f);
+				lightIntensity = Refract(ray, material.refraction, 1.f);
 		}
 	}
 	return lightIntensity;
