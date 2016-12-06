@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include "plane.h"
 #include "obj.h"
+#include "spotLight.h"
 #include <ppl.h>
 #include <string>
 
@@ -20,25 +21,30 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(1.5f, vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(1.5f, vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(1.5f, vec3(1., 0., 0.))));
-	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(1.5f, vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(1.5f, vec3(0., 0., 1.))));
+	//Material* texture = new Material(.5,"wood.bmp");
+	AddPrimitive(new Sphere(vec3(0, 0, 6.0f), 0.5f, new Material(1.0001f, vec3(1., 1., 1.))));
+	//AddPrimitive(new Sphere(vec3(0, 0, 4), 0.4f, new Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, new Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, new Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, new Material(vec3(0., 0., 1.))));
+	//AddPrimitive(new Triangle(vec3(-5, -5, 7), vec3(-5, 5, 7), vec3(5, -5, 7)));
 
-	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 0., 0.))));
-	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(vec3(0., 0., 1.))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(vec3(1., 1., 0.))));
-	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), Material(vec3(0., 1., 1.))));
+	
+	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0)));
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), new Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), new Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1., 1., 0.))));
+	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), new Material(vec3(0., 1., 1.))));
+	
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
+	AddLight(new PointLight(vec3(-3.5f, 3.5f, 5.5f), vec3(20.f, 20.f, 20.f)));
 	//AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
 	AddLight(new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f)));
 	
 	/*
-	LoadObj("box.obj", primitives, mat4(1, 0, 0, 0,
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
 		0, 0, 0, 1)
@@ -83,7 +89,7 @@ void Game::Tick( float dt )
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
 			
-			if (x == 570 && y == 327)
+			if (x == 543 && y == 431)
 				int a = 1;
 				
 			float u = (float)x / SCRWIDTH;
@@ -129,7 +135,7 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 	{
 		if (ray.traceDepth >= MAXTRACEDEPTH)
 			return DirectIllumination(ray);
-		Material material = ray.hit->material;
+Material material = *(ray.hit->material);
 		if (material.IsOpaque())
 			lightIntensity = DirectIllumination(ray);
 		else if (material.IsReflective())
@@ -164,21 +170,16 @@ glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
-		float len = glm::length(l->location - rayPos);
-		Ray shadowRay(rayPos, (l->location - rayPos) / len);
-
+		Ray shadowRay = l->getIllumination(rayPos);
 		// See if shadow ray intersects with primitives
 		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 		{
 			Primitive* p = primitives[i];
 			p->Intersect(shadowRay);
-			if (shadowRay.length < len)
+			if (shadowRay.hit != NULL)
 				goto next;
 		}
-		
 		// Add color to the lightintensity
-		shadowRay.length = len;
-		shadowRay.color = l->color;
 		lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
 	}
@@ -190,7 +191,6 @@ glm::vec3 Tmpl8::Game::Reflect(Ray ray)
 	vec3 lightIntensity = vec3();
 	vec3 rayPos = ray.origin + ray.direction * (ray.length - EPSILON);
 
-	//?? = ?? ? 2(?? ? ??)??.
 	vec3 colPos = ray.origin + ray.direction * ray.length;
 	vec3 normal = ray.hit->Normal(colPos);
 	if (ray.inside)
@@ -200,16 +200,17 @@ glm::vec3 Tmpl8::Game::Reflect(Ray ray)
 	Ray newRay(rayPos, rayDir);
 	newRay.traceDepth = ray.traceDepth + 1;
 	vec3 light = TraceRay(newRay);
-	lightIntensity = light * ray.hit->Color();
+	lightIntensity = light * ray.hit->Color(colPos);
 	return lightIntensity;
 }
+
 
 glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 {
 	// Determine reflection and refraction part
 	vec3 lightIntensity = vec3();
 
-	float fdt = to / from;
+	float fdt = from / to;
 	vec3 D = ray.direction;
 	vec3 colPos = ray.origin + D * ray.length;
 	vec3 N = ray.hit->Normal(colPos);
@@ -231,21 +232,31 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 
 	else
 	{
-		vec3 rayPos = ray.origin + ray.direction * (ray.length) - N * EPSILON;
+		vec3 colPos = ray.origin + ray.direction * (ray.length);
+		vec3 rayPos = colPos -N * EPSILON;
 
 		vec3 d1 = fdt * D;
 		vec3 d2 = N * (fdt * cosTheta - sqrtf(k));
 		vec3 rayDir = d1 + d2;
+
+		float mC = 1 - cosTheta;
+		float cos5 = mC * mC * mC * mC * mC;
+		float R0 = (from - to) / (from + to);
+		R0 *= R0;
+		float Fr = R0 + (1 - R0) * cos5;
+
 		Ray newRay(rayPos, rayDir);
 		newRay.traceDepth = ray.traceDepth + 1;
 		if (ray.hit->hax == 1)
 			newRay.inside = !ray.inside;
 		else
 			newRay.inside = ray.inside;
-		vec3 light = TraceRay(newRay);
-		lightIntensity = light * ray.hit->Color();
+		vec3 light = (1 - Fr) * TraceRay(newRay);
+		vec3 light2 = Fr * Reflect(ray);
+		lightIntensity = (light + light2) * ray.hit->Color(colPos);
 	}
-	/*float fractR = (from - to) / (from + to);
+	/*
+	float fractR = (from - to) / (from + to);
 	float R = fractR * fractR;*/
 
 

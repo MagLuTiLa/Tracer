@@ -21,7 +21,11 @@ void Plane::Intersect(Ray& ray)
 glm::vec3 Plane::Sample(Ray & ray, Ray & lightRay)
 {
 	float intencity = glm::dot(normal, lightRay.direction);
-	return Color()*lightRay.color * intencity / (lightRay.length*lightRay.length);
+	vec2 uv = vec2(lightRay.origin);
+	uv.x = abs(uv.x-(long)uv.x);
+	uv.y = abs(uv.y-(long)uv.y);
+
+	return material->Color(uv)*lightRay.color * intencity / (lightRay.length*lightRay.length);
 }
 
 glm::vec3 Plane::Normal(glm::vec3 loc)

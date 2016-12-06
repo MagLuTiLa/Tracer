@@ -1,16 +1,13 @@
 #pragma once
 #include "ray.h"
 #include "material.h"
-
 class Primitive
 {
 public:
-	Primitive::Primitive(glm::vec3 loc) :
-		location(loc),
-		material(Material(glm::vec3(1.0f,1.0f,1.0f)))
+	Primitive::Primitive(glm::vec3 loc) : Primitive(loc, BASE_MATERIAL)
 	{}
 
-	Primitive::Primitive(glm::vec3 loc, Material m) :
+	Primitive::Primitive(glm::vec3 loc, Material* m) :
 		location(loc),
 		material(m)
 	{}
@@ -19,10 +16,10 @@ public:
 	virtual glm::vec3 Sample(Ray& ray, Ray& lightRay) = 0;
 	virtual glm::vec3 Normal(glm::vec3 loc) = 0;
 
-	glm::vec3 Color() { return material.color; };
+	virtual glm::vec3 Color(const glm::vec3& position) { return material->texture[0]; };
 
 	glm::vec3 location;
-	Material material;
+	Material* material;
 	int hax = 0;
 };
 

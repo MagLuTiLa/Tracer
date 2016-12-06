@@ -68,7 +68,7 @@ glm::vec3 Sphere::Sample(Ray& ray, Ray& lightRay)
 {
 	glm::vec3 hitLoc = lightRay.origin;
 	glm::vec3 normal = Normal(hitLoc);
-	return Color()*lightRay.color * std::max(0.f,glm::dot(normal, lightRay.direction)/(lightRay.length*lightRay.length));
+	return material->texture[0]*lightRay.color * std::max(0.f,glm::dot(normal, lightRay.direction)/(lightRay.length*lightRay.length));
 	
 
 	// or: ray.t = min( ray.t, max( 0, t ) );
