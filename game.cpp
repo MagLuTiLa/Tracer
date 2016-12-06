@@ -221,6 +221,7 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 	float r = (1 - cosTheta * cosTheta);
 	float k = 1 - l * r;
 
+	//TIL
 	if (k < 0)
 	{
 		lightIntensity = Reflect(ray);
