@@ -22,7 +22,7 @@ Game::Game() :
 void Game::Init()
 {
 	//Material* texture = new Material(.5,"wood.bmp");
-	AddPrimitive(new Sphere(vec3(0, 0, 6.0f), 0.5f, new Material(1.0001f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 0, 3), 1.5f, new Material(1.5f, vec3(0., 1., 0.))));
 	//AddPrimitive(new Sphere(vec3(0, 0, 4), 0.4f, new Material(vec3(0., 1., 0.))));
 	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, new Material(vec3(1., 0., 0.))));
 	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, new Material(vec3(0., 1., 0.))));
@@ -210,9 +210,10 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 	// Determine reflection and refraction part
 	vec3 lightIntensity = vec3();
 
+	float s = ray.length;
 	float fdt = from / to;
 	vec3 D = ray.direction;
-	vec3 colPos = ray.origin + D * ray.length;
+	vec3 colPos = ray.origin + D * s;
 	vec3 N = ray.hit->Normal(colPos);
 	if (ray.inside)
 		N *= -1;
@@ -227,12 +228,11 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 	if (k < 0)
 	{
 		lightIntensity = Reflect(ray);
-		//lightIntensity = vec3(0.f, 1.f, 1.f);
 	}
 
 	else
 	{
-		vec3 colPos = ray.origin + ray.direction * (ray.length);
+		vec3 colPos = ray.origin + ray.direction * s;
 		vec3 rayPos = colPos -N * EPSILON;
 
 		vec3 d1 = fdt * D;
@@ -251,14 +251,26 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 			newRay.inside = !ray.inside;
 		else
 			newRay.inside = ray.inside;
-		vec3 light = (1 - Fr) * TraceRay(newRay);
-		vec3 light2 = Fr * Reflect(ray);
-		lightIntensity = (light + light2) * ray.hit->Color(colPos);
-	}
-	/*
-	float fractR = (from - to) / (from + to);
-	float R = fractR * fractR;*/
 
+		vec3 transRay = (1 - Fr) * TraceRay(newRay);
+		vec3 reflRay = Fr * Reflect(ray);
+
+		vec3 matColor = ray.hit->Color(colPos);
+		
+		// Beer's Law
+		if (ray.inside)
+		{
+			transRay.r *= expf(-matColor.r * s);
+			transRay.g *= expf(-matColor.g * s);
+			transRay.b *= expf(-matColor.b * s);
+
+			reflRay.r *= expf(-matColor.r * s);
+			reflRay.g *= expf(-matColor.g * s);
+			reflRay.b *= expf(-matColor.b * s);
+		}
+
+		lightIntensity = (transRay + reflRay) * matColor;
+	}
 
 	return lightIntensity;
 }
