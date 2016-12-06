@@ -8,6 +8,7 @@
 #define SCRWIDTH	   1280
 #define SCRHEIGHT	    800
 #define MAXTRACEDEPTH    10
+#define EPSILON     0.0001f
 
 namespace Tmpl8 {
 

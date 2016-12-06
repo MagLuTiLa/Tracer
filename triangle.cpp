@@ -23,7 +23,7 @@ void Triangle::Intersect(Ray & ray)
 	//if determinant is near zero, ray lies in plane of triangle or ray is parallel to plane of triangle
 	det = glm::dot(e1, P);
 	//NOT CULLING
-	if (det > -0.0001 && det < 0.0001) return;
+	if (det > -EPSILON && det < EPSILON) return;
 	inv_det = 1.f / det;
 
 	//calculate distance from V1 to ray origin
@@ -44,7 +44,7 @@ void Triangle::Intersect(Ray & ray)
 
 	t = glm::dot(e2, Q) * inv_det;
 
-	if ((t > 0.0001) & (t < ray.length)) {
+	if ((t > EPSILON) & (t < ray.length)) {
 		//ray intersection
 		ray.length = t;
 		ray.hit = this;
