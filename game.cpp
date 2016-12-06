@@ -13,7 +13,7 @@ Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
 {
 	cout << sizeof(Triangle);
-	Material* texture = new Material(.8,"concrete.bmp");
+	Material* texture = new Material(.8,"wood.bmp");
 	Primitive * p1 = new Sphere(vec3(2, 0, 4), 0.8f, new Material(0.3f, vec3(1., 1., 1.)));
 	//Triangle *t = NULL;
 	int tc = LoadObj("box.obj", primitives, texture,
@@ -40,7 +40,7 @@ Game::Game() :
 	p1 = new Sphere(vec3(-3, -1, 5), 1.f, new Material(vec3(1., 0., 0.)));
 	primitives.push_back(p1);
 	
-	p1 = new Sphere(vec3(3, -1, 5), 1.f, new Material(vec3(0., 0., 1.)));
+	p1 = new Sphere(vec3(3, -1, 5), 1.f, new Material(vec3(1., 1., 1.)));
 	primitives.push_back(p1);
 
 	p1 = new Plane(vec3(0, 5, 5), vec3(0, -1, 0));
@@ -52,18 +52,18 @@ Game::Game() :
 	p1 = new Plane(vec3(0, 0, -2), vec3(0, 0, 11));
 	primitives.push_back(p1);
 
-	Light * l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
+	Light * /*l = new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f));
 	lights.push_back(l);
 	 l = new PointLight(vec3(1, 2, 6.90), vec3(7.f, 7.f, 7.f));
+	lights.push_back(l);*/
+	
+	l = new PointLight(vec3(-3, -5, 3), vec3(9.f, 0.f, 0.f));
 	lights.push_back(l);
 	
-	l = new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f));
-	lights.push_back(l);
-	
-	l = new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f));
+	l = new PointLight(vec3(3, -3, 3), vec3(0.f, 9.f, 0.f));
 	lights.push_back(l);
 
-	l = new SpotLight(vec3(10, 0, 0), vec3(0, 0, 1), 1, vec3(100, 0, 0));
+	l = new SpotLight(vec3(0, 0, 0), vec3(0, 0, 1), 1, vec3(10, 10, 10));
 	lights.push_back(l);
 }
 
@@ -166,7 +166,6 @@ glm::vec3 Tmpl8::Game::DirectIllumination(Ray ray)
 	{
 		Light* l = lights[i];
 		Ray shadowRay = l->getIllumination(rayPos);
-
 		// See if shadow ray intersects with primitives
 		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 		{

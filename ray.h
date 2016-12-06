@@ -3,7 +3,7 @@
 
 #include "primitive.h"
 class Primitive;
-class Ray
+struct Ray
 {
 public:
 	Ray(glm::vec3, glm::vec3 d);

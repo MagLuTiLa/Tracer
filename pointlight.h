@@ -7,6 +7,7 @@ public:
 	PointLight::PointLight(glm::vec3 loc, glm::vec3 c) :
 		Light(loc, c)
 	{}
+
 	inline virtual Ray getIllumination(glm::vec3 point)
 	{
 		float len = glm::length(location - point);
