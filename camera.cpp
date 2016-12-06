@@ -45,6 +45,60 @@ void Camera::Translate(glm::vec3 t)
 	Update();
 }
 
+void Camera::Horizontal(float inc)
+{
+	position += -inc * right;
+	Update();
+}
+
+void Camera::Vertical(float inc)
+{
+	position += -inc * down;
+	Update();
+}
+
+void Camera::Axial(float inc)
+{
+	position += inc * direction;
+	Update();
+}
+
+void Camera::Jaw(float angle)
+{
+	float X = direction.x;
+	float Z = direction.z;
+
+	float rad = angle * PI / 180;
+	float c = glm::cos(rad);
+	float s = glm::sin(rad);
+
+	float nX = X*c - Z*s;
+	float nZ = Z*c + X*s;
+
+	direction.x = nX;
+	direction.z = nZ;
+
+	Update();
+}
+
+void Camera::Pitch(float angle)
+{
+	float Y = direction.y;
+	float Z = direction.z;
+
+	float rad = angle * PI / 180;
+	float c = glm::cos(rad);
+	float s = glm::sin(rad);
+
+	float nY = Y*c - Z*s;
+	float nZ = Z*c + Y*s;
+
+	direction.y = nY;
+	direction.z = nZ;
+
+	Update();
+}
+
 Ray Camera::ShootRay(float u, float v)
 {
 	glm::vec3 dir = glm::normalize(topLeft + u*width + v*height - position);

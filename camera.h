@@ -6,6 +6,11 @@ public:
 	Ray ShootRay(float u, float v);
 	void Update();
 	void Translate(glm::vec3);
+	void Horizontal(float);
+	void Vertical(float);
+	void Axial(float);
+	void Jaw(float);
+	void Pitch(float);
 
 	glm::vec3 position;
 	glm::vec3 direction;

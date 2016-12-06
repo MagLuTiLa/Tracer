@@ -142,7 +142,6 @@ glm::vec3 Tmpl8::Game::TraceRay(Ray& ray)
 			if (!ray.inside)
 				lightIntensity = Refract(ray, 1.f, 1.5f);
 			else
-				//lightIntensity = DirectIllumination(ray);
 				lightIntensity = Refract(ray, 1.5f, 1.f);
 		}
 	}
@@ -257,31 +256,43 @@ void Tmpl8::Game::KeyDown(int a_Key)
 
 	// Up
 	if (a_Key == 82)
-	{
-		camera.Translate(glm::vec3(0, 0, inc));
-		lights[0]->location += glm::vec3(0, 0, inc);
-	}
+		camera.Pitch(1);
 
 	// Down
 	if (a_Key == 81)
-	{
-		camera.Translate(glm::vec3(0, 0, -inc));
-		lights[0]->location += glm::vec3(0, 0, -inc);
-	}
+		camera.Pitch(-1);
 
 	// Left
 	if (a_Key == 79)
-	{
-		camera.Translate(glm::vec3(inc, 0, 0));
-		lights[0]->location += glm::vec3(inc, 0, 0);
-	}
+		camera.Jaw(-1);
 
 	// Right
 	if (a_Key == 80)
-	{
-		camera.Translate(glm::vec3(-inc, 0, 0));
-		lights[0]->location += glm::vec3(-inc, 0, 0);
-	}
+		camera.Jaw(1);
+
+	// W
+	if (a_Key == 26)
+		camera.Axial(inc);
+
+	// A
+	if (a_Key == 4)
+		camera.Horizontal(-inc);
+
+	// S
+	if (a_Key == 22)
+		camera.Axial(-inc);
+
+	// D
+	if (a_Key == 7)
+		camera.Horizontal(inc);
+
+	// Q
+	if (a_Key == 20)
+		camera.Vertical(-inc);
+
+	// E
+	if (a_Key == 8)
+		camera.Vertical(inc);
 	
 	keyDown = a_Key;
 }
