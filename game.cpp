@@ -252,8 +252,11 @@ void Tmpl8::Game::AddLight(Light * l)
 
 void Tmpl8::Game::KeyDown(int a_Key)
 {
-	float inc = 0.05f;
-
+	float translate = 0.05f;
+	float rotate = 1.f;
+	float stretch = 0.01f;
+	float zoom = 0.01f;
+	/*
 	// Up
 	if (a_Key == 82)
 		camera.Pitch(1);
@@ -293,6 +296,90 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	// E
 	if (a_Key == 8)
 		camera.Vertical(inc);
+		*/
+	switch (a_Key)
+	{
+
+	// Up
+	case 82:
+		camera.Pitch(rotate);
+		break;
+
+	// Down
+	case 81:
+		camera.Pitch(-rotate);
+		break;
+
+	// Left
+	case 79:
+		camera.Jaw(-rotate);
+		break;
+
+	// Right
+	case 80:
+		camera.Jaw(rotate);
+		break;
+
+	// W
+	case 26:
+		camera.Axial(translate);
+		break;
+
+	// A
+	case 4:
+		camera.Horizontal(-translate);
+		break;
+
+	// S
+	case 22:
+		camera.Axial(-translate);
+		break;
+
+	// D
+	case 7:
+		camera.Horizontal(translate);
+		break;
+
+	// Q
+	case 20:
+		camera.Vertical(-translate);
+		break;
+
+	// E
+	case 8:
+		camera.Vertical(translate);
+		break;
+
+	// U
+	case 24:
+		camera.VerStretch(-stretch);
+		break;
+
+	// H
+	case 11:
+		camera.HorStretch(stretch);
+		break;
+
+	// J
+	case 13:
+		camera.VerStretch(stretch);
+		break;
+
+	// K
+	case 14:
+		camera.HorStretch(-stretch);
+		break;
+
+	// Y
+	case 28:
+		camera.Zoom(-zoom);
+		break;
+
+	// I
+	case 12:
+		camera.Zoom(zoom);
+		break;
+	}
 	
 	keyDown = a_Key;
 }

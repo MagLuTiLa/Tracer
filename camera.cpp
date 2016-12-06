@@ -17,22 +17,22 @@ void Camera::Update()
 	right = glm::cross(up, direction);
 	down = -glm::cross(direction, right);
 
+	glm::vec3 hor;
+	glm::vec3 ver;
 	if (SCRWIDTH > SCRHEIGHT)
 	{
-		glm::vec3 ratio = -((float)SCRWIDTH / (float)SCRHEIGHT) * right;
-
-		topLeft = center - ratio - down;
-		topRight = center + ratio - down;
-		botLeft = center - ratio + down;
+		hor = -((float)SCRWIDTH / (float)SCRHEIGHT) * right * horStretch;
+		ver = down * verStretch;
 	}
 	else
 	{
-		glm::vec3 ratio = ((float)SCRHEIGHT / (float)SCRWIDTH) * down;
-
-		topLeft = center + right - ratio;
-		topRight = center - right - ratio;
-		botLeft = center + right + ratio;
+		hor = -right * verStretch;
+		ver = ((float)SCRHEIGHT / (float)SCRWIDTH) * down * verStretch;
 	}
+
+	topLeft = center - hor - ver;
+	topRight = center + hor - ver;
+	botLeft = center - hor + ver;
 
 	// Used for the "screen" through where rays are shot
 	width = topRight - topLeft;
@@ -97,6 +97,33 @@ void Camera::Pitch(float angle)
 	direction.z = nZ;
 
 	Update();
+}
+
+void Camera::HorStretch(float inc)
+{
+	if (horStretch + inc > 0)
+	{
+		horStretch += inc;
+		Update();
+	}
+}
+
+void Camera::VerStretch(float inc)
+{
+	if (verStretch + inc > 0)
+	{
+		verStretch += inc;
+		Update();
+	}
+}
+
+void Camera::Zoom(float inc)
+{
+	if (distance + inc > 0)
+	{
+		distance += inc;
+		Update();
+	}
 }
 
 Ray Camera::ShootRay(float u, float v)
