@@ -1,11 +1,10 @@
 #include "template.h"
 #include "plane.h"
 
-//http://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
 void Plane::Intersect(Ray& ray)
 {
 	float dP = glm::dot(normal, ray.direction);
-	if (dP < 0)
+	if (dP < EPSILON)
 	{
 		glm::vec3 p = (location - ray.origin);
 
