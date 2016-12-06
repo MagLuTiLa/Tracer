@@ -42,8 +42,8 @@ void Camera::Update()
 	}
 
 	topLeft = center - hor - ver;
-	topRight = center + hor - ver;
-	botLeft = center - hor + ver;
+	glm::vec3 topRight = center + hor - ver;
+	glm::vec3 botLeft = center - hor + ver;
 
 	// Used for the "screen" through where rays are shot
 	width = topRight - topLeft;

@@ -21,17 +21,17 @@ Game::Game() :
 void Game::Init()
 {
 	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(1.5f, vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
-	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(1.5f, vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(1.5f, vec3(1., 0., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(1.5f, vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, Material(1.5f, vec3(0., 0., 1.))));
 
 	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0), Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(0.9f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(0.9f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(0.9f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(0.9f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), Material(vec3(1., 1., 0.))));
+	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), Material(vec3(0., 1., 1.))));
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
 	//AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
@@ -193,6 +193,8 @@ glm::vec3 Tmpl8::Game::Reflect(Ray ray)
 	//?? = ?? ? 2(?? ? ??)??.
 	vec3 colPos = ray.origin + ray.direction * ray.length;
 	vec3 normal = ray.hit->Normal(colPos);
+	if (ray.inside)
+		normal = -normal;
 	vec3 rayDir = ray.direction - 2.f * (glm::dot(ray.direction, normal) * normal);
 
 	Ray newRay(rayPos, rayDir);
@@ -207,7 +209,7 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 	// Determine reflection and refraction part
 	vec3 lightIntensity = vec3();
 
-	float fdt = from / to;
+	float fdt = to / from;
 	vec3 D = ray.direction;
 	vec3 colPos = ray.origin + D * ray.length;
 	vec3 N = ray.hit->Normal(colPos);
@@ -223,14 +225,16 @@ glm::vec3 Tmpl8::Game::Refract(Ray ray, float from, float to)
 
 	if (k < 0)
 	{
-		lightIntensity = vec3(0.f, 1.f, 0.f);
+		lightIntensity = Reflect(ray);
+		//lightIntensity = vec3(0.f, 1.f, 1.f);
 	}
+
 	else
 	{
 		vec3 rayPos = ray.origin + ray.direction * (ray.length) - N * EPSILON;
 
 		vec3 d1 = fdt * D;
-		vec3 d2 = N * ((fdt) * cosTheta - sqrtf(k));
+		vec3 d2 = N * (fdt * cosTheta - sqrtf(k));
 		vec3 rayDir = d1 + d2;
 		Ray newRay(rayPos, rayDir);
 		newRay.traceDepth = ray.traceDepth + 1;

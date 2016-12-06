@@ -34,8 +34,6 @@ public:
 	glm::vec3 down;
 
 	glm::vec3 topLeft;
-	glm::vec3 topRight;
-	glm::vec3 botLeft;
 
 	glm::vec3 width;
 	glm::vec3 height;
