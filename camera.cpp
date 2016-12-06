@@ -45,13 +45,13 @@ Ray Camera::ShootRay(float u, float v)
 void Camera::MoveForward()
 {
 	//distance += 0.1f;
-	position += glm::vec3(0, 0, 0.3f);
+	position += glm::vec3(0, 0, 0.1f);
 	Update();
 }
 
 void Camera::MoveBack()
 {
 	//distance -= 0.1f;
-	position -= glm::vec3(0, 0, 0.3f);
+	position -= glm::vec3(0, 0, 0.1f);
 	Update();
 }

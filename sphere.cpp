@@ -4,7 +4,7 @@
 
 void Sphere::Intersect(Ray& ray)
 {
-	/*
+	
 	if (!ray.inside)
 	{
 		glm::vec3 c = location - ray.origin;
@@ -29,7 +29,7 @@ void Sphere::Intersect(Ray& ray)
 	}
 	
 	else
-	{*/
+	{
 		vec3 D = ray.direction;
 		vec3 O = ray.origin;
 		vec3 C = location;
@@ -61,7 +61,7 @@ void Sphere::Intersect(Ray& ray)
 			ray.length = t;
 			ray.hit = this;
 		}
-	//}
+	}
 }
 
 glm::vec3 Sphere::Sample(Ray& ray, Ray& lightRay)

@@ -8,7 +8,7 @@
 #include <ppl.h>
 #include <string>
 
-#define PARALLELa
+#define PARALLEL
 
 Game::Game() :
 	camera(vec3(0, 0, 0), vec3(0, 0, 10), 1.f)
@@ -20,7 +20,7 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.f, .1f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 0, 2), 0.5f, Material(0.95f, vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(1, 1, 4), 1.f, Material(vec3(0., 1., 0.))));
 	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, Material(vec3(1., 0., 0.))));
 	//AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, Material(vec3(0., 1., 0.))));
@@ -252,9 +252,15 @@ void Tmpl8::Game::AddLight(Light * l)
 void Tmpl8::Game::KeyDown(int a_Key)
 {
 	if (a_Key == 82)
+	{
 		camera.MoveForward();
+		lights[0]->location += glm::vec3(0, 0, 0.1f);
+	}
 	if (a_Key == 81)
+	{
 		camera.MoveBack();
+		lights[0]->location -= glm::vec3(0, 0, 0.1f);
+	}
 	/*
 	char text [50];
 	sprintf(text, "%i", a_Key);
