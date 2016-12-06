@@ -21,29 +21,24 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
-	//Material* texture = new Material(.5,"wood.bmp");
-	AddPrimitive(new Sphere(vec3(0, 0, 3), 1.5f, new Material(1.5f, vec3(0., 1., 0.))));
-	//AddPrimitive(new Sphere(vec3(0, 0, 4), 0.4f, new Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(-3, -1, 5), 1.f, new Material(vec3(1., 0., 0.))));
-	AddPrimitive(new Sphere(vec3(0, -3, 5), 1.f, new Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(3, -1, 5), 1.f, new Material(vec3(0., 0., 1.))));
-	//AddPrimitive(new Triangle(vec3(-5, -5, 7), vec3(-5, 5, 7), vec3(5, -5, 7)));
 
-	
-	AddPrimitive(new Plane(vec3(0, 5, 5), vec3(0, -1, 0)));
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), new Material(vec3(1., 0., 0.))));
-	AddPrimitive(new Plane(vec3(0, 0, -2), vec3(0, 0, 1), new Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(0., 0., 1.))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1., 1., 0.))));
-	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), new Material(vec3(0., 1., 1.))));
-	
+	AddPrimitive(new Sphere(vec3(-3, -3, -3), 1.15f, new Material(1.5f, vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(-5, -1, 5), 1.f, new Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(5, 4, 4), 0.5f, new Material(vec3(1., 0.5, 0.))));
+
+	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), new Material(1.f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, 0, -7), vec3(0, 0, 1), new Material(vec3(0.3, 0.3, 1.))));
+	AddPrimitive(new Plane(vec3(0, 7, 0), vec3(0, -1, 0), new Material(1.f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(0, -7, 0), vec3(0, 1, 0), new Material(vec3(0.3, 1., 0.3))));
+	AddPrimitive(new Plane(vec3(7, 0, 0), vec3(-1, 0, 0), new Material(1.f, vec3(1., 1., 1.))));
+	AddPrimitive(new Plane(vec3(-7, 0, 0), vec3(1, 0, 0), new Material(vec3(1., 0.3, 0.3))));
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
-	AddLight(new PointLight(vec3(-3.5f, 3.5f, 5.5f), vec3(20.f, 20.f, 20.f)));
-	//AddLight(new PointLight(vec3(-3, -5, 3), vec3(9.f, 1.f, 1.f)));
-	AddLight(new PointLight(vec3(3, -3, 3), vec3(1.f, 9.f, 1.f)));
+	AddLight(new PointLight(vec3(-3.5f, 3.5f, 5.5f), vec3(2.f, 10.f, 2.f)));
+	AddLight(new PointLight(vec3(3, -3, 3), vec3(9.f, 1.f, 9.f)));
 	
-	/*
+	Material* texture = new Material(.5, "wood.bmp");
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -57,7 +52,7 @@ void Game::Init()
 		mat4(.2, 0, 0, 0,
 			0, .2, 0, 0,
 			0, 0, .2, 4,
-			0, 0, 0, 1));*/
+			0, 0, 0, 1));
 }
 
 // -----------------------------------------------------------
