@@ -41,5 +41,6 @@ public:
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay) override;
 	virtual glm::vec3 Normal(glm::vec3 loc) override;
 	virtual glm::vec3 Color(const glm::vec3& position) override;
+	virtual AABB CalculateBounds();
 };
 

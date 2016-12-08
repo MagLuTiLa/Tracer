@@ -31,3 +31,8 @@ glm::vec3 Plane::Normal(glm::vec3 loc)
 {
 	return normal;
 }
+
+AABB Plane::CalculateBounds()
+{
+	return AABB();
+}

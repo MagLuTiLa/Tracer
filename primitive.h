@@ -1,6 +1,7 @@
 #pragma once
 #include "ray.h"
 #include "material.h"
+#include "BVHNode.h"
 class Primitive
 {
 public:
@@ -17,7 +18,7 @@ public:
 	virtual glm::vec3 Normal(glm::vec3 loc) = 0;
 
 	virtual glm::vec3 Color(const glm::vec3& position) { return material->texture[0]; };
-
+	virtual AABB CalculateBounds() = 0;
 	glm::vec3 location;
 	Material* material;
 	int hax = 0;

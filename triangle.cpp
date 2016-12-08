@@ -82,6 +82,13 @@ glm::vec3 Triangle::Color(const vec3& position)
 	}
 }
 
+AABB Triangle::CalculateBounds()
+{
+	vec3 max = glm::max(glm::max(location, location2), location3);
+	vec3 min = glm::min(glm::min(location, location2), location3);
+	return AABB(min, max);
+}
+
 glm::vec3 Triangle::Normal(glm::vec3 loc)
 {
 	return normal;

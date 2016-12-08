@@ -78,3 +78,8 @@ glm::vec3 Sphere::Normal(glm::vec3 loc)
 {
 	return (loc - location) / radius;
 }
+
+AABB Sphere::CalculateBounds()
+{
+	return AABB(location - radius, location + radius);
+}
