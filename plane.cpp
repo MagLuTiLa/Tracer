@@ -4,7 +4,7 @@
 void Plane::Intersect(Ray& ray)
 {
 	float dP = glm::dot(normal, ray.direction);
-	if (dP < EPSILON)
+	if (dP < 0)
 	{
 		glm::vec3 p = (location - ray.origin);
 
