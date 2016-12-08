@@ -21,7 +21,29 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
+	Material* texture = new Material(.5, "wood.bmp");
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.2, 0, 0, 0,
+			0, .2, 0, 0,
+			0, 0, .2, 4,
+			0, 0, 0, 1)); 
 
+	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
+	/*
+	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(-1000, 5, -10), vec3(1000, 5, -10)));
+	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(1000, 5, 10), vec3(1000, 5, -10)));*/
+
+	// Bye bye fancy scene, you will be remembered for your bravery.
+	/*
 	AddPrimitive(new Sphere(vec3(-3, -3, -3), 1.15f, new Material(1.5f, vec3(0., 1., 0.))));
 	AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(-5, -1, 5), 1.f, new Material(vec3(0., 0., 1.))));
@@ -38,22 +60,24 @@ void Game::Init()
 	AddLight(new PointLight(vec3(-3.5f, 3.5f, 5.5f), vec3(2.f, 10.f, 2.f)));
 	AddLight(new PointLight(vec3(3, -3, 3), vec3(9.f, 1.f, 9.f)));
     AddLight(new SpotLight(vec3(0, 0, 2), vec3(0, 0, 1), .05, vec3(2.5, 0, 0)));
-	
+
 	Material* texture = new Material(.5, "wood.bmp");
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.2, 0, 0, 0,
-			0, .2, 0, 0,
-			0, 0, .2, 4,
-			0, 0, 0, 1));
+	0, std::cos(2), -std::sin(2), 0,
+	0, std::sin(2), std::cos(2), 0,
+	0, 0, 0, 1)
+	*
+	mat4(std::cos(2), 0, -std::sin(2), 0,
+	0, 1, 0, 0,
+	std::sin(2), 0, std::cos(2), 0,
+	0, 0, 0, 1)
+	*
+	mat4(.2, 0, 0, 0,
+	0, .2, 0, 0,
+	0, 0, .2, 4,
+	0, 0, 0, 1));
+	*/
+	
 }
 
 // -----------------------------------------------------------

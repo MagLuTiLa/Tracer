@@ -40,6 +40,7 @@
     <ClCompile Include="spotLight.cpp">
       <Filter>Transport</Filter>
     </ClCompile>
+    <ClCompile Include="BVHNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -81,6 +82,7 @@
     <ClInclude Include="spotLight.h">
       <Filter>Transport</Filter>
     </ClInclude>
+    <ClInclude Include="BVHNode.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
