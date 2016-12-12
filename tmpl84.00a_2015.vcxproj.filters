@@ -41,6 +41,7 @@
       <Filter>Transport</Filter>
     </ClCompile>
     <ClCompile Include="BVHNode.cpp" />
+    <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -83,6 +84,7 @@
       <Filter>Transport</Filter>
     </ClInclude>
     <ClInclude Include="BVHNode.h" />
+    <ClInclude Include="renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
