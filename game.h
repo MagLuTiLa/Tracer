@@ -4,7 +4,6 @@
 #include "camera.h"
 #include "pointlight.h"
 #include "renderer.h"
-#include <vector>
 
 #define SCRWIDTH	   1280
 #define SCRHEIGHT	    800
@@ -33,8 +32,6 @@ public:
 private:
 	Surface* screen;
 	Renderer renderer;
-	std::vector<Primitive*> primitives;
-	std::vector<Light*> lights;
 	Camera camera;
 	int mouseX = 0;
 	int mouseY = 0;
