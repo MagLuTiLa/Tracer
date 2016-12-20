@@ -58,7 +58,8 @@ void Game::Tick( float dt )
 			float u = (float)x / SCRWIDTH;
 			float v = (float)y / SCRHEIGHT;
 
-			Ray ray = camera.ShootRay(u, v);
+			Ray ray;
+			camera.ShootRay(u, v, ray);
 
 			vec3 lightIntensity = renderer.TraceRay(ray);
 

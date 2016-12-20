@@ -6,6 +6,11 @@ class Primitive;
 struct Ray
 {
 public:
+	Ray():
+		length(std::numeric_limits<float>::max()),
+		color(glm::vec3(0, 0, 0)), 
+		traceDepth(0)
+	{};
 	Ray(glm::vec3, glm::vec3 d);
 	Primitive* hit = NULL;
 	glm::vec3 color;
@@ -16,7 +21,7 @@ public:
 		struct
 		{
 			glm::vec3 origin;
-			int traceDepth = 0;
+			int traceDepth;
 		};
 		__m128 quadOrigin;
 	};

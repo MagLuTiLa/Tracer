@@ -8,8 +8,9 @@ BVH::BVH()
 {
 }
 
-void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
+void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
 {
+	primitives = p;
 	// create index array
 	indices = new int[count];
 	for (int i = 0; i < count; i++) 
@@ -25,8 +26,8 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 
 	for (int i = 0; i < count; i++)
 	{
-		bounds[i] = primitives[i]->CalculateBounds();
-		centroids[i] = primitives[i]->Centroid();
+		bounds[i] = (*primitives)[i]->CalculateBounds();
+		centroids[i] = (*primitives)[i]->Centroid();
 	}
 
 	//QuickSort(0, count - 1);
@@ -143,4 +144,28 @@ void BVH::Partition(int node)
 	CalculateBounds(lF);
 	CalculateBounds(lF+1);
 	pool[node].count = 0;
+}
+
+void BVH::Traverse(Ray & ray, int node)
+{
+	BVHNode* n = &pool[node];
+	if (!n->Intersect(ray)) return;
+	if (n->count)
+	{
+		//IntersectPrimitives();
+	}
+	else 
+	{
+		Traverse(ray, n->leftFirst);
+		Traverse(ray, n->leftFirst + 1);
+	}
+}
+
+void BVH::IntersectPrimitives(Ray & ray, int node)
+{
+	BVHNode* n = &pool[node];
+	int first = n->leftFirst;
+	int count = n->count;
+	for (int i = first; i < first + count; i++)
+		(*primitives)[indices[i]]->Intersect(ray);
 }
