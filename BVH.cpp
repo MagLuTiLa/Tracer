@@ -17,7 +17,7 @@ void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
 	for (int i = 0; i < count; i++) 
 		indices[i] = i;
 	// allocate BVH root node
-	pool = reinterpret_cast<BVHNode*>(std::malloc(count*2*sizeof(BVHNode)));// [count * 2];
+	pool = reinterpret_cast<BVHNode*>(_mm_malloc(count*2*sizeof(BVHNode), 64));// [count * 2];
 	BVHNode* root = &pool[0];
 	poolPtr = 2;
 
