@@ -7,13 +7,28 @@ struct Ray
 {
 public:
 	Ray(glm::vec3, glm::vec3 d);
-
-	glm::vec3 origin;
-	glm::vec3 direction;
-	float length;
 	Primitive* hit = NULL;
 	glm::vec3 color;
-	int traceDepth = 0;
 	bool inside = false;
+
+	union
+	{
+		struct
+		{
+			glm::vec3 origin;
+			int traceDepth = 0;
+		};
+		__m128 quadOrigin;
+	};
+
+	union
+	{
+		struct
+		{
+			glm::vec3 direction;
+			float length;
+		};
+		__m128 quadDirection;
+	};
 };
 

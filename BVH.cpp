@@ -1,5 +1,7 @@
 #include "template.h"
 #include "BVH.h"
+#include <iostream>
+#include <fstream>
 
 
 BVH::BVH()
@@ -13,7 +15,7 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 	for (int i = 0; i < count; i++) 
 		indices[i] = i;
 	// allocate BVH root node
-	pool = new BVHNode[count * 2 - 1];
+	pool = new BVHNode[count * 2];
 	BVHNode* root = &pool[0];
 	poolPtr = 2;
 
@@ -39,6 +41,12 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 	}
 	CalculateBounds(root->leftFirst);
 	Subdivide(root->leftFirst);
+
+	ofstream saveFile;
+	saveFile.open("BVH.bvh");
+	for (int i = 0; i < count * 2; i++)
+		saveFile << i << " :" << pool[i].leftFirst << " " << pool[i].count << endl;
+	saveFile.close();
 }
 /*
 void BVH::QuickSort(int left, int right)
