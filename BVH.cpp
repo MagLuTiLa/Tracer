@@ -24,6 +24,7 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 	for (int i = 0; i < count; i++)
 	{
 		bounds[i] = primitives[i]->CalculateBounds();
+		centroids[i] = primitives[i]->Centroid();
 	}
 
 	QuickSort(0, count - 1);
@@ -42,30 +43,30 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 
 void BVH::QuickSort(int left, int right)
 {
+	if (!left < right)
+		return;
+
 	int l = left;
 	int r = right;
 	int tmp;
 	int midIndex = indices[(l + r) / 2];
 	int pivot = centroids[indices[midIndex]].x;
 
-	while (l <= r) {
-		while (centroids[indices[l]].x < pivot)
+	while (true)
+	{
+		while(centroids[indices[l]].x < pivot)
 			l++;
-		while (centroids[indices[r]].x > pivot)
+		while(centroids[indices[r]].x > pivot)
 			r--;
-		if (l <= r) {
-			tmp = indices[l];
-			indices[l] = indices[r];
-			indices[r] = tmp;
-			l++;
-			r--;
-		}
-	};
+		if (l >= r)
+			break;
+		tmp = indices[l];
+		indices[l] = indices[r];
+		indices[r] = tmp;
+	}
 
-	if (left < r)
-		QuickSort(left, r);
-	if (l < right)
-		QuickSort(l, right);
+	QuickSort(left, r);
+	QuickSort(r+1, right);
 }
 
 void BVH::CalculateBounds(int node)
