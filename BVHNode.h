@@ -17,7 +17,6 @@ struct AABB
 	glm::vec3 pos1;
 	glm::vec3 pos2;
 };
-
 struct BVHNode
 {
 	BVHNode() :

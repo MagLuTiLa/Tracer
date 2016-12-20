@@ -69,7 +69,7 @@ void Game::Tick( float dt )
 #ifdef PARALLEL
 	);
 #endif
-	int time = t.elapsed();
+	int time = (int)t.elapsed();
 
 	sprintf(textBuffer, "PlotTime: %ims", time);
 	screen->Print(textBuffer, 2, 2, 0xffffff);

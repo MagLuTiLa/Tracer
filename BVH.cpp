@@ -1,5 +1,6 @@
 #include "template.h"
 #include "BVH.h"
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 
@@ -16,7 +17,7 @@ void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
 	for (int i = 0; i < count; i++) 
 		indices[i] = i;
 	// allocate BVH root node
-	pool = new BVHNode[count * 2];
+	pool = reinterpret_cast<BVHNode*>(std::malloc(count*2*sizeof(BVHNode)));// [count * 2];
 	BVHNode* root = &pool[0];
 	poolPtr = 2;
 
