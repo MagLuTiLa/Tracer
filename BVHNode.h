@@ -52,6 +52,7 @@ struct BVHNode
 
 	float Area();
 	float Cost();
+	void Intersect(Ray&);
 };
 /*
 class BVHTree

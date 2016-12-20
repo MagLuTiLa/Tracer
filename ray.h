@@ -7,13 +7,39 @@ struct Ray
 {
 public:
 	Ray(glm::vec3, glm::vec3 d);
+	union
+	{
+		struct
+		{
+			glm::vec3 origin;
+			int traceDepth;
+		};
+		__m128 quadOrigin;
+	};
 
-	glm::vec3 origin;
-	glm::vec3 direction;
-	float length;
+	union
+	{
+		struct
+		{
+			glm::vec3 direction;
+			float length;
+		};
+		__m128 quadDirection;
+	};
 	Primitive* hit = NULL;
 	glm::vec3 color;
-	int traceDepth = 0;
 	bool inside = false;
+
+
+	void* operator new(size_t i)
+	{
+		return _mm_malloc(i, 16);
+	}
+
+		void operator delete(void* p)
+	{
+		_mm_free(p);
+	}
+
 };
 

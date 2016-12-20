@@ -13,9 +13,8 @@ void Renderer::Init()
 {
 	for (int i = -3; i > 3; i++)
 	{
-
+		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 12)));
-		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1,0,0))));
 	}
 	
 	/*
