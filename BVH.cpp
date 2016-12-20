@@ -24,9 +24,10 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 	for (int i = 0; i < count; i++)
 	{
 		bounds[i] = primitives[i]->CalculateBounds();
+		centroids[i] = primitives[i]->Centroid();
 	}
 
-	QuickSort(0, count - 1);
+	//QuickSort(0, count - 1);
 	
 	// subdivide root node
 	root->leftFirst = 0;
@@ -37,9 +38,9 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 		int a = 1;
 	}
 	CalculateBounds(root->leftFirst);
-	//Subdivide(root->leftFirst);
+	Subdivide(root->leftFirst);
 }
-
+/*
 void BVH::QuickSort(int left, int right)
 {
 	int l = left;
@@ -67,7 +68,7 @@ void BVH::QuickSort(int left, int right)
 	if (l < right)
 		QuickSort(l, right);
 }
-
+*/
 void BVH::CalculateBounds(int node)
 {
 	int count = pool[node].count;
@@ -75,22 +76,25 @@ void BVH::CalculateBounds(int node)
 	if (count < 1)
 		return;
 
-	glm::vec3 min;
-	glm::vec3 max;
+	glm::vec3 mini;
+	glm::vec3 maxi;
 
-	AABB aabb = bounds[indices[node]];
-	min = aabb.pos1;
-	max = aabb.pos2;
+	int first = pool[node].leftFirst;
+
+	AABB aabb = bounds[indices[first]];
+	mini = aabb.pos1;
+	maxi = aabb.pos2;
 	
-	for (int i = node + 1; i < node + count; i++)
+	
+	for (int i = first + 1; i < first + count; i++)
 	{
 		aabb = bounds[indices[i]];
-		max = glm::max(max, aabb.pos2);
-		min = glm::min(min, aabb.pos1);
+		maxi = glm::max(maxi, aabb.pos2);
+		mini = glm::min(mini, aabb.pos1);
 	}
 
-	pool[node].corner1 = min;
-	pool[node].corner2 = max;
+	pool[node].corner1 = mini;
+	pool[node].corner2 = maxi;
 }
 
 void BVH::Subdivide(int node)
@@ -98,9 +102,22 @@ void BVH::Subdivide(int node)
 	if (pool[node].count < 2)
 		return;
 
-	pool[node].leftFirst = poolPtr++;
+	int left = poolPtr++;
 	poolPtr++;
-	Partition(node);
+
+	int count = pool[node].count;
+	int split = count / 2;
+
+	pool[left].leftFirst = pool[node].leftFirst;
+	pool[left+1].leftFirst = pool[node].leftFirst +split;
+
+	pool[left].count = split;
+	pool[left + 1].count = count - split;
+	CalculateBounds(left);
+	CalculateBounds(left + 1);
+	pool[node].count = 0;
+	pool[node].leftFirst = left;
+
 	Subdivide(pool[node].leftFirst);
 	Subdivide(pool[node].leftFirst + 1);
 }
@@ -108,18 +125,14 @@ void BVH::Subdivide(int node)
 void BVH::Partition(int node)
 {
 	int count = pool[node].count;
+	int split = count / 2;
+	int lF = pool[node].leftFirst;
 
-	int split = count / 2 - 1;
-
-	vec3 mid = (pool[node].corner1 + pool[node].corner2) / 2.f;
-
-	int leftFirst = pool[node].leftFirst;
-
-	for (int i = leftFirst; i < leftFirst + count -1; i++)
-	{
-		glm::vec3 cent = centroids[indices[i]];
-		if (cent.x <= mid.x)
-		{
-		}
-	}
+	pool[lF].count = split;
+	pool[lF].leftFirst = 1;
+	pool[lF+1].count = count - split;
+	pool[lF+1].leftFirst = 1;
+	CalculateBounds(lF);
+	CalculateBounds(lF+1);
+	pool[node].count = 0;
 }
