@@ -52,7 +52,7 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if (x == 454 && y == 78)
+			if (x == 640 && y == 400)
 				int a = 1;
 				
 			float u = (float)x / SCRWIDTH;

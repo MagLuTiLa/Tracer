@@ -153,7 +153,7 @@ void BVH::Traverse(Ray & ray, int node)
 	if (!n->Intersect(ray)) return;
 	if (n->count)
 	{
-		//IntersectPrimitives();
+		IntersectPrimitives(ray, node);
 	}
 	else 
 	{

@@ -20,8 +20,8 @@ bool BVHNode::Intersect(Ray & ray)
 	__m128 vmax4 = _mm_max_ps(t1, t2), vmin4 = _mm_min_ps(t1, t2);
 
 	float* vmax = (float*)&vmax4, *vmin = (float*)&vmin4;
-	float tmax = min(vmax[0], min(vmax[1], vmax[2]));
-	float tmin = max(vmin[0], max(vmin[1], vmin[2]));
+	float tmax = min(vmax[0], max(vmax[1], vmax[2]));
+	float tmin = max(vmin[0], min(vmin[1], vmin[2]));
 
 	return (tmax >= tmin && tmax >= 0);
 }

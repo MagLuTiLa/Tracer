@@ -12,10 +12,6 @@ public:
 		traceDepth(0)
 	{};
 	Ray(glm::vec3, glm::vec3 d);
-	Primitive* hit = NULL;
-	glm::vec3 color;
-	bool inside = false;
-
 	union
 	{
 		struct
@@ -35,5 +31,9 @@ public:
 		};
 		__m128 quadDirection;
 	};
+
+	Primitive* hit = NULL;
+	glm::vec3 color;
+	bool inside = false;
 };
 

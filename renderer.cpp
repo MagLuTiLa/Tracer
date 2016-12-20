@@ -2,7 +2,7 @@
 #include "renderer.h"
 
 #include "obj.h"
-
+#define USEBVHk
 
 Renderer::Renderer()
 {
@@ -11,7 +11,7 @@ Renderer::Renderer()
 
 void Renderer::Init()
 {
-	for (int i = -1; i < 1; i++)
+	for (int i = -10; i < 10; i++)
 	{
 		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 12)));
@@ -89,15 +89,18 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 	// See if ray intersects with primitives
 
 
-	/*
+#ifdef USEBVH
+	bvh.Traverse(ray, 0);
+#else
+
 	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 	{
 		Primitive* p = primitives[i];
 		vec3 locthis = p->location;
 		p->Intersect(ray);
 	}
-	*/
-	bvh.Traverse(ray, 0);
+	
+#endif
 
 	vec3 lightIntensity = vec3();
 
