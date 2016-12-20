@@ -1,4 +1,7 @@
 #pragma once
+
+#include <vector>
+
 struct AABB
 {
 	AABB() :
@@ -17,6 +20,11 @@ struct AABB
 
 struct BVHNode
 {
+	BVHNode() :
+		corner1(glm::vec3()),
+		corner2(glm::vec3())
+	{}
+
 	BVHNode(AABB aabb) :
 		corner1(aabb.pos1),
 		corner2(aabb.pos2)
@@ -41,4 +49,16 @@ struct BVHNode
 		};
 		__m128 c2;
 	};
+
+	float Area();
+	float Cost();
 };
+/*
+class BVHTree
+{
+	BVHTree()
+	{
+	};
+
+	vector<Primitive*> yay;
+};*/

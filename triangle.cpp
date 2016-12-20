@@ -93,3 +93,8 @@ glm::vec3 Triangle::Normal(glm::vec3 loc)
 {
 	return normal;
 }
+
+glm::vec3 Triangle::Centroid()
+{
+	return (location + location2 + location3) / 3.f;
+}

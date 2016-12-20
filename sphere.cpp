@@ -83,3 +83,8 @@ AABB Sphere::CalculateBounds()
 {
 	return AABB(location - radius, location + radius);
 }
+
+glm::vec3 Sphere::Centroid()
+{
+	return location;
+}

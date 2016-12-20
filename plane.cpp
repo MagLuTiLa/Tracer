@@ -36,3 +36,8 @@ AABB Plane::CalculateBounds()
 {
 	return AABB();
 }
+
+glm::vec3 Plane::Centroid()
+{
+	return location;
+}

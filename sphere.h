@@ -23,5 +23,6 @@ public:
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay);
 	virtual glm::vec3 Normal(glm::vec3);
 	virtual AABB CalculateBounds();
+	virtual glm::vec3 Centroid();
 	float radius;
 };

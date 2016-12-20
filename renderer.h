@@ -2,6 +2,8 @@
 
 #include <vector>
 #include "primitive.h"
+#include "BVHNode.h"
+
 
 class Renderer
 {
@@ -14,6 +16,8 @@ public:
 	glm::vec3 DirectIllumination(Ray);
 	glm::vec3 Reflect(Ray);
 	glm::vec3 Refract(Ray, float, float);
+
+	BVHNode& MakeFancyTree();
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);

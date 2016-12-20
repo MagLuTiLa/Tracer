@@ -2,6 +2,7 @@
 #include "renderer.h"
 
 #include "obj.h"
+#include "BVH.h"
 
 Renderer::Renderer()
 {
@@ -10,7 +11,16 @@ Renderer::Renderer()
 
 void Renderer::Init()
 {
+	for (int i = 3; i > -3; i--)
+	{
+
+		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 12)));
+		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1,0,0))));
+	}
+	
+	/*
 	Material* texture = new Material(.5, "wood.bmp");
+	
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -21,13 +31,17 @@ void Renderer::Init()
 			std::sin(2), 0, std::cos(2), 0,
 			0, 0, 0, 1)
 		*
-		mat4(.2, 0, 0, 0,
-			0, .2, 0, 0,
-			0, 0, .2, 4,
+		mat4(.5, 0, 0, 0,
+			0, .5, 0, 0,
+			0, 0, .5, 4,
 			0, 0, 0, 1));
-
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
-	AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
+			*/
+	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
+	
+	BVH bvh = BVH();
+	bvh.ConstructBVH(primitives, primitives.size());
+	
+	//AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
 	/*
 	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(-1000, 5, -10), vec3(1000, 5, -10)));
 	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(1000, 5, 10), vec3(1000, 5, -10)));*/
@@ -224,6 +238,19 @@ glm::vec3 Renderer::Refract(Ray ray, float from, float to)
 	}
 
 	return lightIntensity;
+}
+
+BVHNode& Renderer::MakeFancyTree()
+{
+	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+	{
+		Primitive* p = primitives[i];
+
+		glm::vec3 splitPos = p->Centroid();
+		
+
+	}
+	return BVHNode(AABB(vec3(), vec3()));
 }
 
 void Renderer::AddPrimitive(Primitive * p)

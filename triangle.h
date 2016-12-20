@@ -13,6 +13,11 @@ public:
 		CalculateNormal();
 	}
 
+	Triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, Material* m) : Primitive(v1, m), location2(v2), location3(v3)
+	{
+		CalculateNormal();
+	}
+
 	inline void CalculateNormal()
 	{
 		normal = glm::normalize(glm::cross(location2 - location, location3 - location));
@@ -42,5 +47,6 @@ public:
 	virtual glm::vec3 Normal(glm::vec3 loc) override;
 	virtual glm::vec3 Color(const glm::vec3& position) override;
 	virtual AABB CalculateBounds();
+	virtual glm::vec3 Centroid();
 };
 

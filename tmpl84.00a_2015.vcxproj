@@ -224,6 +224,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BVH.cpp" />
     <ClCompile Include="BVHNode.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="game.cpp" />
@@ -248,6 +249,7 @@
     <ClCompile Include="triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BVH.h" />
     <ClInclude Include="BVHNode.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="game.h" />
