@@ -9,7 +9,7 @@
 #include <ppl.h>
 #include <string>
 
-#define PARALLEL
+#define PARALLELz
 
 Game::Game() :
 	camera(), 
@@ -52,7 +52,9 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if (x == 640 && y == 400)
+			if (x == 1070 && y == 425) // white, invisible, before red cut off
+				int a = 1;
+			if (x == 1086 && y == 425) // white, invisible, after red cut off
 				int a = 1;
 				
 			float u = (float)x / SCRWIDTH;

@@ -149,6 +149,12 @@ void BVH::Partition(int node)
 
 void BVH::Traverse(Ray & ray, int node)
 {
+	if (node == 27)
+		int a = 0;
+	if (node == 28)
+		int b = 0;
+	if (node == 30)
+		int c = 0;
 	BVHNode* n = &pool[node];
 	if (!n->Intersect(ray)) return;
 	if (n->count)

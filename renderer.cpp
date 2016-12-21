@@ -2,7 +2,7 @@
 #include "renderer.h"
 
 #include "obj.h"
-#define USEBVHk
+#define USEBVH
 
 Renderer::Renderer()
 {
@@ -11,15 +11,14 @@ Renderer::Renderer()
 
 void Renderer::Init()
 {
+	/*
 	for (int i = -10; i < 10; i++)
 	{
-		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
-		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 12)));
-	}
+		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
+		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
+	}*/
+
 	
-
-
-	/*
 	Material* texture = new Material(.5, "wood.bmp");
 	
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
@@ -36,7 +35,7 @@ void Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 4,
 			0, 0, 0, 1));
-			*/
+			
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
 	
 	bvh = BVH();
