@@ -3,6 +3,7 @@
 
 #include "obj.h"
 #define USEBVH
+#define USEBVHLh
 
 Renderer::Renderer()
 {
@@ -35,7 +36,37 @@ void Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 4,
 			0, 0, 0, 1));
+
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, 5,
+			0, .5, 0, 0,
+			0, 0, .5, 4,
+			0, 0, 0, 1));
 			
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, -5,
+			0, .5, 0, 0,
+			0, 0, .5, 4,
+			0, 0, 0, 1));
+
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
 	
 	bvh = BVH();
@@ -146,6 +177,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 		Ray shadowRay;
 		l->getIllumination(rayPos, shadowRay);
 		// See if shadow ray intersects with primitives
+		/*
 		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 		{
 			Primitive* p = primitives[i];
@@ -153,6 +185,24 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 			if (shadowRay.hit != NULL)
 				goto next;
 		}
+		*/
+#ifdef USEBVHL
+		//TODO, in order for this to be benificial, have to make an alternative version of traversal that stops on first thing hit.
+		bvh.Traverse(ray, 0);
+		if (shadowRay.hit != NULL)
+			continue;
+#else
+
+		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+		{
+			Primitive* p = primitives[i];
+			p->Intersect(shadowRay);
+			if (shadowRay.hit != NULL)
+				goto next;
+		}
+
+#endif
+
 		// Add color to the lightintensity
 		lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
