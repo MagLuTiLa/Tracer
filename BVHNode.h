@@ -17,7 +17,6 @@ struct AABB
 	glm::vec3 pos1;
 	glm::vec3 pos2;
 };
-
 struct BVHNode
 {
 	BVHNode() :
@@ -52,7 +51,7 @@ struct BVHNode
 
 	float Area();
 	float Cost();
-	void Intersect(Ray&);
+	bool Intersect(Ray&);
 };
 /*
 class BVHTree

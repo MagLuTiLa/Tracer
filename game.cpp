@@ -9,7 +9,7 @@
 #include <ppl.h>
 #include <string>
 
-#define PARALLEL
+#define PARALLELz
 
 Game::Game() :
 	camera(), 
@@ -52,13 +52,16 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if (x == 454 && y == 78)
+			if (x == 1070 && y == 425) // white, invisible, before red cut off
+				int a = 1;
+			if (x == 1086 && y == 425) // white, invisible, after red cut off
 				int a = 1;
 				
 			float u = (float)x / SCRWIDTH;
 			float v = (float)y / SCRHEIGHT;
 
-			Ray ray = camera.ShootRay(u, v);
+			Ray ray;
+			camera.ShootRay(u, v, ray);
 
 			vec3 lightIntensity = renderer.TraceRay(ray);
 
@@ -68,7 +71,7 @@ void Game::Tick( float dt )
 #ifdef PARALLEL
 	);
 #endif
-	int time = t.elapsed();
+	int time = (int)t.elapsed();
 
 	sprintf(textBuffer, "PlotTime: %ims", time);
 	screen->Print(textBuffer, 2, 2, 0xffffff);

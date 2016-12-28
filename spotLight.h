@@ -11,15 +11,13 @@ public:
 		Radius(radius);
 	};
 
-	inline virtual Ray getIllumination(vec3 point)
+	inline virtual void getIllumination(vec3 point, Ray& outRay)
 	{
 		float len = glm::length(location - point);
 		vec3 dir = (location - point) / len;
-		Ray shadowRay(point, dir);
-		shadowRay.color = color;
-		shadowRay.length = len;
-		shadowRay.hit = reinterpret_cast<Primitive*>(glm::dot(dir, minusDirection) < cosa);
-		return shadowRay;
+		outRay.color = color;
+		outRay.length = len;
+		outRay.hit = reinterpret_cast<Primitive*>(glm::dot(dir, minusDirection) < cosa);
 	}
 
 	inline float Radius(){return radius;}

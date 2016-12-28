@@ -1,5 +1,6 @@
 #include "template.h"
 #include "BVH.h"
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 
@@ -8,14 +9,15 @@ BVH::BVH()
 {
 }
 
-void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
+void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
 {
+	primitives = p;
 	// create index array
 	indices = new int[count];
 	for (int i = 0; i < count; i++) 
 		indices[i] = i;
 	// allocate BVH root node
-	pool = new BVHNode[count * 2];
+	pool = reinterpret_cast<BVHNode*>(_mm_malloc(count*2*sizeof(BVHNode), 64));// [count * 2];
 	BVHNode* root = &pool[0];
 	poolPtr = 2;
 
@@ -25,8 +27,8 @@ void BVH::ConstructBVH(std::vector<Primitive*> primitives, int count)
 
 	for (int i = 0; i < count; i++)
 	{
-		bounds[i] = primitives[i]->CalculateBounds();
-		centroids[i] = primitives[i]->Centroid();
+		bounds[i] = (*primitives)[i]->CalculateBounds();
+		centroids[i] = (*primitives)[i]->Centroid();
 	}
 
 	//QuickSort(0, count - 1);
@@ -143,4 +145,34 @@ void BVH::Partition(int node)
 	CalculateBounds(lF);
 	CalculateBounds(lF+1);
 	pool[node].count = 0;
+}
+
+void BVH::Traverse(Ray & ray, int node)
+{
+	if (node == 27)
+		int a = 0;
+	if (node == 28)
+		int b = 0;
+	if (node == 30)
+		int c = 0;
+	BVHNode* n = &pool[node];
+	if (!n->Intersect(ray)) return;
+	if (n->count)
+	{
+		IntersectPrimitives(ray, node);
+	}
+	else 
+	{
+		Traverse(ray, n->leftFirst);
+		Traverse(ray, n->leftFirst + 1);
+	}
+}
+
+void BVH::IntersectPrimitives(Ray & ray, int node)
+{
+	BVHNode* n = &pool[node];
+	int first = n->leftFirst;
+	int count = n->count;
+	for (int i = first; i < first + count; i++)
+		(*primitives)[indices[i]]->Intersect(ray);
 }

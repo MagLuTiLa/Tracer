@@ -2,7 +2,8 @@
 #include "renderer.h"
 
 #include "obj.h"
-#include "BVH.h"
+#define USEBVH
+#define USEBVHLh
 
 Renderer::Renderer()
 {
@@ -11,13 +12,14 @@ Renderer::Renderer()
 
 void Renderer::Init()
 {
-	for (int i = -3; i > 3; i++)
-	{
-		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
-		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 12)));
-	}
-	
 	/*
+	for (int i = -10; i < 10; i++)
+	{
+		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
+		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
+	}*/
+
+	
 	Material* texture = new Material(.5, "wood.bmp");
 	
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
@@ -34,11 +36,41 @@ void Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 4,
 			0, 0, 0, 1));
-			*/
+
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, 5,
+			0, .5, 0, 0,
+			0, 0, .5, 4,
+			0, 0, 0, 1));
+			
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, -5,
+			0, .5, 0, 0,
+			0, 0, .5, 4,
+			0, 0, 0, 1));
+
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
 	
-	BVH bvh = BVH();
-	bvh.ConstructBVH(primitives, primitives.size());
+	bvh = BVH();
+	bvh.ConstructBVH(&primitives, primitives.size());
 	
 	//AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
 	/*
@@ -85,12 +117,20 @@ void Renderer::Init()
 glm::vec3 Renderer::TraceRay(Ray & ray)
 {
 	// See if ray intersects with primitives
+
+
+#ifdef USEBVH
+	bvh.Traverse(ray, 0);
+#else
+
 	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 	{
 		Primitive* p = primitives[i];
 		vec3 locthis = p->location;
 		p->Intersect(ray);
 	}
+	
+#endif
 
 	vec3 lightIntensity = vec3();
 
@@ -124,7 +164,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 	return lightIntensity;
 }
 
-glm::vec3 Renderer::DirectIllumination(Ray ray)
+glm::vec3 Renderer::DirectIllumination(Ray& ray)
 {
 	vec3 lightIntensity = vec3();
 
@@ -134,8 +174,10 @@ glm::vec3 Renderer::DirectIllumination(Ray ray)
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
-		Ray shadowRay = l->getIllumination(rayPos);
+		Ray shadowRay;
+		l->getIllumination(rayPos, shadowRay);
 		// See if shadow ray intersects with primitives
+		/*
 		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 		{
 			Primitive* p = primitives[i];
@@ -143,6 +185,24 @@ glm::vec3 Renderer::DirectIllumination(Ray ray)
 			if (shadowRay.hit != NULL)
 				goto next;
 		}
+		*/
+#ifdef USEBVHL
+		//TODO, in order for this to be benificial, have to make an alternative version of traversal that stops on first thing hit.
+		bvh.Traverse(ray, 0);
+		if (shadowRay.hit != NULL)
+			continue;
+#else
+
+		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+		{
+			Primitive* p = primitives[i];
+			p->Intersect(shadowRay);
+			if (shadowRay.hit != NULL)
+				goto next;
+		}
+
+#endif
+
 		// Add color to the lightintensity
 		lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
@@ -150,7 +210,7 @@ glm::vec3 Renderer::DirectIllumination(Ray ray)
 	return lightIntensity;
 }
 
-glm::vec3 Renderer::Reflect(Ray ray)
+glm::vec3 Renderer::Reflect(Ray& ray)
 {
 	vec3 lightIntensity = vec3();
 	vec3 rayPos = ray.origin + ray.direction * (ray.length - EPSILON);
@@ -168,7 +228,7 @@ glm::vec3 Renderer::Reflect(Ray ray)
 	return lightIntensity;
 }
 
-glm::vec3 Renderer::Refract(Ray ray, float from, float to)
+glm::vec3 Renderer::Refract(Ray& ray, float from, float to)
 {
 	// Determine reflection and refraction part
 	vec3 lightIntensity = vec3();
@@ -237,19 +297,6 @@ glm::vec3 Renderer::Refract(Ray ray, float from, float to)
 	}
 
 	return lightIntensity;
-}
-
-BVHNode& Renderer::MakeFancyTree()
-{
-	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
-	{
-		Primitive* p = primitives[i];
-
-		glm::vec3 splitPos = p->Centroid();
-		
-
-	}
-	return BVHNode(AABB(vec3(), vec3()));
 }
 
 void Renderer::AddPrimitive(Primitive * p)

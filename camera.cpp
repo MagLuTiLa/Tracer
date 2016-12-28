@@ -139,8 +139,9 @@ void Camera::Zoom(float inc)
 	}
 }
 
-Ray Camera::ShootRay(float u, float v)
+void Camera::ShootRay(float u, float v, Ray& outRay)
 {
 	glm::vec3 dir = glm::normalize(topLeft + u*width + v*height - position);
-	return Ray(position, dir);
+	outRay.origin = position;
+	outRay.direction = dir;
 }

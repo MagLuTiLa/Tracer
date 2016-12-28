@@ -8,7 +8,7 @@ public:
 		color(c)
 	{}
 	
-	inline virtual Ray getIllumination(glm::vec3 point) = 0;
+	inline virtual void getIllumination(glm::vec3 point, Ray& outRay) = 0;
 
 	glm::vec3 location;
 	glm::vec3 color;

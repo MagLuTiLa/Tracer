@@ -4,7 +4,7 @@ class Camera
 {
 public:
 	Camera();
-	Ray ShootRay(float u, float v);
+	void ShootRay(float u, float v, Ray& outRay);
 
 	void Reset();
 	void Update();
