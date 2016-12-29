@@ -14,7 +14,8 @@ inline void Triangle::Intersect(Ray & ray)
 	vec3 P, Q, T;
 	float det, inv_det, u, v;
 	float t;
-
+	if (glm::dot(ray.direction, normal) > 0)
+		return;
 	//Find vectors for two edges sharing V1
 	e1 = location2 - location;
 	e2 = location3 -  location;
@@ -76,7 +77,7 @@ glm::vec3 Triangle::Color(const vec3& position)
 		float d21 = glm::dot(v2, v1);
 		float denom = d00 * d11 - d01 * d01;
 		float v = (d11 * d20 - d01 * d21) / denom;
-		float w = (d00 * d21 - d01 * d20) / denom;
+		float w = max(0.f,d00 * d21 - d01 * d20) / denom;
 		float u = 1.0f - v - w;
 		return material->Color(uv[0] * u + uv[1] * v + uv[2] * w);
 	}

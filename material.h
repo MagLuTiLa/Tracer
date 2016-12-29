@@ -55,6 +55,8 @@ public:
 
 	inline glm::vec3 Color(const glm::vec2 &uv)
 	{
+		//return glm::vec3(uv.x < 0, uv.y<0, 0);
+
 		if (width == 0)
 			return texture[0];
 		return texture[(int)(uv.x * 0.99999 * width) + (int)(uv.y * 0.99999 * height) * width];

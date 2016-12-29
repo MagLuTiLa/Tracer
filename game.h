@@ -24,8 +24,8 @@ public:
 	void HandleInput( float dt );
 	void Tick( float dt );
 
-	void MouseUp( int _Button ) { /* implement if you want to detect mouse button presses */ }
-	void MouseDown( int _Button ) { /* implement if you want to detect mouse button presses */ }
+	void MouseUp(int _Button) { mouseDown = 0; }
+	void MouseDown(int _Button) { mouseDown = _Button; }
 	void MouseMove(int _X, int _Y);
 	void KeyUp( int a_Key ) { /* implement if you want to handle keys */ }
 	void KeyDown(int a_Key);
@@ -33,6 +33,7 @@ private:
 	Surface* screen;
 	Renderer renderer;
 	Camera camera;
+	int mouseDown = 0;
 	int mouseX = 0;
 	int mouseY = 0;
 	int keyDown = 0;

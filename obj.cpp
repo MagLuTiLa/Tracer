@@ -64,15 +64,14 @@ int LoadObj(const char* fileName, std::vector<Primitive*> &primitives, Material*
 		}
 		case 'f':
 		{
-			string sub = line.substr(1);
-			size_t off;
+			string sub = line.substr((size_t)1);
+			size_t off = 0;
 			for (int i = 0; i < 3; i++)
 			{
 				vertexIndices.push_back(stoi(sub, &off));
-				sub = sub.substr(off);
 				if (sub[0] == '/')
 				{
-					sub = sub.substr(1);
+					sub = sub.substr(off+1);
 					if (sub[0] != '/')
 					{
 						uvIndices.push_back(stoi(sub, &off));
@@ -92,8 +91,10 @@ int LoadObj(const char* fileName, std::vector<Primitive*> &primitives, Material*
 				}
 				else
 				{
-					uvIndices.push_back(stoi(sub, &off));
-					normalIndices.push_back(stoi(sub, &off));
+					uvIndices.push_back(0);
+					normalIndices.push_back(0);
+
+					sub = sub.substr(off);
 				}
 			}
 		}

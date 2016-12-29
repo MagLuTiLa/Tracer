@@ -9,7 +9,7 @@
 #include <ppl.h>
 #include <string>
 
-#define PARALLELz
+#define PARALLEL
 
 Game::Game() :
 	camera(), 
@@ -52,18 +52,29 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if (x == 1070 && y == 425) // white, invisible, before red cut off
+			if (x == 608 && y == 412) // white, invisible, before red cut off
 				int a = 1;
 			if (x == 1086 && y == 425) // white, invisible, after red cut off
 				int a = 1;
+			if(x == mouseX && y == mouseY & !mouseDown)
+				screen->Plot(x, y, vec3(1,0,0));
+			if (x == mouseX && y == mouseY && mouseDown)
+				int a = 1;
+
 				
 			float u = (float)x / SCRWIDTH;
 			float v = (float)y / SCRHEIGHT;
 
 			Ray ray;
 			camera.ShootRay(u, v, ray);
-
+			
 			vec3 lightIntensity = renderer.TraceRay(ray);
+			if (lightIntensity.x < 0 || lightIntensity.y < 0 || lightIntensity.z < 0)
+			{
+				Ray newRay;
+				camera.ShootRay(u, v, newRay);
+				lightIntensity = renderer.TraceRay(newRay);
+			}
 
 			screen->Plot(x, y, lightIntensity);
 		}

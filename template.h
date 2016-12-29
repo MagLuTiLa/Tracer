@@ -89,7 +89,7 @@ struct timer
 typedef unsigned int uint;
 typedef unsigned char uchar;
 typedef unsigned char byte;
-
+void HandleEvents();
 #define BADFLOAT(x) ((*(uint*)&x & 0x7f000000) == 0x7f000000)
 
 }; // namespace Tmpl8

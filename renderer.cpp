@@ -4,7 +4,7 @@
 #include "obj.h"
 #define USEBVH
 #define USEBVHLh
-#define DEPTHTRACER
+//#define DEPTHTRACER
 
 Renderer::Renderer()
 {
@@ -23,52 +23,15 @@ void Renderer::Init()
 	
 	Material* texture = new Material(.5, "wood.bmp");
 	
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
+	LoadObj("bunny.obj", primitives, texture,
+		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, 0,
-			0, .5, 0, 0,
-			0, 0, .5, 4,
+		mat4(6, 0, 0, 0,
+			0, 6, 0, 0,
+			0, 0, 6, 2,
 			0, 0, 0, 1));
 
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, 5,
-			0, .5, 0, 0,
-			0, 0, .5, 4,
-			0, 0, 0, 1));
-			
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, -5,
-			0, .5, 0, 0,
-			0, 0, .5, 4,
-			0, 0, 0, 1));
-
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
+	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
 	
 	bvh = BVH();
 	bvh.ConstructBVH(&primitives, primitives.size());
