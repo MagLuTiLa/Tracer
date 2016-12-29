@@ -47,6 +47,7 @@ bool BVHNode::Intersect(Ray & ray)
 	tmin = max(tmin, min(tz1, tz2));
 	tmax = min(tmax, max(tz1, tz2));
 
-	return (tmax >= tmin && tmax >= 0);	*/
+	return (tmax >= tmin && tmax >= 0);
+	*/
 }
 
