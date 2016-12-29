@@ -69,9 +69,10 @@ int LoadObj(const char* fileName, std::vector<Primitive*> &primitives, Material*
 			for (int i = 0; i < 3; i++)
 			{
 				vertexIndices.push_back(stoi(sub, &off));
+				sub = sub.substr(off);
 				if (sub[0] == '/')
 				{
-					sub = sub.substr(off+1);
+					sub = sub.substr(1);
 					if (sub[0] != '/')
 					{
 						uvIndices.push_back(stoi(sub, &off));
@@ -93,8 +94,6 @@ int LoadObj(const char* fileName, std::vector<Primitive*> &primitives, Material*
 				{
 					uvIndices.push_back(0);
 					normalIndices.push_back(0);
-
-					sub = sub.substr(off);
 				}
 			}
 		}
