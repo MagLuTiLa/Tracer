@@ -7,11 +7,11 @@ class BVH
 public:
 	BVH();
 
-	void ConstructBVH(std::vector<Primitive*>*, int);
+	void ConstructBVH(std::vector<Primitive*>*);
 	void QuickSort(int l, int r, int axis = 0);
 	void CalculateBounds(int);
 	void Subdivide(int);
-	void Partition(int);
+	void WriteToFile();
 	
 	void Traverse(Ray&, int, int* depth = NULL);
 	void IntersectPrimitives(Ray&, int);

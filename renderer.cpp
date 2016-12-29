@@ -8,10 +8,9 @@
 
 Renderer::Renderer()
 {
-	Init();
 }
 
-void Renderer::Init()
+int Renderer::Init()
 {
 	/*
 	for (int i = -10; i < 10; i++)
@@ -19,7 +18,6 @@ void Renderer::Init()
 		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
-
 	
 	Material* texture = new Material(.5, "wood.bmp");
 	
@@ -70,9 +68,12 @@ void Renderer::Init()
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
 	
+	timer t;
 	bvh = BVH();
-	bvh.ConstructBVH(&primitives, primitives.size());
-	
+	bvh.ConstructBVH(&primitives);
+	int time = (int)t.elapsed();
+
+	return time;
 	//AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
 	/*
 	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(-1000, 5, -10), vec3(1000, 5, -10)));

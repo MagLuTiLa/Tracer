@@ -9,9 +9,10 @@ BVH::BVH()
 {
 }
 
-void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
+void BVH::ConstructBVH(std::vector<Primitive*>* p)
 {
 	primitives = p;
+	int count = primitives->size();
 	// create index array
 	indices = new int[count];
 	for (int i = 0; i < count; i++) 
@@ -44,11 +45,7 @@ void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
 	CalculateBounds(root->leftFirst);
 	Subdivide(root->leftFirst);
 
-	ofstream saveFile;
-	saveFile.open("BVH.bvh");
-	for (int i = 0; i < count * 2; i++)
-		saveFile << i << " :" << pool[i].leftFirst << " " << pool[i].count << endl;
-	saveFile.close();
+	WriteToFile();
 }
 
 void BVH::QuickSort(int left, int right, int axis)
@@ -133,19 +130,13 @@ void BVH::Subdivide(int node)
 	Subdivide(pool[node].leftFirst + 1);
 }
 
-void BVH::Partition(int node)
+void BVH::WriteToFile()
 {
-	int count = pool[node].count;
-	int split = count / 2;
-	int lF = pool[node].leftFirst;
-
-	pool[lF].count = split;
-	pool[lF].leftFirst = 1;
-	pool[lF+1].count = count - split;
-	pool[lF+1].leftFirst = 1;
-	CalculateBounds(lF);
-	CalculateBounds(lF+1);
-	pool[node].count = 0;
+	ofstream saveFile;
+	saveFile.open("BVH.bvh");
+	for (int i = 0; i < poolPtr; i++)
+		saveFile << i << " :" << pool[i].leftFirst << " " << pool[i].count << endl;
+	saveFile.close();
 }
 
 void BVH::Traverse(Ray & ray, int node, int* depth)

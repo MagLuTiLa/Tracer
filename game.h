@@ -33,9 +33,11 @@ private:
 	Surface* screen;
 	Renderer renderer;
 	Camera camera;
+
 	int mouseX = 0;
 	int mouseY = 0;
 	int keyDown = 0;
+	int bvhConstructTime = 0;
 };
 
 }; // namespace Tmpl8
