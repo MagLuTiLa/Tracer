@@ -69,12 +69,6 @@ void Game::Tick( float dt )
 			camera.ShootRay(u, v, ray);
 			
 			vec3 lightIntensity = renderer.TraceRay(ray);
-			if (lightIntensity.x < 0 || lightIntensity.y < 0 || lightIntensity.z < 0)
-			{
-				Ray newRay;
-				camera.ShootRay(u, v, newRay);
-				lightIntensity = renderer.TraceRay(newRay);
-			}
 
 			screen->Plot(x, y, lightIntensity);
 		}
