@@ -3,15 +3,15 @@
 
 #include "obj.h"
 #define USEBVH
+#define USESAH
 #define USEBVHLh
 //#define DEPTHTRACER
 
 Renderer::Renderer()
 {
-	Init();
 }
 
-void Renderer::Init()
+int Renderer::Init()
 {
 	/*
 	for (int i = -10; i < 10; i++)
@@ -19,23 +19,75 @@ void Renderer::Init()
 		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
-
 	
 	Material* texture = new Material(.5, "wood.bmp");
 	
 	LoadObj("bunny.obj", primitives, texture,
 		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
-		mat4(6, 0, 0, 0,
-			0, 6, 0, 0,
-			0, 0, 6, 2,
+		mat4(8, 0, 0, 0,
+			0, 8, 0, -0.8,
+			0, 0, 8, 2,
 			0, 0, 0, 1));
-
+	/*
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, 0,
+			0, .5, 0, -1,
+			0, 0, .5, 3,
+			0, 0, 0, 1));
+	
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, 4,
+			0, .5, 0, 0,
+			0, 0, .5, 4,
+			0, 0, 0, 1));
+			
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, -5,
+			0, .5, 0, 2,
+			0, 0, .5, 7,
+			0, 0, 0, 1));
+*/
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
 	
+	timer t;
+#ifdef USESAH
 	bvh = BVH();
-	bvh.ConstructBVH(&primitives, primitives.size());
-	
+	bvh.ConstructBVHSAH(&primitives);
+#else
+	bvh = BVH();
+	bvh.ConstructBVH(&primitives);
+#endif
+	int time = (int)t.elapsed();
+
+	return time;
 	//AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
 	/*
 	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(-1000, 5, -10), vec3(1000, 5, -10)));
@@ -85,6 +137,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 #ifdef DEPTHTRACER
 	int depth = 0;
 	bvh.Traverse(ray, 0, &depth);
+	depth /= 50;
 	return vec3(min(1.f, max(0.f, ((float)depth-20.f)/20.f)) , max(0.f, 1-(float)depth/20.f), 0);
 #endif
 

@@ -11,7 +11,7 @@ class Renderer
 public:
 	Renderer();
 
-	void Init();
+	int Init();
 
 	glm::vec3 TraceRay(Ray&);
 	glm::vec3 DirectIllumination(Ray&);
