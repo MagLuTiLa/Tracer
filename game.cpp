@@ -22,6 +22,7 @@ Game::Game() :
 // -----------------------------------------------------------
 void Game::Init()
 {
+	bvhConstructTime = renderer.Init();
 }
 
 // -----------------------------------------------------------
@@ -52,15 +53,10 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if (x == 608 && y == 412) // white, invisible, before red cut off
-				int a = 1;
-			if (x == 1086 && y == 425) // white, invisible, after red cut off
-				int a = 1;
 			if(x == mouseX && y == mouseY & !mouseDown)
 				screen->Plot(x, y, vec3(1,0,0));
 			if (x == mouseX && y == mouseY && mouseDown)
 				int a = 1;
-
 				
 			float u = (float)x / SCRWIDTH;
 			float v = (float)y / SCRHEIGHT;
@@ -76,17 +72,20 @@ void Game::Tick( float dt )
 #ifdef PARALLEL
 	);
 #endif
-	int time = (int)t.elapsed();
-
-	sprintf(textBuffer, "PlotTime: %ims", time);
+	
+	sprintf(textBuffer, "BVH build: %ims", bvhConstructTime);
 	screen->Print(textBuffer, 2, 2, 0xffffff);
 
-	sprintf(textBuffer, "Mouse X: %i", mouseX );
+	int time = (int)t.elapsed();
+	sprintf(textBuffer, "PlotTime: %ims", time);
 	screen->Print(textBuffer, 2, 12, 0xffffff);
-	sprintf(textBuffer, "Mouse Y: %i", mouseY);
+
+	sprintf(textBuffer, "Mouse X: %i", mouseX );
 	screen->Print(textBuffer, 2, 22, 0xffffff);
-	sprintf(textBuffer, "Key down: %i", keyDown);
+	sprintf(textBuffer, "Mouse Y: %i", mouseY);
 	screen->Print(textBuffer, 2, 32, 0xffffff);
+	sprintf(textBuffer, "Key down: %i", keyDown);
+	screen->Print(textBuffer, 2, 42, 0xffffff);
 }
 
 void Tmpl8::Game::KeyDown(int a_Key)
