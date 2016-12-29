@@ -50,8 +50,8 @@ void BVH::ConstructBVH(std::vector<Primitive*>* p, int count)
 		saveFile << i << " :" << pool[i].leftFirst << " " << pool[i].count << endl;
 	saveFile.close();
 }
-/*
-void BVH::QuickSort(int left, int right)
+
+void BVH::QuickSort(int left, int right, int axis)
 {
 	if (!left < right)
 		return;
@@ -60,13 +60,13 @@ void BVH::QuickSort(int left, int right)
 	int r = right;
 	int tmp;
 	int midIndex = indices[(l + r) / 2];
-	int pivot = centroids[indices[midIndex]].x;
+	int pivot = centroids[midIndex][axis];
 
 	while (true)
 	{
-		while(centroids[indices[l]].x < pivot)
+		while(centroids[indices[l]][axis] < pivot)
 			l++;
-		while(centroids[indices[r]].x > pivot)
+		while(centroids[indices[r]][axis] > pivot)
 			r--;
 		if (l >= r)
 			break;
@@ -75,10 +75,10 @@ void BVH::QuickSort(int left, int right)
 		indices[r] = tmp;
 	}
 
-	QuickSort(left, r);
-	QuickSort(r+1, right);
+	QuickSort(left, r, axis);
+	QuickSort(r+1, right, axis);
 }
-*/
+
 void BVH::CalculateBounds(int node)
 {
 	int count = pool[node].count;
@@ -114,12 +114,13 @@ void BVH::Subdivide(int node)
 
 	int left = poolPtr++;
 	poolPtr++;
-
+	int lf = pool[node].leftFirst;
 	int count = pool[node].count;
+	QuickSort(lf, lf + count);
 	int split = count / 2;
 
-	pool[left].leftFirst = pool[node].leftFirst;
-	pool[left+1].leftFirst = pool[node].leftFirst +split;
+	pool[left].leftFirst = lf;
+	pool[left+1].leftFirst = lf +split;
 
 	pool[left].count = split;
 	pool[left + 1].count = count - split;
@@ -147,8 +148,10 @@ void BVH::Partition(int node)
 	pool[node].count = 0;
 }
 
-void BVH::Traverse(Ray & ray, int node)
+void BVH::Traverse(Ray & ray, int node, int* depth)
 {
+	if(depth != NULL)
+		depth[0]++;
 	if (node == 27)
 		int a = 0;
 	if (node == 28)
@@ -163,8 +166,8 @@ void BVH::Traverse(Ray & ray, int node)
 	}
 	else 
 	{
-		Traverse(ray, n->leftFirst);
-		Traverse(ray, n->leftFirst + 1);
+		Traverse(ray, n->leftFirst, depth);
+		Traverse(ray, n->leftFirst + 1, depth);
 	}
 }
 

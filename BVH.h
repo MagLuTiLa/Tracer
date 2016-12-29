@@ -8,11 +8,14 @@ public:
 	BVH();
 
 	void ConstructBVH(std::vector<Primitive*>*, int);
-	void QuickSort(int, int);
+	void QuickSort(int l, int r, int axis = 0);
 	void CalculateBounds(int);
 	void Subdivide(int);
 	void Partition(int);
-		void Traverse(Ray&, int);	void IntersectPrimitives(Ray&, int);
+	
+	void Traverse(Ray&, int, int* depth = NULL);
+	void IntersectPrimitives(Ray&, int);
+
 	std::vector<Primitive*>* primitives;
 	int* indices;
 	BVHNode* pool;
