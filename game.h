@@ -39,6 +39,7 @@ private:
 	int mouseY = 0;
 	int keyDown = 0;
 	int bvhConstructTime = 0;
+	int prevTime = 3000;
 };
 
 }; // namespace Tmpl8

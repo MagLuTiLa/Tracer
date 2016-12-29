@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 
+#define ALLAXES
 
 BVH::BVH()
 {
@@ -178,6 +179,16 @@ void BVH::SubdivideSAH(int node)
 	int lf = pool[node].leftFirst;
 	int count = pool[node].count;
 
+	float bestCost = pool[node].Cost();
+	int bestSplit = 0;
+	int split;
+
+	int nr = 0;
+
+#ifdef ALLAXES
+	for (int maxAxis = 0; maxAxis < 3; maxAxis++)
+	{
+#else
 	glm::vec3 axisSize = pool[node].corner2 - pool[node].corner1;
 
 	int maxAxis = 0;
@@ -186,35 +197,37 @@ void BVH::SubdivideSAH(int node)
 		maxAxis = 1;
 	if (axisSize[2] > axisSize[maxAxis])
 		maxAxis = 2;
+#endif
+		split = 1;
+		QuickSort(lf, lf + count - 1, maxAxis);
 
-	QuickSort(lf, lf + count -1, maxAxis);
-
-	int bestCost = pool[node].Cost();
-	int bestSplit = 0;
-
-	int split = 1;
-	for (split; split < count; split++)
-	{
-		pool[left].leftFirst = lf;
-		pool[left + 1].leftFirst = lf + split;
-
-		pool[left].count = split;
-		pool[left + 1].count = count - split;
-
-		CalculateBounds(left);
-		CalculateBounds(left + 1);
-
-		int costLeft = pool[left].Cost();
-		int costRight = pool[left+1].Cost();
-
-		int newCost = costLeft + costRight;
-
-		if (costLeft + costRight < bestCost)
+		for (split; split < count; split++)
 		{
-			bestCost = newCost;
-			bestSplit = split;
+			nr++;
+			pool[left].leftFirst = lf;
+			pool[left + 1].leftFirst = lf + split;
+
+			pool[left].count = split;
+			pool[left + 1].count = count - split;
+
+			CalculateBounds(left);
+			CalculateBounds(left + 1);
+
+			float costLeft = pool[left].Cost();
+			int costRight = pool[left + 1].Cost();
+
+			float newCost = costLeft + costRight;
+
+			if (newCost < bestCost)
+			{
+				//cout << newCost << " < " << bestCost << endl;
+				bestCost = newCost;
+				bestSplit = split;
+			}
 		}
+#ifdef ALLAXES
 	}
+#endif
 
 	if (bestSplit != 0)
 	{
@@ -222,20 +235,30 @@ void BVH::SubdivideSAH(int node)
 		{
 			pool[left].leftFirst = lf;
 			pool[left + 1].leftFirst = lf + bestSplit;
-
+	
 			pool[left].count = bestSplit;
 			pool[left + 1].count = count - bestSplit;
-
+	
 			CalculateBounds(left);
 			CalculateBounds(left + 1);
+			int costLeft = pool[left].Cost();
+			int costRight = pool[left + 1].Cost();
+	
+			int newCost = costLeft + costRight;
+			int a = 1;
 		}
-
+	
 		pool[node].count = 0;
 		pool[node].leftFirst = left;
-
+	
+		int aa = nr;
+	
 		SubdivideSAH(pool[node].leftFirst);
 		SubdivideSAH(pool[node].leftFirst + 1);
 	}
+	else
+		int a = 1;
+
 }
 
 void BVH::WriteToFile()

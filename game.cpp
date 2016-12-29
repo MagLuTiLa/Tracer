@@ -10,6 +10,7 @@
 #include <string>
 
 #define PARALLEL
+#define SMOOTHTIME
 
 Game::Game() :
 	camera(), 
@@ -77,6 +78,11 @@ void Game::Tick( float dt )
 	screen->Print(textBuffer, 2, 2, 0xffffff);
 
 	int time = (int)t.elapsed();
+#ifdef SMOOTHTIME
+	float a = 0.8;
+	time = time * a + prevTime * (1 - a);
+	prevTime = time;
+#endif
 	sprintf(textBuffer, "PlotTime: %ims", time);
 	screen->Print(textBuffer, 2, 12, 0xffffff);
 
