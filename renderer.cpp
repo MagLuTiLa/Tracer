@@ -198,21 +198,11 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 		Ray shadowRay;
 		l->getIllumination(rayPos, shadowRay);
 		// See if shadow ray intersects with primitives
-		/*
-		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
-		{
-			Primitive* p = primitives[i];
-			p->Intersect(shadowRay);
-			if (shadowRay.hit != NULL)
-				goto next;
-		}
-		*/
+
 #ifdef USEBVHL
-		//TODO, in order for this to be benificial, have to make an alternative version of traversal that stops on first thing hit.
 		if (bvh.LightTraverse(shadowRay, 0))
 			continue;
 #else
-
 		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
 		{
 			Primitive* p = primitives[i];
