@@ -51,7 +51,7 @@ struct BVHNode
 
 	float Area();
 	float Cost();
-	bool Intersect(Ray&);
+	bool Intersect(Ray&, float& dist);
 };
 /*
 class BVHTree

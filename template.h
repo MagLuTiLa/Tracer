@@ -63,6 +63,23 @@ namespace Tmpl8 {
 #define broadcastps(ps)		_mm_shuffle_ps((ps),(ps), 0)
 #define broadcastss(ss)		broadcastps(loadss((ss)))
 
+	// turn those verbose intrinsics into something readable.
+#define loadps(mem)		_mm_load_ps((const float * const)(mem))
+#define storess(ss,mem)		_mm_store_ss((float * const)(mem),(ss))
+#define minss			_mm_min_ss
+#define maxss			_mm_max_ss
+#define minps			_mm_min_ps
+#define maxps			_mm_max_ps
+#define mulps			_mm_mul_ps
+#define subps			_mm_sub_ps
+#define rotatelps(ps)		_mm_shuffle_ps((ps),(ps), 0x39)	// a,b,c,d -> b,c,d,a
+#define muxhps(low,high)	_mm_movehl_ps((low),(high))	// low{a,b,c,d}|high{e,f,g,h} = {c,d,g,h}
+
+static const float flt_plus_inf = -logf(0);	// let's keep C and C++ compilers happy.
+static const __m128 _MM_ALIGN16
+	q_plus_inf = _mm_set_ps( flt_plus_inf,  flt_plus_inf,  flt_plus_inf,  flt_plus_inf ),
+	q_minus_inf = _mm_set_ps( -flt_plus_inf, -flt_plus_inf, -flt_plus_inf, -flt_plus_inf);
+
 struct timer 
 { 
 	typedef long long value_type; 

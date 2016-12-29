@@ -159,15 +159,21 @@ void BVH::Traverse(Ray & ray, int node, int* depth)
 	if (node == 30)
 		int c = 0;
 	BVHNode* n = &pool[node];
-	if (!n->Intersect(ray)) return;
 	if (n->count)
 	{
 		IntersectPrimitives(ray, node);
 	}
 	else 
 	{
-		Traverse(ray, n->leftFirst, depth);
-		Traverse(ray, n->leftFirst + 1, depth);
+		float dist[2];
+		bool traverse[2];
+		traverse[0] = pool[n->leftFirst].Intersect(ray, dist[0]);
+		traverse[1] = pool[n->leftFirst + 1].Intersect(ray, dist[1]);
+		bool first = dist[0] > dist[1];
+		if(traverse[first])
+			Traverse(ray, n->leftFirst + first, depth);
+		if(traverse[first^1] & ray.length > dist[first ^ 1])
+			Traverse(ray, n->leftFirst + first^1, depth);
 	}
 }
 

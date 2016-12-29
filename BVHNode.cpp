@@ -13,40 +13,43 @@ float BVHNode::Cost()
 	return Area() * count;
 }
 
-bool BVHNode::Intersect(Ray & ray)
+bool BVHNode::Intersect(Ray & ray, float &distance)
 {
-	/*
-	__m128 t1 = _mm_mul_ps(_mm_sub_ps(c1, ray.quadOrigin), ray.quadDirection);
-	__m128 t2 = _mm_mul_ps(_mm_sub_ps(c2, ray.quadOrigin), ray.quadDirection);
-	*/
+	const __m128
+		inv_dir = _mm_rcp_ps(ray.quadDirection);
 
-	//TODO Instead of dividing by quaddirection, multiply by the reciprocal of quaddirecction. Have to adjust ray class for that 
-	__m128 t1 = _mm_div_ps(_mm_sub_ps(c1, ray.quadOrigin), ray.quadDirection);
-	__m128 t2 = _mm_div_ps(_mm_sub_ps(c2, ray.quadOrigin), ray.quadDirection);
-	__m128 vmax4 = _mm_max_ps(t1, t2), vmin4 = _mm_min_ps(t1, t2);
+	// use a div if inverted directions aren't available
+	const __m128 l1 = mulps(subps(c1, ray.quadOrigin), inv_dir);
+	const __m128 l2 = mulps(subps(c2, ray.quadOrigin), inv_dir);
 
-	float* vmax = (float*)&vmax4, *vmin = (float*)&vmin4;
-	float tmax = min(vmax[0], min(vmax[1], vmax[2]));
-	float tmin = max(vmin[0], max(vmin[1], vmin[2]));
+	// the order we use for those min/max is vital to filter out
+	// NaNs that happens when an inv_dir is +/- inf and
+	// (box_min - pos) is 0. inf * 0 = NaN
+	const __m128 filtered_l1a = minps(l1, q_plus_inf);
+	const __m128 filtered_l2a = minps(l2, q_plus_inf);
 
-	return (tmax >= tmin && tmax >= 0);
-	
-	/*
-	float tx1 = (corner1.x - ray.origin.x) / ray.direction.x;
-	float tx2 = (corner2.x - ray.origin.x) / ray.direction.x;
-	float tmin = min(tx1, tx2);
-	float tmax = max(tx1, tx2);
+	const __m128 filtered_l1b = maxps(l1, q_minus_inf);
+	const __m128 filtered_l2b = maxps(l2, q_minus_inf);
 
-	float ty1 = (corner1.y - ray.origin.y) / ray.direction.y;
-	float ty2 = (corner2.y - ray.origin.y) / ray.direction.y;
-	tmin = max(tmin, min(ty1, ty2));
-	tmax = min(tmax, max(ty1, ty2));
+	// now that we're back on our feet, test those slabs.
+	__m128 lmax = maxps(filtered_l1a, filtered_l2a);
+	__m128 lmin = minps(filtered_l1b, filtered_l2b);
 
-	float tz1 = (corner1.z - ray.origin.z) / ray.direction.z;
-	float tz2 = (corner2.z - ray.origin.z) / ray.direction.z;
-	tmin = max(tmin, min(tz1, tz2));
-	tmax = min(tmax, max(tz1, tz2));
+	// unfold back. try to hide the latency of the shufps & co.
+	const __m128 lmax0 = rotatelps(lmax);
+	const __m128 lmin0 = rotatelps(lmin);
+	lmax = minss(lmax, lmax0);
+	lmin = maxss(lmin, lmin0);
 
-	return (tmax >= tmin && tmax >= 0);	*/
+	const __m128 lmax1 = muxhps(lmax, lmax);
+	const __m128 lmin1 = muxhps(lmin, lmin);
+	lmax = minss(lmax, lmax1);
+	lmin = maxss(lmin, lmin1);
+	vec4 lminv;
+	storess(lmin, &lminv);
+
+	distance = glm::length(vec3(lminv)- ray.origin);
+
+	return _mm_comige_ss(lmax, _mm_setzero_ps()) & _mm_comige_ss(lmax, lmin) && distance < ray.length;
 }
 

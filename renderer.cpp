@@ -4,7 +4,7 @@
 #include "obj.h"
 #define USEBVH
 #define USEBVHLh
-//#define DEPTHTRACER
+#define DEPTHTRACER
 
 Renderer::Renderer()
 {
@@ -85,7 +85,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 #ifdef DEPTHTRACER
 	int depth = 0;
 	bvh.Traverse(ray, 0, &depth);
-	return vec3(min(1.f, max(0.f, ((float)depth-20.f)/20.f)) , max(0.f, 1-(float)depth/20.f), 0);
+	return vec3(min(1.f, max(0.f, ((float)depth-2000.f)/2000.f)) , max(0.f, 1-(float)depth/2000.f), 0);
 #endif
 
 #ifdef USEBVH
