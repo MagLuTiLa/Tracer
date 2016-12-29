@@ -254,9 +254,7 @@ void BVH::Traverse(Ray & ray, int node, int* depth)
 
 	BVHNode* n = &pool[node];
 	if (n->count)
-	{
 		IntersectPrimitives(ray, node);
-	}
 	else 
 	{
 		float dist[2];
@@ -269,6 +267,31 @@ void BVH::Traverse(Ray & ray, int node, int* depth)
 		if(traverse[first^1] & ray.length > dist[first ^ 1])
 			Traverse(ray, n->leftFirst + first^1, depth);
 	}
+}
+
+bool BVH::LightTraverse(Ray & ray, int node)
+{
+	BVHNode* n = &pool[node];
+	if (n->count)
+	{
+		IntersectPrimitives(ray, node);
+		return (ray.hit != NULL);
+	}
+	else
+	{
+		float dist[2];
+		bool traverse[2];
+		traverse[0] = pool[n->leftFirst].Intersect(ray, dist[0]);
+		traverse[1] = pool[n->leftFirst + 1].Intersect(ray, dist[1]);
+		bool first = dist[0] > dist[1];
+		if (traverse[first])
+			if (LightTraverse(ray, n->leftFirst + first))
+				return true;
+		if (traverse[first ^ 1] & ray.length > dist[first ^ 1])
+			if (LightTraverse(ray, n->leftFirst + first ^ 1))
+				return true;
+	}
+	return false;
 }
 
 void BVH::IntersectPrimitives(Ray & ray, int node)

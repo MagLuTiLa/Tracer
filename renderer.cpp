@@ -4,8 +4,8 @@
 #include "obj.h"
 #define USEBVH
 #define USESAH
-#define USEBVHLh
-#define DEPTHTRACER
+#define USEBVHL
+//#define DEPTHTRACER
 
 Renderer::Renderer()
 {
@@ -209,8 +209,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 		*/
 #ifdef USEBVHL
 		//TODO, in order for this to be benificial, have to make an alternative version of traversal that stops on first thing hit.
-		bvh.Traverse(ray, 0);
-		if (shadowRay.hit != NULL)
+		if (bvh.LightTraverse(shadowRay, 0))
 			continue;
 #else
 

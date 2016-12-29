@@ -16,6 +16,7 @@ public:
 	void WriteToFile();
 	
 	void Traverse(Ray&, int, int* depth = NULL);
+	bool LightTraverse(Ray&, int);
 	void IntersectPrimitives(Ray&, int);
 
 	std::vector<Primitive*>* primitives;
