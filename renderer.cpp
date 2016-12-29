@@ -3,6 +3,7 @@
 
 #include "obj.h"
 #define USEBVH
+#define USESAHa
 #define USEBVHLh
 #define DEPTHTRACER
 
@@ -32,10 +33,10 @@ int Renderer::Init()
 			0, 0, 0, 1)
 		*
 		mat4(.5, 0, 0, 0,
-			0, .5, 0, 0,
-			0, 0, .5, 4,
+			0, .5, 0, -1,
+			0, 0, .5, 3,
 			0, 0, 0, 1));
-
+	
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -46,7 +47,7 @@ int Renderer::Init()
 			std::sin(2), 0, std::cos(2), 0,
 			0, 0, 0, 1)
 		*
-		mat4(.5, 0, 0, 5,
+		mat4(.5, 0, 0, 4,
 			0, .5, 0, 0,
 			0, 0, .5, 4,
 			0, 0, 0, 1));
@@ -62,15 +63,20 @@ int Renderer::Init()
 			0, 0, 0, 1)
 		*
 		mat4(.5, 0, 0, -5,
-			0, .5, 0, 0,
-			0, 0, .5, 4,
+			0, .5, 0, 2,
+			0, 0, .5, 7,
 			0, 0, 0, 1));
 
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(50.f, 50.f, 50.f)));
 	
 	timer t;
+#ifdef USESAH
+	bvh = BVH();
+	bvh.ConstructBVHSAH(&primitives);
+#else
 	bvh = BVH();
 	bvh.ConstructBVH(&primitives);
+#endif
 	int time = (int)t.elapsed();
 
 	return time;

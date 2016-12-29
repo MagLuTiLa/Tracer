@@ -32,18 +32,48 @@ void BVH::ConstructBVH(std::vector<Primitive*>* p)
 		centroids[i] = (*primitives)[i]->Centroid();
 	}
 
-	//QuickSort(0, count - 1);
+	QuickSort(0, count - 1, 0);
 	
 	// subdivide root node
 	root->leftFirst = 0;
 	root->count = count;
-	for (int i = 0; i < count; i++)
-	{
-		indices[i];
-		int a = 1;
-	}
+
 	CalculateBounds(root->leftFirst);
 	Subdivide(root->leftFirst);
+
+	WriteToFile();
+}
+
+void BVH::ConstructBVHSAH(std::vector<Primitive*>* p)
+{
+	primitives = p;
+	int count = primitives->size();
+	// create index array
+	indices = new int[count];
+	for (int i = 0; i < count; i++)
+		indices[i] = i;
+	// allocate BVH root node
+	pool = reinterpret_cast<BVHNode*>(_mm_malloc(count * 2 * sizeof(BVHNode), 64));// [count * 2];
+	BVHNode* root = &pool[0];
+	poolPtr = 2;
+
+	// Calculate AABB over primitives
+	bounds = new AABB[count];
+	centroids = new glm::vec3[count];
+
+	for (int i = 0; i < count; i++)
+	{
+		bounds[i] = (*primitives)[i]->CalculateBounds();
+		centroids[i] = (*primitives)[i]->Centroid();
+	}
+
+	// subdivide root node
+	root->leftFirst = 0;
+	root->count = count;
+
+	CalculateBounds(root->leftFirst);
+
+	SubdivideSAH(root->leftFirst);
 
 	WriteToFile();
 }
@@ -92,7 +122,6 @@ void BVH::CalculateBounds(int node)
 	mini = aabb.pos1;
 	maxi = aabb.pos2;
 	
-	
 	for (int i = first + 1; i < first + count; i++)
 	{
 		aabb = bounds[indices[i]];
@@ -113,7 +142,6 @@ void BVH::Subdivide(int node)
 	poolPtr++;
 	int lf = pool[node].leftFirst;
 	int count = pool[node].count;
-	QuickSort(lf, lf + count);
 	int split = count / 2;
 
 	pool[left].leftFirst = lf;
@@ -130,6 +158,76 @@ void BVH::Subdivide(int node)
 	Subdivide(pool[node].leftFirst + 1);
 }
 
+void BVH::SubdivideSAH(int node)
+{
+	if (pool[node].count < 2)
+		return;
+
+	int left = poolPtr++;
+	poolPtr++;
+	int lf = pool[node].leftFirst;
+	int count = pool[node].count;
+
+	glm::vec3 axisSize = pool[node].corner2 - pool[node].corner1;
+
+	int maxAxis = 0;
+
+	if (axisSize[1] > axisSize[maxAxis])
+		maxAxis = 1;
+	if (axisSize[2] > axisSize[maxAxis])
+		maxAxis = 2;
+
+	QuickSort(lf, lf + count -1, maxAxis);
+
+	int bestCost = pool[node].Cost();
+	int bestSplit = 0;
+
+	int split = 1;
+	for (split; split < count; split++)
+	{
+		pool[left].leftFirst = lf;
+		pool[left + 1].leftFirst = lf + split;
+
+		pool[left].count = split;
+		pool[left + 1].count = count - split;
+
+		CalculateBounds(left);
+		CalculateBounds(left + 1);
+
+		int costLeft = pool[left].Cost();
+		int costRight = pool[left+1].Cost();
+
+		int newCost = costLeft + costRight;
+
+		if (costLeft + costRight < bestCost)
+		{
+			bestCost = newCost;
+			bestSplit = split;
+		}
+	}
+
+	if (bestSplit != 0)
+	{
+		if (bestSplit != split)
+		{
+			pool[left].leftFirst = lf;
+			pool[left + 1].leftFirst = lf + bestSplit;
+
+			pool[left].count = bestSplit;
+			pool[left + 1].count = count - bestSplit;
+
+			CalculateBounds(left);
+			CalculateBounds(left + 1);
+		}
+
+		pool[node].count = 0;
+		pool[node].leftFirst = left;
+
+		SubdivideSAH(pool[node].leftFirst);
+		SubdivideSAH(pool[node].leftFirst + 1);
+	}
+}
+
 void BVH::WriteToFile()
 {
 	ofstream saveFile;
@@ -143,13 +241,9 @@ void BVH::Traverse(Ray & ray, int node, int* depth)
 {
 	if(depth != NULL)
 		depth[0]++;
-	if (node == 27)
-		int a = 0;
-	if (node == 28)
-		int b = 0;
-	if (node == 30)
-		int c = 0;
+
 	BVHNode* n = &pool[node];
+
 	if (!n->Intersect(ray)) return;
 	if (n->count)
 	{

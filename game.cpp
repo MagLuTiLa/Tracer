@@ -53,9 +53,9 @@ void Game::Tick( float dt )
 	{
 		for (int x = 0; x < SCRWIDTH; x += 1)
 		{
-			if (x == 1070 && y == 425) // white, invisible, before red cut off
+			if (x == 150 && y == 150)
 				int a = 1;
-			if (x == 1086 && y == 425) // white, invisible, after red cut off
+			if (x == 1086 && y == 425)
 				int a = 1;
 				
 			float u = (float)x / SCRWIDTH;
