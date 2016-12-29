@@ -5,7 +5,11 @@ float BVHNode::Area()
 {
 	glm::vec3 difference = corner2 - corner1;
 
-	return difference.x * difference.y * difference.z;
+	float l = difference.x;
+	float h = difference.y;
+	float d = difference.z;
+
+	return 2 * l*h + 2 * l*d + 2 * h*d;
 }
 
 float BVHNode::Cost()

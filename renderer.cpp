@@ -5,7 +5,7 @@
 #define USEBVH
 #define USESAH
 #define USEBVHL
-#define DEPTHTRACERa
+//#define DEPTHTRACER
 
 Renderer::Renderer()
 {
@@ -25,9 +25,24 @@ int Renderer::Init()
 	LoadObj("bunnay.obj", primitives, texture,
 		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
-		mat4(8, 0, 0, 0,
+		mat4(8, 0, 0, -1,
 			0, 8, 0, -0.8,
 			0, 0, 8, 2,
+			0, 0, 0, 1));
+
+	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
+		0, std::cos(2), -std::sin(2), 0,
+		0, std::sin(2), std::cos(2), 0,
+		0, 0, 0, 1)
+		*
+		mat4(std::cos(2), 0, -std::sin(2), 0,
+			0, 1, 0, 0,
+			std::sin(2), 0, std::cos(2), 0,
+			0, 0, 0, 1)
+		*
+		mat4(.5, 0, 0, 3,
+			0, .5, 0, -1,
+			0, 0, .5, 3,
 			0, 0, 0, 1));
 	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,

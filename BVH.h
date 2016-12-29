@@ -9,7 +9,8 @@ public:
 
 	void ConstructBVH(std::vector<Primitive*>*);
 	void ConstructBVHSAH(std::vector<Primitive*>*);
-	void QuickSort(int l, int r, int axis);
+	void QuickSort(int, int, int);
+	int Partition(int, int, int);
 	void CalculateBounds(int);
 	void Subdivide(int);
 	void SubdivideSAH(int);

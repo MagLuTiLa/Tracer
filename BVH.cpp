@@ -50,9 +50,8 @@ void BVH::ConstructBVHSAH(std::vector<Primitive*>* p)
 	primitives = p;
 	int count = primitives->size();
 	// create index array
-	indices = new int[count];
-	for (int i = 0; i < count; i++)
-		indices[i] = i;
+	
+
 	// allocate BVH root node
 	pool = reinterpret_cast<BVHNode*>(_mm_malloc(count * 2 * sizeof(BVHNode), 64));// [count * 2];
 	BVHNode* root = &pool[0];
@@ -62,8 +61,10 @@ void BVH::ConstructBVHSAH(std::vector<Primitive*>* p)
 	bounds = new AABB[count];
 	centroids = new glm::vec3[count];
 
+	indices = new int[count];
 	for (int i = 0; i < count; i++)
 	{
+		indices[i] = i;
 		bounds[i] = (*primitives)[i]->CalculateBounds();
 		centroids[i] = (*primitives)[i]->Centroid();
 	}
@@ -79,7 +80,7 @@ void BVH::ConstructBVHSAH(std::vector<Primitive*>* p)
 	WriteToFile();
 }
 
-void BVH::QuickSort(int left, int right, int axis)
+/*void BVH::QuickSort(int left, int right, int axis)
 {
 	if (!left < right)
 		return;
@@ -116,6 +117,46 @@ void BVH::QuickSort(int left, int right, int axis)
 	QuickSort(left, r, axis);
 	QuickSort(r+1, right, axis);
 }
+*/
+void BVH::QuickSort(int left, int right, int axis)
+{
+	if (left >= right)
+		return;
+
+	int partition = Partition(left, right, axis);
+	QuickSort(left, partition, axis);
+	QuickSort(partition + 1, right, axis);
+}
+
+int BVH::Partition(int left, int right, int axis)
+{
+	float pivot = centroids[left][axis];
+	int l = left;
+	int r = right;
+	while (true)
+	{
+		do { l += 1; } while (centroids[l][axis] < pivot);
+		do { r -= 1; } while (centroids[r][axis] > pivot);
+		if (l >= r)
+			return r;
+		glm::vec3 tmp = centroids[l];
+		centroids[l] = centroids[r];
+		centroids[r] = tmp;
+	}
+	/*float pivot = centroids[indices[left]][axis];
+	int l = left;
+	int r = right;
+	while (true)
+	{
+		do { l += 1; } while (centroids[indices[l]][axis] < pivot);
+		do { r -= 1; } while (centroids[indices[r]][axis] > pivot);
+		if (l >= r)
+			return r;
+		int tmp = indices[l];
+		indices[l] = indices[r];
+		indices[r] = tmp;
+	}*/
+}
 
 void BVH::CalculateBounds(int node)
 {
@@ -129,13 +170,15 @@ void BVH::CalculateBounds(int node)
 
 	int first = pool[node].leftFirst;
 
-	AABB aabb = bounds[indices[first]];
+	//AABB aabb = bounds[indices[first]];
+	AABB aabb = bounds[first];
 	mini = aabb.pos1;
 	maxi = aabb.pos2;
 	
 	for (int i = first + 1; i < first + count; i++)
 	{
-		aabb = bounds[indices[i]];
+		//aabb = bounds[indices[i]];
+		aabb = bounds[i];
 		maxi = glm::max(maxi, aabb.pos2);
 		mini = glm::min(mini, aabb.pos1);
 	}
@@ -146,7 +189,7 @@ void BVH::CalculateBounds(int node)
 
 void BVH::Subdivide(int node)
 {
-	if (pool[node].count < 2)
+	if (pool[node].count < 4)
 		return;
 
 	int left = poolPtr++;
@@ -171,7 +214,7 @@ void BVH::Subdivide(int node)
 
 void BVH::SubdivideSAH(int node)
 {
-	if (pool[node].count < 2)
+	if (pool[node].count < 3)
 		return;
 
 	int left = poolPtr++;
@@ -181,12 +224,14 @@ void BVH::SubdivideSAH(int node)
 
 	float bestCost = pool[node].Cost();
 	int bestSplit = 0;
+	int bestAxis;
+	int maxAxis = 0;
 	int split;
 
 	int nr = 0;
 
 #ifdef ALLAXES
-	for (int maxAxis = 0; maxAxis < 3; maxAxis++)
+	for (maxAxis = 0; maxAxis < 3; maxAxis++)
 	{
 #else
 	glm::vec3 axisSize = pool[node].corner2 - pool[node].corner1;
@@ -214,7 +259,7 @@ void BVH::SubdivideSAH(int node)
 			CalculateBounds(left + 1);
 
 			float costLeft = pool[left].Cost();
-			int costRight = pool[left + 1].Cost();
+			float costRight = pool[left + 1].Cost();
 
 			float newCost = costLeft + costRight;
 
@@ -223,6 +268,7 @@ void BVH::SubdivideSAH(int node)
 				//cout << newCost << " < " << bestCost << endl;
 				bestCost = newCost;
 				bestSplit = split;
+				bestAxis = maxAxis;
 			}
 		}
 #ifdef ALLAXES
@@ -233,6 +279,8 @@ void BVH::SubdivideSAH(int node)
 	{
 		if (bestSplit != split)
 		{
+			if (bestAxis != maxAxis)
+				QuickSort(lf, lf + count - 1, bestAxis);
 			pool[left].leftFirst = lf;
 			pool[left + 1].leftFirst = lf + bestSplit;
 	
