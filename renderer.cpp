@@ -20,9 +20,9 @@ int Renderer::Init()
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
 	
-	Material* texture = new Material(.5, "wood.bmp");
+	Material* texture = new Material(.7, "wood.bmp");
 	
-	LoadObj("bunnay.obj", primitives, texture,
+	/*LoadObj("bunnay.obj", primitives, texture,
 		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
 		mat4(8, 0, 0, -1,
@@ -43,8 +43,8 @@ int Renderer::Init()
 		mat4(.5, 0, 0, 3,
 			0, .5, 0, -1,
 			0, 0, .5, 3,
-			0, 0, 0, 1));
-	/*
+			0, 0, 0, 1));*/
+	
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -89,8 +89,12 @@ int Renderer::Init()
 			0, .5, 0, 2,
 			0, 0, .5, 7,
 			0, 0, 0, 1));
-*/
+
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(0, -5, 0), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(0, 2, 1), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(-6, -3, 0), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(1, 3, -1), vec3(10.f, 10.f, 10.f)));
 	
 	timer t;
 #ifdef USESAH
@@ -186,8 +190,15 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 				lightIntensity = Reflect(ray);
 			else
 			{
+#if 0
+				if(Rand(1.f) < s)
+					lightIntensity += s / s * Reflect(ray);
+				else
+					lightIntensity += (1-s) / (1 - s) * DirectIllumination(ray);
+#else
 				lightIntensity += s * Reflect(ray);
 				lightIntensity += (1 - s) * DirectIllumination(ray);
+#endif
 			}
 		}
 		else if (material.IsRefractive())

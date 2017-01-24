@@ -289,10 +289,10 @@ void BVH::SubdivideSAH(int node)
 	
 			CalculateBounds(left);
 			CalculateBounds(left + 1);
-			int costLeft = pool[left].Cost();
-			int costRight = pool[left + 1].Cost();
+			float costLeft = pool[left].Cost();
+			float costRight = pool[left + 1].Cost();
 	
-			int newCost = costLeft + costRight;
+			float newCost = costLeft + costRight;
 			int a = 1;
 		}
 	
