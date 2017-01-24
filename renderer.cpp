@@ -1,10 +1,10 @@
 #include "template.h"
 #include "renderer.h"
-
+#include "plane.h"
 #include "obj.h"
-#define USEBVH
-#define USESAH
-#define USEBVHL
+//#define USEBVH
+//#define USESAH
+//#define USEBVHL
 //#define DEPTHTRACER
 
 Renderer::Renderer()
@@ -13,13 +13,31 @@ Renderer::Renderer()
 
 int Renderer::Init()
 {
+	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+
+	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
+
+	AddPrimitive(new Plane(vec3(0, 1, 0), vec3(0, -1, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, -7, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, 0, 10), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+
+	AddLight(new PointLight(vec3(0, -5, 6), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
+
 	/*
 	for (int i = -10; i < 10; i++)
 	{
 		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
-	
+	/*
 	Material* texture = new Material(.5, "wood.bmp");
 	
 	LoadObj("bunnay.obj", primitives, texture,
@@ -43,7 +61,7 @@ int Renderer::Init()
 		mat4(.5, 0, 0, 3,
 			0, .5, 0, -1,
 			0, 0, .5, 3,
-			0, 0, 0, 1));
+			0, 0, 0, 1));*/
 	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
@@ -90,13 +108,11 @@ int Renderer::Init()
 			0, 0, .5, 7,
 			0, 0, 0, 1));
 */
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
-	
 	timer t;
 #ifdef USESAH
 	bvh = BVH();
 	bvh.ConstructBVHSAH(&primitives);
-#else
+#elseif USEBVH
 	bvh = BVH();
 	bvh.ConstructBVH(&primitives);
 #endif
