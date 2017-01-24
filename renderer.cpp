@@ -2,6 +2,8 @@
 #include "renderer.h"
 #include "plane.h"
 #include "obj.h"
+#include "trianglelight.h"
+#include "spherelight.h"
 //#define USEBVH
 //#define USESAH
 //#define USEBVHL
@@ -22,15 +24,26 @@ int Renderer::Init()
 	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
 
 	AddPrimitive(new Plane(vec3(0, 1, 0), vec3(0, -1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, -7, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, -6, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
 	AddPrimitive(new Plane(vec3(0, 0, 10), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
 	AddPrimitive(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
 	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
 	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
 
-	AddLight(new PointLight(vec3(0, -5, 6), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
+	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
+	//AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
 
+	
+	Triangle* tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
+	tri->light = true;
+	AddPrimitive(tri);
+	AddLight(new TriangleLight(tri, vec3(15.f, 15.f, 15.f)));
+	
+	/*
+	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
+	sph->light = true;
+	AddPrimitive(sph);
+	AddLight(new SphereLight(sph, vec3(10.f, 10.f, 10.f)));*/
 	/*
 	for (int i = -10; i < 10; i++)
 	{
@@ -246,7 +259,10 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 #endif
 
 		// Add color to the lightintensity
-		lightIntensity += ray.hit->Sample(ray, shadowRay);
+		if (ray.hit->light)
+			lightIntensity += ray.hit->material->texture[0];
+		else
+			lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
 	}
 	return lightIntensity;
