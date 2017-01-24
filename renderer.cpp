@@ -38,6 +38,11 @@ int Renderer::Init()
 	tri->light = true;
 	AddPrimitive(tri);
 	AddLight(new TriangleLight(tri, vec3(15.f, 15.f, 15.f)));
+
+	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
+	tri->light = true;
+	AddPrimitive(tri);
+	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
 	
 	/*
 	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
