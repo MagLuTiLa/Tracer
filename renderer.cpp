@@ -8,6 +8,7 @@
 //#define USESAH
 //#define USEBVHL
 //#define DEPTHTRACER
+#define MCLIGHT
 
 Renderer::Renderer()
 {
@@ -241,7 +242,26 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 
 	// Draw a shadow ray towards the light sources
 	glm::vec3 rayPos = ray.origin + ray.direction * (ray.length - EPSILON);
-
+#ifdef MCLIGHT
+	int size = lights.size();
+	if (size < 1)
+	{
+		return lightIntensity;
+	}
+	int index = rand() % size;
+	Light* l = lights[index];
+	Ray shadowRay;
+	l->getIllumination(rayPos, shadowRay);
+	
+	// See if shadow ray intersects with primitives
+	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+	{
+		Primitive* p = primitives[i];
+		p->Intersect(shadowRay);
+		if (shadowRay.hit != NULL)
+			goto next;
+	}
+#else
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
@@ -262,14 +282,18 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 		}
 
 #endif
-
+#endif
 		// Add color to the lightintensity
 		if (ray.hit->light)
 			lightIntensity += ray.hit->material->texture[0];
 		else
 			lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
+#ifdef MCLIGHT
+		lightIntensity *= (float)size;
+#else
 	}
+#endif
 	return lightIntensity;
 }
 
