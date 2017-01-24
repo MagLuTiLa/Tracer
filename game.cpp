@@ -43,7 +43,7 @@ void Game::Tick( float dt )
 
 	// Clear the screen
 	screen->Clear( 0 );
-
+	bufferCount++;
 	// Iterate over pixels
 #ifdef PARALLEL
 	concurrency::parallel_for(0, SCRHEIGHT, [&](int y)
@@ -64,10 +64,15 @@ void Game::Tick( float dt )
 
 			Ray ray;
 			camera.ShootRay(u, v, ray);
-			
 			vec3 lightIntensity = renderer.TraceRay(ray);
 
-			screen->Plot(x, y, lightIntensity);
+			if(bufferCount == 1)
+				buffer[y * SCRWIDTH + x] = lightIntensity;
+			else
+				buffer[y * SCRWIDTH + x] += lightIntensity;
+
+
+			screen->Plot(x, y, buffer[y * SCRWIDTH + x]/(float)bufferCount);
 		}
 	}
 #ifdef PARALLEL
@@ -107,86 +112,103 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	// Up
 	case 82:
 		camera.Pitch(rotate);
+		bufferCount = 0;
 		break;
 
 	// Down
 	case 81:
 		camera.Pitch(-rotate);
+		bufferCount = 0;
 		break;
 
 	// Left
 	case 79:
 		camera.Jaw(-rotate);
+		bufferCount = 0;
 		break;
 
 	// Right
 	case 80:
 		camera.Jaw(rotate);
+		bufferCount = 0;
 		break;
 
 	// W
 	case 26:
 		camera.Axial(translate);
+		bufferCount = 0;
 		break;
 
 	// A
 	case 4:
 		camera.Horizontal(-translate);
+		bufferCount = 0;
 		break;
 
 	// S
 	case 22:
 		camera.Axial(-translate);
+		bufferCount = 0;
 		break;
 
 	// D
 	case 7:
 		camera.Horizontal(translate);
+		bufferCount = 0;
 		break;
 
 	// Q
 	case 20:
 		camera.Vertical(-translate);
+		bufferCount = 0;
 		break;
 
 	// E
 	case 8:
 		camera.Vertical(translate);
+		bufferCount = 0;
 		break;
 
 	// U
 	case 24:
 		camera.VerStretch(-stretch);
+		bufferCount = 0;
 		break;
 
 	// H
 	case 11:
 		camera.HorStretch(stretch);
+		bufferCount = 0;
 		break;
 
 	// J
 	case 13:
 		camera.VerStretch(stretch);
+		bufferCount = 0;
 		break;
 
 	// K
 	case 14:
 		camera.HorStretch(-stretch);
+		bufferCount = 0;
 		break;
 
 	// Y
 	case 28:
 		camera.Zoom(-zoom);
+		bufferCount = 0;
 		break;
 
 	// I
 	case 12:
 		camera.Zoom(zoom);
+		bufferCount = 0;
 		break;
 
 	// R
 	case 21:
 		camera.Reset();
+		bufferCount = 0;
 		break;
 	}
 

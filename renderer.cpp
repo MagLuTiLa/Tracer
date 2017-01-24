@@ -38,7 +38,7 @@ int Renderer::Init()
 	Triangle* tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
 	tri->light = true;
 	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(15.f, 15.f, 15.f)));
+	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
 
 	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
 	tri->light = true;
@@ -57,10 +57,10 @@ int Renderer::Init()
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
 	/*
-	Material* texture = new Material(.5, "wood.bmp");
+	Material* texture = new Material(.7, "wood.bmp");
 	
-	LoadObj("bunnay.obj", primitives, texture,
-		glm::rotate(glm::mat4(), 0.2f, glm::vec3(0, 1, 0))
+	/*LoadObj("bunnay.obj", primitives, texture,
+		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
 		mat4(8, 0, 0, -0.5,
 			0, 8, 0, 0.25,
@@ -126,7 +126,9 @@ int Renderer::Init()
 			0, .5, 0, 2,
 			0, 0, .5, 7,
 			0, 0, 0, 1));
+
 */
+
 	timer t;
 #ifdef USESAH
 	bvh = BVH();
@@ -221,8 +223,15 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 				lightIntensity = Reflect(ray);
 			else
 			{
+#if 0
+				if(Rand(1.f) < s)
+					lightIntensity += s / s * Reflect(ray);
+				else
+					lightIntensity += (1-s) / (1 - s) * DirectIllumination(ray);
+#else
 				lightIntensity += s * Reflect(ray);
 				lightIntensity += (1 - s) * DirectIllumination(ray);
+#endif
 			}
 		}
 		else if (material.IsRefractive())
@@ -249,6 +258,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 		return lightIntensity;
 	}
 	int index = rand() % size;
+	//int index = (int)Randamonium() % size;
 	Light* l = lights[index];
 	Ray shadowRay;
 	l->getIllumination(rayPos, shadowRay);
@@ -394,4 +404,12 @@ void Renderer::AddPrimitive(Primitive * p)
 void Renderer::AddLight(Light * p)
 {
 	lights.push_back(p);
+}
+
+float Renderer::Randamonium()
+{
+	seed ^= seed << 13;
+	seed ^= seed >> 17;
+	seed ^= seed << 5;
+	return (float)seed * 2.3283064365387e-10f;
 }

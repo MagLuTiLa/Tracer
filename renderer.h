@@ -22,9 +22,11 @@ public:
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);
+	float Randamonium();
 
 private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
+	int seed = rand();
 };
 
