@@ -1,2 +1,2 @@
-#include "template.h"
 #include "light.h"
+#include "template.h"

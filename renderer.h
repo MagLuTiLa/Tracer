@@ -19,6 +19,7 @@ public:
 	glm::vec3 Refract(Ray&, float, float);
 
 	BVH bvh;
+	bool depthMode = false;
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);

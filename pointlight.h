@@ -8,8 +8,10 @@ public:
 		Light(loc, c)
 	{}
 
-	inline virtual void getIllumination(glm::vec3 point, Ray& outRay)
+	inline virtual void getIllumination(const Ray& ray, Ray& outRay)
 	{
+		glm::vec3 point = ray.origin + ray.direction * ray.length;
+		point += 0.0001f * ray.hit->Normal(point);
 		float len = glm::length(location - point);
 		outRay.origin = point;
 		outRay.direction = (location - point) / len;

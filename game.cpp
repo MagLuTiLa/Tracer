@@ -188,6 +188,11 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	case 21:
 		camera.Reset();
 		break;
+		
+	// T
+	case 23:
+		renderer.depthMode = !renderer.depthMode;
+		break;
 	}
 
 	keyDown = a_Key;
