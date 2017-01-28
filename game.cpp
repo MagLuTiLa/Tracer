@@ -193,6 +193,11 @@ void Tmpl8::Game::KeyDown(int a_Key)
 	case 23:
 		renderer.depthMode = !renderer.depthMode;
 		break;
+
+		// B
+	case 5:
+		renderer.bvhMode = !renderer.bvhMode;
+		break;
 	}
 
 	keyDown = a_Key;

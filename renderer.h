@@ -20,6 +20,7 @@ public:
 
 	BVH bvh;
 	bool depthMode = false;
+	bool bvhMode = true;
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);

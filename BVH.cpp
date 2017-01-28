@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#define ALLAXES
+#define ALLAXESx
 
 BVH::BVH()
 {
@@ -236,8 +236,6 @@ void BVH::SubdivideSAH(int node)
 #else
 	glm::vec3 axisSize = pool[node].corner2 - pool[node].corner1;
 
-	int maxAxis = 0;
-
 	if (axisSize[1] > axisSize[maxAxis])
 		maxAxis = 1;
 	if (axisSize[2] > axisSize[maxAxis])
@@ -289,10 +287,10 @@ void BVH::SubdivideSAH(int node)
 	
 			CalculateBounds(left);
 			CalculateBounds(left + 1);
-			int costLeft = pool[left].Cost();
-			int costRight = pool[left + 1].Cost();
+			float costLeft = pool[left].Cost();
+			float costRight = pool[left + 1].Cost();
 	
-			int newCost = costLeft + costRight;
+			float newCost = costLeft + costRight;
 			int a = 1;
 		}
 	
@@ -335,8 +333,8 @@ void BVH::Traverse(Ray & ray, int node, int* depth)
 		bool first = dist[0] > dist[1];
 		if(traverse[first])
 			Traverse(ray, n->leftFirst + first, depth);
-		if(traverse[first^1] & ray.length > dist[first ^ 1])
-			Traverse(ray, n->leftFirst + first^1, depth);
+		if(traverse[first^1] && ray.length > dist[first ^ 1])
+			Traverse(ray, n->leftFirst + (first^1), depth);
 	}
 }
 
@@ -358,7 +356,7 @@ bool BVH::LightTraverse(Ray & ray, int node)
 		if (traverse[first])
 			if (LightTraverse(ray, n->leftFirst + first))
 				return true;
-		if (traverse[first ^ 1] & ray.length > dist[first ^ 1])
+		if (traverse[first ^ 1] && ray.length > dist[first ^ 1])
 			if (LightTraverse(ray, n->leftFirst + first ^ 1))
 				return true;
 	}

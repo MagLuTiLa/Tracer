@@ -2,7 +2,6 @@
 #include "renderer.h"
 
 #include "obj.h"
-#define USEBVHx
 #define USESAH
 #define USEBVHL
 //#define DEPTHTRACER
@@ -142,19 +141,16 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 		return vec3(min(0.f, 1.f-depth/5.f), depth / 5.f,0);
 	}
 
-#ifdef USEBVH
-	bvh.Traverse(ray, 0);
-#else
-
-	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
-	{
-		Primitive* p = primitives[i];
-		vec3 locthis = p->location;
-		p->Intersect(ray);
-	}
+	if(bvhMode)
+		bvh.Traverse(ray, 0);
+	else
+		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+		{
+			Primitive* p = primitives[i];
+			vec3 locthis = p->location;
+			p->Intersect(ray);
+		}
 	
-#endif
-
 	vec3 lightIntensity = vec3();
 
 	// If ray collided with a primitive
