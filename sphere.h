@@ -24,5 +24,6 @@ public:
 	virtual glm::vec3 Normal(glm::vec3);
 	virtual AABB CalculateBounds();
 	virtual glm::vec3 Centroid();
+	virtual glm::vec3 RandomPointOn();
 	float radius;
 };

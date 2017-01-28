@@ -88,3 +88,26 @@ glm::vec3 Sphere::Centroid()
 {
 	return location;
 }
+
+glm::vec3 Sphere::RandomPointOn()
+{
+	float x = 0;
+	float y = 0;
+	float z = 0;
+	float xyz2 = 0;
+	do
+	{
+		x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		y = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		xyz2 = x*x + y*y + z*z;
+	}
+	while (xyz2 > 1);
+	float len = sqrtf(xyz2);
+	vec3 result = vec3(x, y, z);
+	result /= len;
+	result *= radius;
+	result += location;
+	
+	return glm::vec3();
+}

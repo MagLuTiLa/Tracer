@@ -257,8 +257,10 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	{
 		return lightIntensity;
 	}
-	int index = rand() % size;
-	//int index = (int)Randamonium() % size;
+	//int index = rand() % size;
+	float index = Randamonium();
+	index *= size;
+	index = (int)index;
 	Light* l = lights[index];
 	Ray shadowRay;
 	l->getIllumination(rayPos, shadowRay);
@@ -408,8 +410,11 @@ void Renderer::AddLight(Light * p)
 
 float Renderer::Randamonium()
 {
+	unsigned int seed = rand() * prime1 * prime2;
 	seed ^= seed << 13;
 	seed ^= seed >> 17;
 	seed ^= seed << 5;
-	return (float)seed * 2.3283064365387e-10f;
+	float yay = (float)seed;
+	float result = yay * 2.3283064365387e-10f;
+	return result;
 }

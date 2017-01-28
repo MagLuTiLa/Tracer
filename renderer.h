@@ -27,6 +27,7 @@ public:
 private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
-	int seed = rand();
+	int prime1 = 114818411;
+	int prime2 = 782595287;
 };
 
