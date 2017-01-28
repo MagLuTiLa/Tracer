@@ -23,10 +23,10 @@ int Renderer::Init()
 	Material* texture = new Material(.5, "wood.bmp");
 	
 	LoadObj("bunnay.obj", primitives, texture,
-		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
+		glm::rotate(glm::mat4(), 0.2f, glm::vec3(0, 1, 0))
 		*
-		mat4(8, 0, 0, -1,
-			0, 8, 0, -0.8,
+		mat4(8, 0, 0, -0.5,
+			0, 8, 0, 0.25,
 			0, 0, 8, 2,
 			0, 0, 0, 1));
 

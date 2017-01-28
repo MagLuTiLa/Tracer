@@ -5,8 +5,8 @@
 #include "pointlight.h"
 #include "renderer.h"
 
-#define SCRWIDTH	   1280
-#define SCRHEIGHT	    800
+#define SCRWIDTH	    512
+#define SCRHEIGHT	    512
 #define MAXTRACEDEPTH    10
 #define EPSILON     0.0001f
 
