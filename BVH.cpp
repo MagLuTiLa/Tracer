@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#define ALLAXESx
+#define ALLAXES
 
 BVH::BVH()
 {
