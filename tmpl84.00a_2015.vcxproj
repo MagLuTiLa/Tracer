@@ -234,6 +234,8 @@
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="pointlight.cpp" />
     <ClCompile Include="primitive.cpp" />
+    <ClCompile Include="spherelight.cpp" />
+    <ClCompile Include="trianglelight.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="sphere.cpp" />
@@ -259,6 +261,8 @@
     <ClInclude Include="plane.h" />
     <ClInclude Include="pointlight.h" />
     <ClInclude Include="primitive.h" />
+    <ClInclude Include="spherelight.h" />
+    <ClInclude Include="trianglelight.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="sphere.h" />

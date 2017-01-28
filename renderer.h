@@ -24,11 +24,13 @@ public:
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);
+	float Randamonium();
 
 	glm::vec3 PhongBRDF();
 
 private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
+	int seed = rand();
 };
 

@@ -43,6 +43,12 @@
     <ClCompile Include="BVHNode.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="BVH.cpp" />
+    <ClCompile Include="trianglelight.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
+    <ClCompile Include="spherelight.cpp">
+      <Filter>Transport</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -87,6 +93,12 @@
     <ClInclude Include="BVHNode.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="BVH.h" />
+    <ClInclude Include="trianglelight.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
+    <ClInclude Include="spherelight.h">
+      <Filter>Transport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">

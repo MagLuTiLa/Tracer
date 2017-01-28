@@ -1,10 +1,14 @@
 #include "template.h"
 #include "renderer.h"
-
+#include "plane.h"
 #include "obj.h"
-#define USESAH
-#define USEBVHL
+#include "trianglelight.h"
+#include "spherelight.h"
+//#define USEBVH
+//#define USESAH
+//#define USEBVHL
 //#define DEPTHTRACER
+#define MCLIGHT
 
 Renderer::Renderer()
 {
@@ -12,16 +16,53 @@ Renderer::Renderer()
 
 int Renderer::Init()
 {
+	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+
+	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
+
+	AddPrimitive(new Plane(vec3(0, 1, 0), vec3(0, -1, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, -6, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, 0, 10), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+
+	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
+	//AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
+
+	
+	Triangle* tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
+	tri->light = true;
+	AddPrimitive(tri);
+	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
+
+	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
+	tri->light = true;
+	AddPrimitive(tri);
+	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
+	
+	/*
+	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
+	sph->light = true;
+	AddPrimitive(sph);
+	AddLight(new SphereLight(sph, vec3(10.f, 10.f, 10.f)));*/
 	/*
 	for (int i = -10; i < 10; i++)
 	{
 		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
-	
+	/*
 	Material* texture = new Material(.7, "wood.bmp");
 	
+<<<<<<< HEAD
 	AddPrimitive(new Sphere(vec3(0, 2, 3), 1.5f, new Material(vec3(1., 1., 1.))));
+=======
+>>>>>>> origin/PT
 	/*LoadObj("bunnay.obj", primitives, texture,
 		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
@@ -35,7 +76,7 @@ int Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 3,
 			0, 0, 0, 1));*/
-	
+	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -81,17 +122,13 @@ int Renderer::Init()
 			0, 0, .5, 7,
 			0, 0, 0, 1));
 
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(0, -5, 0), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(0, 2, 1), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(-6, -3, 0), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(1, 3, -1), vec3(10.f, 10.f, 10.f)));
-	
+*/
+
 	timer t;
 #ifdef USESAH
 	bvh = BVH();
 	bvh.ConstructBVHSAH(&primitives);
-#else
+#elseif USEBVH
 	bvh = BVH();
 	bvh.ConstructBVH(&primitives);
 #endif
@@ -206,8 +243,33 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	vec3 lightIntensity = vec3();
 
 	// Draw a shadow ray towards the light sources
+<<<<<<< HEAD
 	
 
+=======
+	glm::vec3 rayPos = ray.origin + ray.direction * (ray.length - EPSILON);
+#ifdef MCLIGHT
+	int size = lights.size();
+	if (size < 1)
+	{
+		return lightIntensity;
+	}
+	int index = rand() % size;
+	//int index = (int)Randamonium() % size;
+	Light* l = lights[index];
+	Ray shadowRay;
+	l->getIllumination(rayPos, shadowRay);
+	
+	// See if shadow ray intersects with primitives
+	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+	{
+		Primitive* p = primitives[i];
+		p->Intersect(shadowRay);
+		if (shadowRay.hit != NULL)
+			goto next;
+	}
+#else
+>>>>>>> origin/PT
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
@@ -228,11 +290,18 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 		}
 
 #endif
-
+#endif
 		// Add color to the lightintensity
-		lightIntensity += ray.hit->Sample(ray, shadowRay);
+		if (ray.hit->light)
+			lightIntensity += ray.hit->material->texture[0];
+		else
+			lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
+#ifdef MCLIGHT
+		lightIntensity *= (float)size;
+#else
 	}
+#endif
 	return lightIntensity;
 }
 
@@ -335,7 +404,16 @@ void Renderer::AddLight(Light * p)
 	lights.push_back(p);
 }
 
+<<<<<<< HEAD
 glm::vec3 Renderer::PhongBRDF()
 {
 	return vec3();
+=======
+float Renderer::Randamonium()
+{
+	seed ^= seed << 13;
+	seed ^= seed >> 17;
+	seed ^= seed << 5;
+	return (float)seed * 2.3283064365387e-10f;
+>>>>>>> origin/PT
 }

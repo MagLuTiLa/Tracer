@@ -17,7 +17,6 @@ public:
 		outRay.direction = (location - point) / len;
 		outRay.color = color;
 		outRay.length = len;
-
 	}
 };
 
