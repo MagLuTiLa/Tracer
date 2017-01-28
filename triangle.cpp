@@ -3,7 +3,6 @@
 
 
 
-
 Triangle::~Triangle()
 {
 }
@@ -99,4 +98,19 @@ glm::vec3 Triangle::Normal(glm::vec3 loc)
 glm::vec3 Triangle::Centroid()
 {
 	return (location + location2 + location3) / 3.f;
+}
+
+glm::vec3 Triangle::RandomPointOn()
+{
+	float u = 0;
+	float v = 0;
+	do
+	{
+		u = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+		v = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	}
+	while (u + v >= 1);
+	vec3 uVec = (location2 - location) * u;
+	vec3 vVec = (location2 - location) * v;
+	return uVec + vVec;
 }

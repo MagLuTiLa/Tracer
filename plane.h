@@ -26,5 +26,7 @@ public:
 	virtual AABB CalculateBounds();
 
 	virtual glm::vec3 Centroid();
+
+	virtual glm::vec3 RandomPointOn();
 };
 

@@ -48,5 +48,6 @@ public:
 	virtual glm::vec3 Color(const glm::vec3& position) override;
 	virtual AABB CalculateBounds();
 	virtual glm::vec3 Centroid();
+	virtual glm::vec3 RandomPointOn();
 };
 

@@ -41,3 +41,8 @@ glm::vec3 Plane::Centroid()
 {
 	return location;
 }
+
+glm::vec3 Plane::RandomPointOn()
+{
+	return glm::vec3();
+}

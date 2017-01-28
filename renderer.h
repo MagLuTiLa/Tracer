@@ -15,6 +15,7 @@ public:
 
 	glm::vec3 TraceRay(Ray&);
 	glm::vec3 DirectIllumination(Ray&);
+	glm::vec3 IndirectIllumination(Ray&);
 	glm::vec3 Reflect(Ray&);
 	glm::vec3 Refract(Ray&, float, float);
 
@@ -24,6 +25,7 @@ public:
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);
+	glm::vec3 WorldToLocal(glm::vec3 world, glm::vec3 normal);
 	float Randamonium();
 
 	glm::vec3 PhongBRDF();
@@ -31,6 +33,7 @@ public:
 private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
-	int seed = rand();
+	int prime1 = 114818411;
+	int prime2 = 782595287;
 };
 

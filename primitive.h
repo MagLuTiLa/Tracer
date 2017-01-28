@@ -20,6 +20,7 @@ public:
 	virtual glm::vec3 Color(const glm::vec3& position) { return material->texture[0]; };
 	virtual AABB CalculateBounds() = 0;
 	virtual glm::vec3 Centroid() = 0;
+	virtual glm::vec3 RandomPointOn() = 0;
 	glm::vec3 location;
 	Material* material;
 	int hax = 0;

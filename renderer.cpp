@@ -4,9 +4,9 @@
 #include "obj.h"
 #include "trianglelight.h"
 #include "spherelight.h"
-//#define USEBVH
-//#define USESAH
-//#define USEBVHL
+#define USEBVH
+#define USESAH
+#define USEBVHL
 //#define DEPTHTRACER
 #define MCLIGHT
 
@@ -16,6 +16,7 @@ Renderer::Renderer()
 
 int Renderer::Init()
 {
+	Material* texture = new Material(.7, "wood.bmp");
 	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
@@ -24,27 +25,9 @@ int Renderer::Init()
 	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
 
-	AddPrimitive(new Plane(vec3(0, 1, 0), vec3(0, -1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, -6, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, 0, 10), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
 
-	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
-	//AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
-
-	
-	Triangle* tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
-	tri->light = true;
-	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
-
-	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
-	tri->light = true;
-	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
-	
 	/*
 	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
 	sph->light = true;
@@ -57,12 +40,8 @@ int Renderer::Init()
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
 	/*
-	Material* texture = new Material(.7, "wood.bmp");
 	
-<<<<<<< HEAD
 	AddPrimitive(new Sphere(vec3(0, 2, 3), 1.5f, new Material(vec3(1., 1., 1.))));
-=======
->>>>>>> origin/PT
 	/*LoadObj("bunnay.obj", primitives, texture,
 		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
@@ -76,7 +55,7 @@ int Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 3,
 			0, 0, 0, 1));*/
-	/*
+	
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -106,7 +85,7 @@ int Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 4,
 			0, 0, 0, 1));
-			
+	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -128,7 +107,7 @@ int Renderer::Init()
 #ifdef USESAH
 	bvh = BVH();
 	bvh.ConstructBVHSAH(&primitives);
-#elseif USEBVH
+#elif USEBVH
 	bvh = BVH();
 	bvh.ConstructBVH(&primitives);
 #endif
@@ -208,7 +187,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
 		if (material.IsOpaque())
-			lightIntensity = DirectIllumination(ray);
+			lightIntensity = DirectIllumination(ray) + IndirectIllumination(ray);
 		else if (material.IsReflective())
 		{
 			float s = material.ref;
@@ -224,6 +203,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 #else
 				lightIntensity += s * Reflect(ray);
 				lightIntensity += (1 - s) * DirectIllumination(ray);
+				lightIntensity += (1 - s) * IndirectIllumination(ray);
 #endif
 			}
 		}
@@ -243,10 +223,6 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	vec3 lightIntensity = vec3();
 
 	// Draw a shadow ray towards the light sources
-<<<<<<< HEAD
-	
-
-=======
 	glm::vec3 rayPos = ray.origin + ray.direction * (ray.length - EPSILON);
 #ifdef MCLIGHT
 	int size = lights.size();
@@ -254,11 +230,13 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	{
 		return lightIntensity;
 	}
-	int index = rand() % size;
-	//int index = (int)Randamonium() % size;
+	//int index = rand() % size;
+	float index = Randamonium();
+	index *= size;
+	index = (int)index;
 	Light* l = lights[index];
 	Ray shadowRay;
-	l->getIllumination(rayPos, shadowRay);
+	l->getIllumination(ray, shadowRay);
 	
 	// See if shadow ray intersects with primitives
 	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
@@ -269,7 +247,6 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 			goto next;
 	}
 #else
->>>>>>> origin/PT
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
@@ -303,6 +280,16 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	}
 #endif
 	return lightIntensity;
+}
+
+glm::vec3 Renderer::IndirectIllumination(Ray& ray)
+{
+	vec3 loc = ray.origin + ray.direction * ray.length;
+	vec3 N = ray.hit->Normal(loc);
+	Ray r(loc, WorldToLocal(PhongBRDF(), N));
+	r.traceDepth = ray.traceDepth;
+	r.origin += EPSILON * r.direction;
+	return this->TraceRay(r) * ray.hit->Color(loc)/PI;
 }
 
 glm::vec3 Renderer::Reflect(Ray& ray)
@@ -404,16 +391,38 @@ void Renderer::AddLight(Light * p)
 	lights.push_back(p);
 }
 
-<<<<<<< HEAD
+glm::vec3 Renderer::WorldToLocal(vec3 world, vec3 N)
+{
+	vec3 W;
+	if (N.x > .95)
+		W = vec3(1, 0, 0);
+	else
+		W = vec3(0, 1, 0);
+	vec3 T = glm::normalize(glm::cross(N,W));
+	vec3 B = glm::cross(T,N);
+	return vec3(
+		glm::dot(world, T),
+		glm::dot(world, B),
+		glm::dot(world, N));
+}
+
 glm::vec3 Renderer::PhongBRDF()
 {
-	return vec3();
-=======
+	float r1 = Randamonium();
+	float r2 = Randamonium();
+	float temp = sqrtf(1 - r2);
+	float temp2 = 2 * PI * r1;
+	return vec3(
+		cos(temp2) + temp,
+		sin(temp2) + temp,
+		sqrtf(r2));;
+}
+
 float Renderer::Randamonium()
 {
+	unsigned int seed = rand() * prime1 * prime2;
 	seed ^= seed << 13;
 	seed ^= seed >> 17;
 	seed ^= seed << 5;
 	return (float)seed * 2.3283064365387e-10f;
->>>>>>> origin/PT
 }
