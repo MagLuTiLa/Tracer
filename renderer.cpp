@@ -2,7 +2,7 @@
 #include "renderer.h"
 
 #include "obj.h"
-#define USEBVH
+#define USEBVHx
 #define USESAH
 #define USEBVHL
 //#define DEPTHTRACER
@@ -22,26 +22,11 @@ int Renderer::Init()
 	
 	Material* texture = new Material(.5, "wood.bmp");
 	
-	LoadObj("bunnay.obj", primitives, texture,
-		glm::rotate(glm::mat4(), 0.2f, glm::vec3(0, 1, 0))
-		*
-		mat4(8, 0, 0, -0.5,
-			0, 8, 0, 0.25,
-			0, 0, 8, 2,
-			0, 0, 0, 1));
+	AddPrimitive(new Sphere(vec3(0, 2, 3), 1.5f, new Material(vec3(1., 1., 1.))));
 
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, 3,
-			0, .5, 0, -1,
+	LoadObj("box.obj", primitives, texture, 
+		mat4(.5, 0, 0, 0,
+			0, .5, 0, 0,
 			0, 0, .5, 3,
 			0, 0, 0, 1));
 	/*
@@ -149,12 +134,13 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 {
 	// See if ray intersects with primitives
 
-#ifdef DEPTHTRACER
-	int depth = 0;
-	
-	bvh.Traverse(ray, 0, &depth);
-	return vec3(min(0.f, max(0.f, ((float)depth-1800.f)/ 1800.f)) , max(0.f, 1-(float)depth/ 1800.f), 0);
-#endif
+	if (depthMode)
+	{
+		int depth = 0;
+
+		bvh.Traverse(ray, 0, &depth);
+		return vec3(min(0.f, 1.f-depth/5.f), depth / 5.f,0);
+	}
 
 #ifdef USEBVH
 	bvh.Traverse(ray, 0);
@@ -206,13 +192,13 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	vec3 lightIntensity = vec3();
 
 	// Draw a shadow ray towards the light sources
-	glm::vec3 rayPos = ray.origin + ray.direction * (ray.length - EPSILON);
+	
 
 	for (std::vector<Light>::size_type i = 0; i != lights.size(); i++)
 	{
 		Light* l = lights[i];
 		Ray shadowRay;
-		l->getIllumination(rayPos, shadowRay);
+		l->getIllumination(ray, shadowRay);
 		// See if shadow ray intersects with primitives
 
 #ifdef USEBVHL

@@ -135,8 +135,8 @@ int BVH::Partition(int left, int right, int axis)
 	int r = right;
 	while (true)
 	{
-		do { l += 1; } while (centroids[l][axis] < pivot);
-		do { r -= 1; } while (centroids[r][axis] > pivot);
+		do { l += 1; } while (l < r && centroids[l][axis] < pivot);
+		do { r -= 1; } while (l < r && centroids[r][axis] > pivot);
 		if (l >= r)
 			return r;
 		glm::vec3 tmp = centroids[l];

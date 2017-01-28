@@ -10,15 +10,16 @@ Triangle::~Triangle()
 
 inline void Triangle::Intersect(Ray & ray)
 {
+	if (glm::dot(ray.direction, normal) > 0)
+		return;
 	vec3 e1, e2;  //Edge1, Edge2
 	vec3 P, Q, T;
 	float det, inv_det, u, v;
 	float t;
-	if (glm::dot(ray.direction, normal) > 0)
-		return;
+
 	//Find vectors for two edges sharing V1
 	e1 = location2 - location;
-	e2 = location3 -  location;
+	e2 = location3 - location;
 	//Begin calculating determinant - also used to calculate u parameter
 	P = glm::cross(ray.direction, e2);
 	//if determinant is near zero, ray lies in plane of triangle or ray is parallel to plane of triangle
@@ -57,7 +58,7 @@ inline void Triangle::Intersect(Ray & ray)
 
 glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 {
-	float intencity = (glm::dot(normal, lightRay.direction));
+	float intencity = max(0.f,glm::dot(normal, lightRay.direction));
 	vec3 matcol = Color(lightRay.origin);
 
 	return matcol*lightRay.color * intencity / (lightRay.length*lightRay.length);
