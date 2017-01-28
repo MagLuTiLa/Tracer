@@ -299,6 +299,7 @@ void Surface::Plot( int x, int y, Pixel c )
 
 void Surface::Plot(int x, int y, glm::vec3 c)
 {
+	c = glm::sqrt(c);
 	if ((x >= 0) && (y >= 0) && (x < m_Width) && (y < m_Height))
 	{
 		int red = (std::min)((int)(c.r * 255), 255);

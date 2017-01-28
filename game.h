@@ -13,6 +13,7 @@
 namespace Tmpl8 {
 
 class Surface;
+
 class Game
 {
 public:
@@ -40,6 +41,8 @@ private:
 	int keyDown = 0;
 	int bvhConstructTime = 0;
 	int prevTime = 3000;
+	int bufferCount = 0;
+	glm::vec3 buffer[SCRWIDTH * SCRHEIGHT];
 };
 
 }; // namespace Tmpl8

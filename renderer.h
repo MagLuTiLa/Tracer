@@ -25,6 +25,8 @@ public:
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);
 
+	glm::vec3 PhongBRDF();
+
 private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;
