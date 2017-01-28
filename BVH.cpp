@@ -118,6 +118,9 @@ void BVH::ConstructBVHSAH(std::vector<Primitive*>* p)
 	QuickSort(r+1, right, axis);
 }
 */
+
+
+
 void BVH::QuickSort(int left, int right, int axis)
 {
 	if (left >= right)

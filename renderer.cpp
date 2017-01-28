@@ -316,3 +316,8 @@ void Renderer::AddLight(Light * p)
 {
 	lights.push_back(p);
 }
+
+vec3 Renderer::PhongBRDF()
+{
+	return vec3();
+}

@@ -14,7 +14,7 @@ float BVHNode::Area()
 
 float BVHNode::Cost()
 {
-	return Area() * (count+2);
+	return Area() * (count+0);
 }
 
 bool BVHNode::Intersect(Ray & ray, float &distance)
