@@ -14,9 +14,10 @@ public:
 	inline virtual void getIllumination(const Ray& ray, Ray& outRay)
 	{
 		glm::vec3 point = ray.origin + ray.direction * (ray.length - EPSILON);
-		float len = glm::length(location - point);
+		vec3 rLoc = triangle->RandomPointOn();
+		float len = glm::length(rLoc - point);
 		outRay.origin = point;
-		outRay.direction = (location - point) / len;
+		outRay.direction = (rLoc - point) / len;
 		outRay.color = color;
 		outRay.length = len - EPSILON;
 	}
