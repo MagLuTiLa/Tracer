@@ -23,7 +23,7 @@ int Renderer::Init()
 
 	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
 	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 1., 0.))));
 
 	AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
 	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
@@ -187,7 +187,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
 		if (material.IsOpaque())
-			lightIntensity = DirectIllumination(ray) + IndirectIllumination(ray);
+			lightIntensity = 0.5f * DirectIllumination(ray) + 0.5f * IndirectIllumination(ray);
 		else if (material.IsReflective())
 		{
 			float s = material.ref;
@@ -425,23 +425,25 @@ glm::vec3 Renderer::PhongBRDF()
 {
 	float r1 = Randamonium();
 	float r2 = Randamonium();
-	float temp = sqrtf(1 - r2);
-	float temp2 = 2 * PI * r1;
+	float temp = 2 * PI * r1;
+	float temp2 = sqrtf(1 - r2);
 	return vec3(
-		cos(temp2) + temp,
-		sin(temp2) + temp,
-		sqrtf(r2));;
+		cos(temp) * temp2,
+		sin(temp) * temp2,
+		sqrtf(r2));
 }
+
 glm::vec3 Renderer::PhongBRDF(float alpha)
 {
-	float r1 = pow(Randamonium(),2/(alpha+1));
-	float r2 = Randamonium();
-	float temp = sqrtf(1 - r2);
-	float temp2 = 2 * PI * r1;
+	float r1 = Randamonium();
+	float t = pow(Randamonium(),2/(alpha+1));
+
+	float temp = 2 * PI * r1;
+	float temp2 = sqrtf(1 - t);
 	return vec3(
-		cos(temp2) + temp,
-		sin(temp2) + temp,
-		sqrtf(r2));;
+		cos(temp) * temp2,
+		sin(temp) * temp2,
+		sqrtf(t));
 }
 
 float Renderer::Randamonium()
