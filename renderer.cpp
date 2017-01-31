@@ -20,13 +20,24 @@ int Renderer::Init()
 	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 1.5f, 7), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 1.5f, 3), 1, new Material(vec3(1., 1., 1.))));
+
 
 	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
 	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -0.1f, 7), 0.6f, new Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(0, -0.1f, 3), 0.6f, new Material(vec3(1., 0., 1.))));
 
-	AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
+	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
+	//AddLight(new PointLight(vec3(0, -5, 5), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(2, -5, 3), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(2, -5, 7), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(-2, -5, 3), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(-2, -5, 7), vec3(10.f, 10.f, 10.f)));
+
+	AddLight(new PointLight(vec3(0, 5, 5), vec3(10.f, 10.f, 10.f)));
 
 	/*
 	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
@@ -55,7 +66,7 @@ int Renderer::Init()
 			0, .5, 0, 0,
 			0, 0, .5, 3,
 			0, 0, 0, 1));*/
-	
+	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -84,7 +95,7 @@ int Renderer::Init()
 		mat4(.5, 0, 0, 4,
 			0, .5, 0, 0,
 			0, 0, .5, 4,
-			0, 0, 0, 1));
+			0, 0, 0, 1));*/
 	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
@@ -187,7 +198,10 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
 		if (material.IsOpaque())
-			lightIntensity = 0.5f * DirectIllumination(ray) + 0.5f * IndirectIllumination(ray);
+		{
+			float alfa = 0.f;
+			lightIntensity = alfa * DirectIllumination(ray) + (1 - alfa) * IndirectIllumination(ray);
+		}
 		else if (material.IsReflective())
 		{
 			float s = material.ref;
@@ -288,22 +302,23 @@ glm::vec3 Renderer::IndirectIllumination(Ray& ray)
 	vec3 N = ray.hit->Normal(loc);
 	if (ray.hit->material->IsOpaque())
 	{
-		Ray r(loc, WorldToLocal(PhongBRDF(), N));
-		r.traceDepth = ray.traceDepth;
+		vec3 p = normalize(PhongBRDF());
+		Ray r(loc, WorldToLocal(p, N));
+		r.traceDepth = ray.traceDepth + 1;
 		r.origin += EPSILON * N;
 		return this->TraceRay(r) * ray.hit->Color(loc) / PI;
 	}
 	else
 	{
-		float alpha = 1.f / ray.hit->material->ref;
-		Ray r(loc, WorldToLocal(glm::normalize(PhongBRDF(alpha)), N));
-		r.traceDepth = ray.traceDepth;
+		float alpha = 5000 * ray.hit->material->ref;
+		vec3 reflectDir = ray.direction - 2.f * (glm::dot(ray.direction, N) * N);
+		Ray r(loc, WorldToLocal(glm::normalize(PhongBRDF(alpha)), reflectDir));
+		r.traceDepth = ray.traceDepth + 1;
 		r.origin += EPSILON * N;
 		float dot = fmax(0.f,glm::dot(r.direction, -ray.direction));
 		vec3 matcol = ray.hit->Color(loc);
 		vec3 mult = matcol*(alpha + 2) / (2 * PI)*pow(dot, alpha);
-		return mult == vec3() ? mult : mult * this->TraceRay(r) ;
-
+		return mult == vec3() ? mult : mult * this->TraceRay(r);
 	}
 }
 
@@ -409,10 +424,10 @@ void Renderer::AddLight(Light * p)
 glm::vec3 Renderer::WorldToLocal(vec3 world, vec3 N)
 {
 	vec3 W;
-	if (N.x > .95)
+	/*if (abs(N.x) > .95)
 		W = vec3(1, 0, 0);
-	else
-		W = vec3(0, 1, 0);
+	else*/
+		W = vec3(0, 0, 1);
 	vec3 T = glm::normalize(glm::cross(N,W));
 	vec3 B = glm::cross(T,N);
 	return vec3(
