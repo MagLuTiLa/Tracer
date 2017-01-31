@@ -410,7 +410,6 @@ void Renderer::AddLight(Light * p)
 
 float Renderer::Randamonium()
 {
-	unsigned int seed = rand() * prime1 * prime2;
 	seed ^= seed << 13;
 	seed ^= seed >> 17;
 	seed ^= seed << 5;

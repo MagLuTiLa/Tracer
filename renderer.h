@@ -29,5 +29,6 @@ private:
 	std::vector<Light*> lights;
 	int prime1 = 114818411;
 	int prime2 = 782595287;
+	unsigned int seed = rand() * prime1 * prime2;
 };
 
