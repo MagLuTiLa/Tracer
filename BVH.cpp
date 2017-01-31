@@ -118,6 +118,9 @@ void BVH::ConstructBVHSAH(std::vector<Primitive*>* p)
 	QuickSort(r+1, right, axis);
 }
 */
+
+
+
 void BVH::QuickSort(int left, int right, int axis)
 {
 	if (left >= right)
@@ -135,8 +138,8 @@ int BVH::Partition(int left, int right, int axis)
 	int r = right;
 	while (true)
 	{
-		do { l += 1; } while (centroids[l][axis] < pivot);
-		do { r -= 1; } while (centroids[r][axis] > pivot);
+		do { l += 1; } while (l < r && centroids[l][axis] < pivot);
+		do { r -= 1; } while (l < r && centroids[r][axis] > pivot);
 		if (l >= r)
 			return r;
 		glm::vec3 tmp = centroids[l];
@@ -236,8 +239,6 @@ void BVH::SubdivideSAH(int node)
 #else
 	glm::vec3 axisSize = pool[node].corner2 - pool[node].corner1;
 
-	int maxAxis = 0;
-
 	if (axisSize[1] > axisSize[maxAxis])
 		maxAxis = 1;
 	if (axisSize[2] > axisSize[maxAxis])
@@ -335,8 +336,8 @@ void BVH::Traverse(Ray & ray, int node, int* depth)
 		bool first = dist[0] > dist[1];
 		if(traverse[first])
 			Traverse(ray, n->leftFirst + first, depth);
-		if(traverse[first^1] & ray.length > dist[first ^ 1])
-			Traverse(ray, n->leftFirst + first^1, depth);
+		if(traverse[first^1] && ray.length > dist[first ^ 1])
+			Traverse(ray, n->leftFirst + (first^1), depth);
 	}
 }
 
@@ -358,7 +359,7 @@ bool BVH::LightTraverse(Ray & ray, int node)
 		if (traverse[first])
 			if (LightTraverse(ray, n->leftFirst + first))
 				return true;
-		if (traverse[first ^ 1] & ray.length > dist[first ^ 1])
+		if (traverse[first ^ 1] && ray.length > dist[first ^ 1])
 			if (LightTraverse(ray, n->leftFirst + first ^ 1))
 				return true;
 	}

@@ -1,5 +1,5 @@
 #pragma once
-#include "ray.h"
+#include "template.h"
 class Light
 {
 public:
@@ -8,7 +8,7 @@ public:
 		color(c)
 	{}
 	
-	inline virtual void getIllumination(glm::vec3 point, Ray& outRay) = 0;
+	inline virtual void getIllumination(const Ray& inRay, Ray& outRay) = 0;
 
 	glm::vec3 location;
 	glm::vec3 color;

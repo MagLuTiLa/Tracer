@@ -4,9 +4,9 @@
 #include "obj.h"
 #include "trianglelight.h"
 #include "spherelight.h"
-//#define USEBVH
-//#define USESAH
-//#define USEBVHL
+#define USEBVH
+#define USESAH
+#define USEBVHL
 //#define DEPTHTRACER
 #define MCLIGHT
 
@@ -16,35 +16,29 @@ Renderer::Renderer()
 
 int Renderer::Init()
 {
+	Material* texture = new Material(.0007, "wood.bmp");
 	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 1.5f, 7), 1, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, 1.5f, 3), 1, new Material(vec3(1., 1., 1.))));
+
 
 	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
 	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
-
-	AddPrimitive(new Plane(vec3(0, 1, 0), vec3(0, -1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, -6, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, 0, 10), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -0.1f, 7), 0.6f, new Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(0, -0.1f, 3), 0.6f, new Material(vec3(1., 0., 1.))));
 
 	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
-	//AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
+	//AddLight(new PointLight(vec3(0, -5, 5), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(2, -5, 3), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(2, -5, 7), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(-2, -5, 3), vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(-2, -5, 7), vec3(10.f, 10.f, 10.f)));
 
-	
-	Triangle* tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
-	tri->light = true;
-	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
+	AddLight(new PointLight(vec3(0, 5, 5), vec3(10.f, 10.f, 10.f)));
 
-	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
-	tri->light = true;
-	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
-	
 	/*
 	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
 	sph->light = true;
@@ -57,28 +51,19 @@ int Renderer::Init()
 		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
 	}*/
 	/*
-	Material* texture = new Material(.7, "wood.bmp");
 	
+	AddPrimitive(new Sphere(vec3(0, 2, 3), 1.5f, new Material(vec3(1., 1., 1.))));
 	/*LoadObj("bunnay.obj", primitives, texture,
 		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
 		*
-		mat4(8, 0, 0, -0.5,
-			0, 8, 0, 0.25,
+		mat4(8, 0, 0, -1,
+			0, 8, 0, -0.8,
 			0, 0, 8, 2,
 			0, 0, 0, 1));
 
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, 3,
-			0, .5, 0, -1,
+	LoadObj("box.obj", primitives, texture, 
+		mat4(.5, 0, 0, 0,
+			0, .5, 0, 0,
 			0, 0, .5, 3,
 			0, 0, 0, 1));*/
 	/*
@@ -110,8 +95,8 @@ int Renderer::Init()
 		mat4(.5, 0, 0, 4,
 			0, .5, 0, 0,
 			0, 0, .5, 4,
-			0, 0, 0, 1));
-			
+			0, 0, 0, 1));*/
+	/*
 	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
 		0, std::cos(2), -std::sin(2), 0,
 		0, std::sin(2), std::cos(2), 0,
@@ -133,7 +118,7 @@ int Renderer::Init()
 #ifdef USESAH
 	bvh = BVH();
 	bvh.ConstructBVHSAH(&primitives);
-#elseif USEBVH
+#elif USEBVH
 	bvh = BVH();
 	bvh.ConstructBVH(&primitives);
 #endif
@@ -186,26 +171,24 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 {
 	// See if ray intersects with primitives
 
-#ifdef DEPTHTRACER
-	int depth = 0;
-	
-	bvh.Traverse(ray, 0, &depth);
-	return vec3(min(0.f, max(0.f, ((float)depth-1800.f)/ 1800.f)) , max(0.f, 1-(float)depth/ 1800.f), 0);
-#endif
-
-#ifdef USEBVH
-	bvh.Traverse(ray, 0);
-#else
-
-	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+	if (depthMode)
 	{
-		Primitive* p = primitives[i];
-		vec3 locthis = p->location;
-		p->Intersect(ray);
-	}
-	
-#endif
+		int depth = 0;
 
+		bvh.Traverse(ray, 0, &depth);
+		return vec3(min(0.f, 1.f-depth/5.f), depth / 5.f,0);
+	}
+
+	if(bvhMode)
+		bvh.Traverse(ray, 0);
+	else
+		for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
+		{
+			Primitive* p = primitives[i];
+			vec3 locthis = p->location;
+			p->Intersect(ray);
+		}
+	
 	vec3 lightIntensity = vec3();
 
 	// If ray collided with a primitive
@@ -215,7 +198,10 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
 		if (material.IsOpaque())
-			lightIntensity = DirectIllumination(ray);
+		{
+			float alfa = 0.f;
+			lightIntensity = alfa * DirectIllumination(ray) + (1 - alfa) * IndirectIllumination(ray);
+		}
 		else if (material.IsReflective())
 		{
 			float s = material.ref;
@@ -229,8 +215,9 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 				else
 					lightIntensity += (1-s) / (1 - s) * DirectIllumination(ray);
 #else
-				lightIntensity += s * Reflect(ray);
-				lightIntensity += (1 - s) * DirectIllumination(ray);
+				//lightIntensity += s * Reflect(ray);
+				lightIntensity += DirectIllumination(ray);
+ 				lightIntensity += IndirectIllumination(ray);
 #endif
 			}
 		}
@@ -263,7 +250,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	index = (int)fmin(index, size - 1);
 	Light* l = lights[index];
 	Ray shadowRay;
-	l->getIllumination(rayPos, shadowRay);
+	l->getIllumination(ray, shadowRay);
 	
 	// See if shadow ray intersects with primitives
 	for (std::vector<Primitive>::size_type i = 0; i != primitives.size(); i++)
@@ -278,7 +265,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	{
 		Light* l = lights[i];
 		Ray shadowRay;
-		l->getIllumination(rayPos, shadowRay);
+		l->getIllumination(ray, shadowRay);
 		// See if shadow ray intersects with primitives
 
 #ifdef USEBVHL
@@ -307,6 +294,32 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	}
 #endif
 	return lightIntensity;
+}
+
+glm::vec3 Renderer::IndirectIllumination(Ray& ray)
+{
+	vec3 loc = ray.origin + ray.direction * ray.length;
+	vec3 N = ray.hit->Normal(loc);
+	if (ray.hit->material->IsOpaque())
+	{
+		vec3 p = normalize(PhongBRDF());
+		Ray r(loc, WorldToLocal(p, N));
+		r.traceDepth = ray.traceDepth + 1;
+		r.origin += EPSILON * N;
+		return this->TraceRay(r) * ray.hit->Color(loc) / PI;
+	}
+	else
+	{
+		float alpha = 5000 * ray.hit->material->ref;
+		vec3 reflectDir = ray.direction - 2.f * (glm::dot(ray.direction, N) * N);
+		Ray r(loc, WorldToLocal(glm::normalize(PhongBRDF(alpha)), reflectDir));
+		r.traceDepth = ray.traceDepth + 1;
+		r.origin += EPSILON * N;
+		float dot = fmax(0.f,glm::dot(r.direction, -ray.direction));
+		vec3 matcol = ray.hit->Color(loc);
+		vec3 mult = matcol*(alpha + 2) / (2 * PI)*pow(dot, alpha);
+		return mult == vec3() ? mult : mult * this->TraceRay(r);
+	}
 }
 
 glm::vec3 Renderer::Reflect(Ray& ray)
@@ -408,12 +421,50 @@ void Renderer::AddLight(Light * p)
 	lights.push_back(p);
 }
 
+glm::vec3 Renderer::WorldToLocal(vec3 world, vec3 N)
+{
+	vec3 W;
+	/*if (abs(N.x) > .95)
+		W = vec3(1, 0, 0);
+	else*/
+		W = vec3(0, 0, 1);
+	vec3 T = glm::normalize(glm::cross(N,W));
+	vec3 B = glm::cross(T,N);
+	return vec3(
+		glm::dot(world, T),
+		glm::dot(world, B),
+		glm::dot(world, N));
+}
+
+glm::vec3 Renderer::PhongBRDF()
+{
+	float r1 = Randamonium();
+	float r2 = Randamonium();
+	float temp = 2 * PI * r1;
+	float temp2 = sqrtf(1 - r2);
+	return vec3(
+		cos(temp) * temp2,
+		sin(temp) * temp2,
+		sqrtf(r2));
+}
+
+glm::vec3 Renderer::PhongBRDF(float alpha)
+{
+	float r1 = Randamonium();
+	float t = pow(Randamonium(),2/(alpha+1));
+
+	float temp = 2 * PI * r1;
+	float temp2 = sqrtf(1 - t);
+	return vec3(
+		cos(temp) * temp2,
+		sin(temp) * temp2,
+		sqrtf(t));
+}
+
 float Renderer::Randamonium()
 {
 	seed ^= seed << 13;
 	seed ^= seed >> 17;
 	seed ^= seed << 5;
-	float yay = (float)seed;
-	float result = yay * 2.3283064365387e-10f;
-	return result;
+	return (float)seed * 2.3283064365387e-10f;
 }

@@ -14,7 +14,7 @@ float BVHNode::Area()
 
 float BVHNode::Cost()
 {
-	return Area() * count;
+	return Area() * (count+0);
 }
 
 bool BVHNode::Intersect(Ray & ray, float &distance)
@@ -52,7 +52,7 @@ bool BVHNode::Intersect(Ray & ray, float &distance)
 	vec4 lminv;
 	storess(lmin, &lminv);
 
-	distance = glm::length(vec3(lminv)- ray.origin);
+	distance = lminv.x;
 
 	return _mm_comige_ss(lmax, _mm_setzero_ps()) & _mm_comige_ss(lmax, lmin) && distance < ray.length;
 }
