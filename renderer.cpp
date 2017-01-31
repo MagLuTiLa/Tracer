@@ -35,11 +35,11 @@ int Renderer::Init()
 	//AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
 
 
-	Triangle* tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
+	Triangle* /*tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
 	tri->light = true;
 	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
-
+	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));*/
+	
 	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
 	tri->light = true;
 	AddPrimitive(tri);
@@ -223,6 +223,8 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 	// If ray collided with a primitive
 	if (ray.length < std::numeric_limits<float>::max())
 	{
+		if (ray.hit->light)
+			return ray.hit->material->texture[0];
 		if (ray.traceDepth >= MAXTRACEDEPTH)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
@@ -308,11 +310,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 
 #endif
 #endif
-		// Add color to the lightintensity
-		if (ray.hit->light)
-			lightIntensity += ray.hit->material->texture[0];
-		else
-			lightIntensity += ray.hit->Sample(ray, shadowRay);
+		lightIntensity += ray.hit->Sample(ray, shadowRay);
 	next:;
 #ifdef MCLIGHT
 		lightIntensity *= (float)size;

@@ -18,6 +18,8 @@ public:
 		CalculateNormal();
 	}
 
+	Triangle::~Triangle();
+
 	inline void CalculateNormal()
 	{
 		normal = glm::normalize(glm::cross(location2 - location, location3 - location));
@@ -39,10 +41,10 @@ public:
 
 	glm::vec2* uv = NULL;
 
-	~Triangle();
-
 	// Inherited via Primitive
-	virtual void Intersect(Ray & ray) override;
+	virtual float Area();
+
+	void Intersect(Ray & ray) override;
 	virtual glm::vec3 Sample(Ray & ray, Ray & lightRay) override;
 	virtual glm::vec3 Normal(glm::vec3 loc) override;
 	virtual glm::vec3 Color(const glm::vec3& position) override;

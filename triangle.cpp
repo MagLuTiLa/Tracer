@@ -1,16 +1,25 @@
 #include "template.h"
 #include "triangle.h"
 
-
-
 Triangle::~Triangle()
 {
+}
+
+float Triangle::Area()
+{
+	float side1 = length(location2 - location);
+	float side2 = length(location3 - location);
+	float side3 = length(location3 - location2);
+	float average = (side1 + side2 + side3) / 2;
+
+	return sqrtf(abs(average * (average - side1) * (average - side2) * (average - side3)));
 }
 
 inline void Triangle::Intersect(Ray & ray)
 {
 	if (glm::dot(ray.direction, normal) > 0)
 		return;
+
 	vec3 e1, e2;  //Edge1, Edge2
 	vec3 P, Q, T;
 	float det, inv_det, u, v;
@@ -45,15 +54,13 @@ inline void Triangle::Intersect(Ray & ray)
 
 	t = glm::dot(e2, Q) * inv_det;
 
-	if ((t > EPSILON) && (t < ray.length)) {
+	if ((t > EPSILON) && (t < ray.length)) 
+	{
 		//ray intersection
 		ray.length = t;
 		ray.hit = this;
 	}
-
 }
-
-
 
 glm::vec3 Triangle::Sample(Ray & ray, Ray & lightRay)
 {
@@ -114,3 +121,4 @@ glm::vec3 Triangle::RandomPointOn()
 	vec3 vVec = (location2 - location) * v;
 	return uVec + vVec;
 }
+
