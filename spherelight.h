@@ -7,6 +7,7 @@ public:
 		Light(s->Centroid(), c)
 	{
 		sphere = s;
+		s->light = this;
 	}
 
 	// TODO might have to account for radius if using sphere

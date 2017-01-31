@@ -11,8 +11,8 @@ Camera::Camera()
 
 void Camera::Reset()
 {
-	position = glm::vec3(0, 0, 0);
-	vec3 lookAt(0, 0, 1);
+	position = glm::vec3(0, -2, 0);
+	vec3 lookAt(0, -2, 1);
 	//vec3 lookAt(1, 2, 3);
 	direction = glm::normalize(lookAt - position);
 	up = glm::vec3(0, -1, 0);

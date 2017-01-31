@@ -21,11 +21,12 @@ public:
 
 	BVH bvh;
 	bool depthMode = false;
-	bool bvhMode = true;
+	bool bvhMode = false;
 
 	void AddPrimitive(Primitive*);
 	void AddLight(Light*);
 	glm::vec3 WorldToLocal(glm::vec3 world, glm::vec3 normal);
+	glm::vec3 LocalToWorld(glm::vec3 local, glm::vec3 N);
 	float Randamonium();
 
 	glm::vec3 PhongBRDF();

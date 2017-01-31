@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "material.h"
 #include "BVHNode.h"
+#include "light.h"
 class Primitive
 {
 public:
@@ -24,6 +25,6 @@ public:
 	glm::vec3 location;
 	Material* material;
 	int hax = 0;
-	bool light = false;
+	Light* light = 0;
 };
 

@@ -8,6 +8,7 @@ public:
 		Light(t->Centroid(), c)
 	{
 		triangle = t;
+		t->light = this;
 	}
 
 	// TODO might have to account for radius if using sphere
@@ -17,10 +18,12 @@ public:
 		glm::vec3 N = ray.hit->Normal(point);
 		vec3 rLoc = triangle->RandomPointOn();
 		float len = glm::length(rLoc - point);
+
 		outRay.origin = point;
 		outRay.direction = (rLoc - point) / len;
 		outRay.color = color;
 		outRay.length = len - EPSILON;
+
 		float cosO = dot(-outRay.direction, triangle->Normal(rLoc));
 		float solidAngle = (cosO * triangle->Area()) / (len * len);
 		float cosI = dot(outRay.direction, N);
