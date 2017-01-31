@@ -16,132 +16,31 @@ Renderer::Renderer()
 
 int Renderer::Init()
 {
-	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
+	Material* texture = new Material(.0007, "wood.bmp");
 
-	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
-	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 0., 1.))));
+	AddPrimitive(new Sphere(vec3(-2, -0.3f, 5), 0.8f, new Material(1.7f, vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(0, -0.3f, 5), 0.8f, new Material(vec3(1., 1., 1.))));
+	AddPrimitive(new Sphere(vec3(2, -0.3f, 5), 0.8f, new Material(.5f, vec3(0., 1., 0.))));
+	AddPrimitive(new Sphere(vec3(0, -0.3f, 3), 0.8f, new Material(1.f, vec3(1., 1., 0.))));
+
 
 	AddPrimitive(new Plane(vec3(0, 1, 0), vec3(0, -1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, -6, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, 0, 10), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(0, 0, -10), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(-5, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
-	AddPrimitive(new Plane(vec3(5, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, -5, 0), vec3(0, 1, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, 0, 6), vec3(0, 0, -1), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(0, 0, -6), vec3(0, 0, 1), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(-4, 0, 0), vec3(1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
+	AddPrimitive(new Plane(vec3(4, 0, 0), vec3(-1, 0, 0), new Material(vec3(1.f, 1.f, 1.f))));
 
-	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
-	//AddLight(new PointLight(vec3(0, 0, 0), vec3(10.f, 10.f, 10.f)));
-
-
-	Triangle* /*tri = new Triangle(vec3(-2, -6 + EPSILON, 4), vec3(0, -6 + EPSILON, 8), vec3(2, -6 + EPSILON, 4));
+	Triangle* tri = new Triangle(vec3(-2, -5 + EPSILON, 1), vec3(0, -5 + EPSILON, 5), vec3(2, -5 + EPSILON, 1));
 	tri->light = true;
 	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));*/
+	AddLight(new TriangleLight(tri, vec3(1000.f, 1000.f, 1000.f)));
 	
-	tri = new Triangle(vec3(5 - EPSILON, -4, 4), vec3(5 - EPSILON, -2.5f, 8), vec3(5 - EPSILON, -1, 4));
+	tri = new Triangle(vec3( 4 - EPSILON, -4, 1), vec3(4 - EPSILON, -2.5f, 5), vec3(4 - EPSILON, -1, 1));
 	tri->light = true;
 	AddPrimitive(tri);
-	AddLight(new TriangleLight(tri, vec3(10.f, 10.f, 10.f)));
-	/*
-	Material* texture = new Material(.0007, "wood.bmp");
-	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(0, 1.5f, 7), 1, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(0, 1.5f, 3), 1, new Material(vec3(1., 1., 1.))));
+	AddLight(new TriangleLight(tri, vec3(1000.f, 1000.f, 1000.f)));
 
-
-	AddPrimitive(new Sphere(vec3(-2, -0.1f, 5), 0.6f, new Material(vec3(1., 0., 0.))));
-	AddPrimitive(new Sphere(vec3(0, -0.1f, 5), 0.6f, new Material(vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(2, -0.1f, 5), 0.6f, new Material(vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(0, -0.1f, 7), 0.6f, new Material(vec3(0., 0., 1.))));
-	AddPrimitive(new Sphere(vec3(0, -0.1f, 3), 0.6f, new Material(vec3(1., 0., 1.))));
-
-	//AddLight(new PointLight(vec3(0, -3.f, 6), vec3(10.f, 10.f, 10.f)));
-	//AddLight(new PointLight(vec3(0, -5, 5), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(2, -5, 3), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(2, -5, 7), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(-2, -5, 3), vec3(10.f, 10.f, 10.f)));
-	AddLight(new PointLight(vec3(-2, -5, 7), vec3(10.f, 10.f, 10.f)));
-
-	AddLight(new PointLight(vec3(0, 5, 5), vec3(10.f, 10.f, 10.f)));
-	*/
-	/*
-	Sphere* sph = new Sphere(vec3(0, -7, 5), 1.f);
-	sph->light = true;
-	AddPrimitive(sph);
-	AddLight(new SphereLight(sph, vec3(10.f, 10.f, 10.f)));*/
-	/*
-	for (int i = -10; i < 10; i++)
-	{
-		AddPrimitive(new Triangle(vec3(2 * i + 0, -2, 13), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, -2, 12), new Material(vec3(1, 0, 0))));
-		AddPrimitive(new Triangle(vec3(2 * i + 2, -2, 12), vec3(2 * i + 0, 2, 12), vec3(2 * i + 2, 2, 11)));
-	}*/
-	/*
-	
-	AddPrimitive(new Sphere(vec3(0, 2, 3), 1.5f, new Material(vec3(1., 1., 1.))));
-	/*LoadObj("bunnay.obj", primitives, texture,
-		glm::rotate(glm::mat4(), 1.f, glm::vec3(0, 1, 0))
-		*
-		mat4(8, 0, 0, -1,
-			0, 8, 0, -0.8,
-			0, 0, 8, 2,
-			0, 0, 0, 1));
-
-	LoadObj("box.obj", primitives, texture, 
-		mat4(.5, 0, 0, 0,
-			0, .5, 0, 0,
-			0, 0, .5, 3,
-			0, 0, 0, 1));*/
-	/*
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, 0,
-			0, .5, 0, -1,
-			0, 0, .5, 3,
-			0, 0, 0, 1));
-	
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, 4,
-			0, .5, 0, 0,
-			0, 0, .5, 4,
-			0, 0, 0, 1));*/
-	/*
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-		0, std::cos(2), -std::sin(2), 0,
-		0, std::sin(2), std::cos(2), 0,
-		0, 0, 0, 1)
-		*
-		mat4(std::cos(2), 0, -std::sin(2), 0,
-			0, 1, 0, 0,
-			std::sin(2), 0, std::cos(2), 0,
-			0, 0, 0, 1)
-		*
-		mat4(.5, 0, 0, -5,
-			0, .5, 0, 2,
-			0, 0, .5, 7,
-			0, 0, 0, 1));
-
-*/
 
 	timer t;
 #ifdef USESAH
@@ -154,46 +53,6 @@ int Renderer::Init()
 	int time = (int)t.elapsed();
 
 	return time;
-	//AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
-	/*
-	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(-1000, 5, -10), vec3(1000, 5, -10)));
-	AddPrimitive(new Triangle(vec3(-1000, 5, 10), vec3(1000, 5, 10), vec3(1000, 5, -10)));*/
-
-	// Bye bye fancy scene, you will be remembered for your bravery.
-	/*
-	AddPrimitive(new Sphere(vec3(-3, -3, -3), 1.15f, new Material(1.5f, vec3(0., 1., 0.))));
-	AddPrimitive(new Sphere(vec3(3, 3, 3), 1.5f, new Material(0.9f, vec3(1., 1., 1.))));
-	AddPrimitive(new Sphere(vec3(-5, -1, 5), 1.f, new Material(vec3(0., 0., 1.))));
-	AddPrimitive(new Sphere(vec3(5, 4, 4), 0.5f, new Material(vec3(1., 0.5, 0.))));
-
-	AddPrimitive(new Plane(vec3(0, 0, 7), vec3(0, 0, -1), new Material(1.f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, 0, -7), vec3(0, 0, 1), new Material(vec3(0.3, 0.3, 1.))));
-	AddPrimitive(new Plane(vec3(0, 7, 0), vec3(0, -1, 0), new Material(1.f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(0, -7, 0), vec3(0, 1, 0), new Material(vec3(0.3, 1., 0.3))));
-	AddPrimitive(new Plane(vec3(7, 0, 0), vec3(-1, 0, 0), new Material(1.f, vec3(1., 1., 1.))));
-	AddPrimitive(new Plane(vec3(-7, 0, 0), vec3(1, 0, 0), new Material(vec3(1., 0.3, 0.3))));
-
-	AddLight(new PointLight(vec3(0, 0, 0), vec3(20.f, 20.f, 20.f)));
-	AddLight(new PointLight(vec3(-3.5f, 3.5f, 5.5f), vec3(2.f, 10.f, 2.f)));
-	AddLight(new PointLight(vec3(3, -3, 3), vec3(9.f, 1.f, 9.f)));
-	AddLight(new SpotLight(vec3(0, 0, 2), vec3(0, 0, 1), .05, vec3(2.5, 0, 0)));
-
-	Material* texture = new Material(.5, "wood.bmp");
-	LoadObj("box.obj", primitives, texture, mat4(1, 0, 0, 0,
-	0, std::cos(2), -std::sin(2), 0,
-	0, std::sin(2), std::cos(2), 0,
-	0, 0, 0, 1)
-	*
-	mat4(std::cos(2), 0, -std::sin(2), 0,
-	0, 1, 0, 0,
-	std::sin(2), 0, std::cos(2), 0,
-	0, 0, 0, 1)
-	*
-	mat4(.2, 0, 0, 0,
-	0, .2, 0, 0,
-	0, 0, .2, 4,
-	0, 0, 0, 1));
-	*/
 }
 
 glm::vec3 Renderer::TraceRay(Ray & ray)
@@ -229,7 +88,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
 		if (material.IsOpaque())
-			lightIntensity =  DirectIllumination(ray) +  IndirectIllumination(ray);
+			lightIntensity =  0.01f * DirectIllumination(ray) +  IndirectIllumination(ray);
 		else if (material.IsReflective())
 		{
 			float s = material.ref;

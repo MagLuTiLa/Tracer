@@ -118,7 +118,7 @@ glm::vec3 Triangle::RandomPointOn()
 	}
 	while (u + v >= 1);
 	vec3 uVec = (location2 - location) * u;
-	vec3 vVec = (location2 - location) * v;
-	return uVec + vVec;
+	vec3 vVec = (location3 - location) * v;
+	return location + uVec + vVec;
 }
 
