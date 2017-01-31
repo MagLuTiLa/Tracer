@@ -260,7 +260,7 @@ glm::vec3 Renderer::DirectIllumination(Ray& ray)
 	//int index = rand() % size;
 	float index = Randamonium();
 	index *= size;
-	index = (int)index;
+	index = (int)fmin(index, size - 1);
 	Light* l = lights[index];
 	Ray shadowRay;
 	l->getIllumination(rayPos, shadowRay);
