@@ -30,6 +30,8 @@ public:
 
 	glm::vec3 PhongBRDF();
 
+	glm::vec3 PhongBRDF(float alpha);
+
 private:
 	std::vector<Primitive*> primitives;
 	std::vector<Light*> lights;

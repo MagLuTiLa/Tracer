@@ -16,7 +16,7 @@ Renderer::Renderer()
 
 int Renderer::Init()
 {
-	Material* texture = new Material(.7, "wood.bmp");
+	Material* texture = new Material(.0007, "wood.bmp");
 	AddPrimitive(new Sphere(vec3(-2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(0, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
 	AddPrimitive(new Sphere(vec3(2, 1.5f, 5), 1, new Material(vec3(1., 1., 1.))));
@@ -201,9 +201,9 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 				else
 					lightIntensity += (1-s) / (1 - s) * DirectIllumination(ray);
 #else
-				lightIntensity += s * Reflect(ray);
-				lightIntensity += (1 - s) * DirectIllumination(ray);
-				lightIntensity += (1 - s) * IndirectIllumination(ray);
+				//lightIntensity += s * Reflect(ray);
+				lightIntensity += DirectIllumination(ray);
+ 				lightIntensity += IndirectIllumination(ray);
 #endif
 			}
 		}
@@ -286,10 +286,25 @@ glm::vec3 Renderer::IndirectIllumination(Ray& ray)
 {
 	vec3 loc = ray.origin + ray.direction * ray.length;
 	vec3 N = ray.hit->Normal(loc);
-	Ray r(loc, WorldToLocal(PhongBRDF(), N));
-	r.traceDepth = ray.traceDepth;
-	r.origin += EPSILON * r.direction;
-	return this->TraceRay(r) * ray.hit->Color(loc)/PI;
+	if (ray.hit->material->IsOpaque())
+	{
+		Ray r(loc, WorldToLocal(PhongBRDF(), N));
+		r.traceDepth = ray.traceDepth;
+		r.origin += EPSILON * N;
+		return this->TraceRay(r) * ray.hit->Color(loc) / PI;
+	}
+	else
+	{
+		float alpha = 1.f / ray.hit->material->ref;
+		Ray r(loc, WorldToLocal(glm::normalize(PhongBRDF(alpha)), N));
+		r.traceDepth = ray.traceDepth;
+		r.origin += EPSILON * N;
+		float dot = fmax(0.f,glm::dot(r.direction, -ray.direction));
+		vec3 matcol = ray.hit->Color(loc);
+		vec3 mult = matcol*(alpha + 2) / (2 * PI)*pow(dot, alpha);
+		return mult == vec3() ? mult : mult * this->TraceRay(r) ;
+
+	}
 }
 
 glm::vec3 Renderer::Reflect(Ray& ray)
@@ -409,6 +424,17 @@ glm::vec3 Renderer::WorldToLocal(vec3 world, vec3 N)
 glm::vec3 Renderer::PhongBRDF()
 {
 	float r1 = Randamonium();
+	float r2 = Randamonium();
+	float temp = sqrtf(1 - r2);
+	float temp2 = 2 * PI * r1;
+	return vec3(
+		cos(temp2) + temp,
+		sin(temp2) + temp,
+		sqrtf(r2));;
+}
+glm::vec3 Renderer::PhongBRDF(float alpha)
+{
+	float r1 = pow(Randamonium(),2/(alpha+1));
 	float r2 = Randamonium();
 	float temp = sqrtf(1 - r2);
 	float temp2 = 2 * PI * r1;
