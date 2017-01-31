@@ -35,7 +35,6 @@ extern "C"
 #include "fcntl.h"
 
 #include "sphere.h"
-#include "pointlight.h"
 #include "ray.h"
 #include "camera.h"
 

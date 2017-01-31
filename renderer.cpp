@@ -227,10 +227,7 @@ glm::vec3 Renderer::TraceRay(Ray & ray)
 			return DirectIllumination(ray);
 		Material material = *(ray.hit->material);
 		if (material.IsOpaque())
-		{
-			float alfa = 0.f;
-			lightIntensity = alfa * DirectIllumination(ray) + (1 - alfa) * IndirectIllumination(ray);
-		}
+			lightIntensity =  DirectIllumination(ray) +  IndirectIllumination(ray);
 		else if (material.IsReflective())
 		{
 			float s = material.ref;
@@ -335,7 +332,11 @@ glm::vec3 Renderer::IndirectIllumination(Ray& ray)
 		Ray r(loc, WorldToLocal(p, N));
 		r.traceDepth = ray.traceDepth + 1;
 		r.origin += EPSILON * N;
-		return this->TraceRay(r) * ray.hit->Color(loc) / PI;
+		vec3 yay = TraceRay(r);
+		if (r.hit != NULL)
+			return yay * (float)(!r.hit->light) * ray.hit->Color(loc) / PI;
+		//Skybox
+		return yay * ray.hit->Color(loc) / PI;
 	}
 	else
 	{

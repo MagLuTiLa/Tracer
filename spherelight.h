@@ -10,8 +10,9 @@ public:
 	}
 
 	// TODO might have to account for radius if using sphere
-	inline virtual void getIllumination(glm::vec3 point, Ray& outRay)
+	inline virtual void getIllumination(const Ray& ray, Ray& outRay)
 	{
+		glm::vec3 point = ray.origin + ray.direction * (ray.length - EPSILON);
 		float len = glm::length(location - point);
 		outRay.direction = (location - point) / len;
 		outRay.origin = point + outRay.direction * sphere->radius + EPSILON;
